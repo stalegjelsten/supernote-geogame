@@ -63,13 +63,15 @@ import uk from './uk';
 import vi from './vi';
 import zhHans from './zh-Hans';
 import zhHant from './zh-Hant';
+import {normalize} from '../core/match';
 import type {Language} from './types';
 
 export type {Language} from './types';
 
 /**
- * Inkluderte språk, i den rekkefølgen de vises i menyen.
- * Det første er reservespråket for ukjente språk på enheten.
+ * Inkluderte språk. Det første er reservespråket for ukjente språk på enheten,
+ * og rekkefølgen avgjør uavgjort når språket på et ark gjenkjennes.
+ * Menyen bruker MENU_LANGUAGES.
  */
 export const LANGUAGES: readonly Language[] = [
   en, nb, da, sv, fi, is, de, fr, es, it, pt, nl,
@@ -77,6 +79,26 @@ export const LANGUAGES: readonly Language[] = [
   id, ga, ja, kk, ko, lv, lt, mk, mg, ms, mn, pl, ro, ru, srCyrl, srLatn, sk, sl, sw, tt,
   tr, uk, vi,
 ];
+
+/**
+ * Språkene slik menyen viser dem: engelsk først, så resten sortert etter
+ * navnet på språket selv. Aksenter ignoreres (Čeština under C, Íslenska
+ * under I); latinske navn kommer før gresk, kyrillisk, armensk, georgisk,
+ * kinesisk, japansk og koreansk.
+ */
+/** Utvidede kyrilliske bokstaver sorteres som grunnbokstaven (Қазақ under К). */
+function menuSortKey(label: string): string {
+  return normalize(label).replace(/[қҚ]/g, 'к').replace(/[ңҢ]/g, 'н').replace(/[үҮұҰ]/g, 'у').replace(/[өӨ]/g, 'о');
+}
+
+export const MENU_LANGUAGES: readonly Language[] = [...LANGUAGES].sort((a, b) => {
+  if (a.code === 'en' || b.code === 'en') {
+    return a.code === 'en' ? (b.code === 'en' ? 0 : -1) : 1;
+  }
+  const keyA = menuSortKey(a.label);
+  const keyB = menuSortKey(b.label);
+  return keyA < keyB ? -1 : keyA > keyB ? 1 : a.label < b.label ? -1 : a.label > b.label ? 1 : 0;
+});
 
 /** Engelsk brukes som ekstra fasit hvis det er inkludert. */
 export const ENGLISH: Language | undefined = LANGUAGES.find(l => l.code === 'en');

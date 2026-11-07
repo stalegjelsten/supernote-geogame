@@ -37,6 +37,7 @@ import {
 } from './src/core/sheet';
 import {
   LANGUAGES,
+  MENU_LANGUAGES,
   currentLanguage,
   deviceLanguage,
   languageChoice,
@@ -139,8 +140,8 @@ function App(): React.JSX.Element {
   const [allLanguages, setAllLanguages] = useState(false);
   // Uten «alle språk» vises bare automatisk, valgt språk og enhetens språk.
   const shownLanguages = allLanguages
-    ? LANGUAGES
-    : LANGUAGES.filter(l => l.code === choice || l.code === device.code);
+    ? MENU_LANGUAGES
+    : MENU_LANGUAGES.filter(l => l.code === choice || l.code === device.code);
   const busy = status.kind === 'busy';
 
   // Statistikk: postene hentes når visningen åpnes og etter hver retting.
