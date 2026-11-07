@@ -2,7 +2,7 @@
  * English names of countries and capitals. Alternatives cover local spellings
  * and disputed/shared capitals.
  *
- * [land, hovedstad, alternative svar som også godtas]
+ * [country, capital, alternative answers that are also accepted]
  */
 import type {CountryNames} from '../types';
 

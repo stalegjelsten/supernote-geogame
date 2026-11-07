@@ -1,13 +1,13 @@
 /**
- * Norske navn på land og hovedsteder. Alternativene dekker engelske/lokale
- * skrivemåter og omstridte/delte hovedsteder.
+ * Norwegian names of countries and capitals. Alternatives cover English/local
+ * spellings and disputed/shared capitals.
  *
- * [land, hovedstad, alternative svar som også godtas]
+ * [country, capital, alternative answers that are also accepted]
  */
 import type {CountryNames} from '../types';
 
 const countries: CountryNames = {
-  // Europa
+  // Europe
   AL: ['Albania', 'Tirana', ['Tirane']],
   AD: ['Andorra', 'Andorra la Vella', ['Andorra']],
   BY: ['Belarus', 'Minsk'],
@@ -105,7 +105,7 @@ const countries: CountryNames = {
   VN: ['Vietnam', 'Hanoi', ['Ha Noi']],
   TL: ['Øst-Timor', 'Dili'],
 
-  // Afrika
+  // Africa
   DZ: ['Algerie', 'Alger', ['Algiers']],
   AO: ['Angola', 'Luanda'],
   BJ: ['Benin', 'Porto-Novo', ['Cotonou']],
@@ -161,7 +161,7 @@ const countries: CountryNames = {
   ZM: ['Zambia', 'Lusaka'],
   ZW: ['Zimbabwe', 'Harare'],
 
-  // Nord- og Mellom-Amerika
+  // North and Central America
   AG: ['Antigua og Barbuda', "St. John's", ["Saint John's", 'St Johns']],
   BS: ['Bahamas', 'Nassau'],
   BB: ['Barbados', 'Bridgetown'],
@@ -186,7 +186,7 @@ const countries: CountryNames = {
   TT: ['Trinidad og Tobago', 'Port of Spain'],
   US: ['USA', 'Washington D.C.', ['Washington', 'Washington DC']],
 
-  // Sør-Amerika
+  // South America
   AR: ['Argentina', 'Buenos Aires'],
   BO: ['Bolivia', 'Sucre', ['La Paz']],
   BR: ['Brasil', 'Brasília'],
@@ -200,7 +200,7 @@ const countries: CountryNames = {
   UY: ['Uruguay', 'Montevideo'],
   VE: ['Venezuela', 'Caracas'],
 
-  // Oseania
+  // Oceania
   AU: ['Australia', 'Canberra'],
   FJ: ['Fiji', 'Suva'],
   KI: ['Kiribati', 'Tarawa', ['South Tarawa', 'Sør-Tarawa']],

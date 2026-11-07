@@ -1,4 +1,4 @@
-// Menytekster på français, oversatt fra menu/en.ts.
+// Menu texts in French, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

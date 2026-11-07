@@ -8,13 +8,13 @@ import {statsTexts} from '../src/i18n/stats';
 const placeholders = (s: string) => (s.match(/\{\w+\}/g) ?? []).sort().join(',');
 const generated = LANGUAGES.filter(l => l.code !== 'en' && l.code !== 'nb');
 
-test('alle genererte språk har oversatte menytekster', () => {
+test('all generated languages have translated menu texts', () => {
   for (const lang of generated) {
     expect([lang.code, Boolean(lang.menu)]).toEqual([lang.code, true]);
   }
 });
 
-test('menytekstene har de samme nøklene og plassholderne som engelsk', () => {
+test('menu texts have the same keys and placeholders as English', () => {
   const keys = Object.keys(enMenu).sort();
   for (const lang of generated) {
     const m = lang.menu as unknown as Record<string, string>;
@@ -31,7 +31,7 @@ test('menytekstene har de samme nøklene og plassholderne som engelsk', () => {
   }
 });
 
-test('ferdige menytekster har ingen plassholdere igjen', () => {
+test('finished menu texts have no placeholders left', () => {
   for (const lang of generated) {
     const m = mapTexts(lang);
     const hs = hotSeatTexts(lang);
@@ -72,7 +72,7 @@ test('ferdige menytekster har ingen plassholdere igjen', () => {
   }
 });
 
-test('arkteksten er fortsatt engelsk for flerspiller og kart, så den kjennes igjen', () => {
+test('sheet text stays English for multiplayer and map, so it is recognized', () => {
   const de = LANGUAGES.find(l => l.code === 'de')!;
   const en = LANGUAGES.find(l => l.code === 'en')!;
   expect(hotSeatTexts(de).passTag(1, 2)).toBe(hotSeatTexts(en).passTag(1, 2));

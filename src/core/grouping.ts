@@ -23,9 +23,9 @@ export function boxOf(points: Array<{x: number; y: number}>): Box | null {
 }
 
 /**
- * Fordeler strøk på rader ut fra strøkets midtpunkt.
- * Bare strøk med midtpunkt i svarkolonnen telles med; kladd andre steder ignoreres.
- * Returnerer for hver rad indeksene til strøkene som hører til den.
+ * Distributes strokes onto rows based on each stroke's center point.
+ * Only strokes with a center in the answer column count; scribbles elsewhere are ignored.
+ * Returns, for each row, the indices of the strokes that belong to it.
  */
 export function assignToRows(
   boxes: Array<Box | null>,
@@ -44,7 +44,7 @@ export function assignToRows(
   return result;
 }
 
-/** Finner raden hvis landcelle ligger nærmest tekstboksens midtpunkt. */
+/** Finds the row whose country cell is nearest the center of the text box. */
 export function nearestRow(rect: Rect, rows: Array<{country: Rect}>): number {
   const cy = (rect.top + rect.bottom) / 2;
   let best = -1;

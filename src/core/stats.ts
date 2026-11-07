@@ -1,23 +1,23 @@
 /**
- * Svarhistorikk og statistikk per land, uten SDK.
+ * Answer history and statistics per country, without the SDK.
  *
- * Hvert rettet ark (eller hver rettet side i et sett) blir én `SheetRecord`:
- * hvilken ferdighet som ble øvd, når, og hvor godt det gikk med hvert land.
- * All statistikk regnes ut fra disse postene, så modellen kan endres senere
- * uten at noe lagret må skrives om.
+ * Each corrected sheet (or each corrected page in a set) becomes one `SheetRecord`:
+ * which skill was practiced, when, and how well it went for each country.
+ * All statistics are computed from these records, so the model can be changed later
+ * without having to rewrite anything stored.
  *
- * Postene lagres som mappenavn (se src/sdk/statsStore.ts), fordi SDK-en ikke
- * kan skrive vanlige filer. Kodingen bruker derfor bare små bokstaver, sifre
- * og punktum, og holder seg godt under 255 tegn.
+ * The records are stored as folder names (see src/sdk/statsStore.ts), because the SDK
+ * cannot write ordinary files. The encoding therefore uses only lowercase letters, digits
+ * and dots, and stays well under 255 characters.
  */
 import {CONTINENT_OF, type CountryCode} from '../data/countries';
 import type {Verdict} from './match';
 
 /**
- * Det som øves:
- * - capital: skrive hovedstaden (tabellarket)
- * - mapCapital: finne hovedstaden på kartet
- * - mapCountry: finne landet på kartet
+ * What is practiced:
+ * - capital: write the capital (the table sheet)
+ * - mapCapital: find the capital on the map
+ * - mapCountry: find the country on the map
  */
 export type Skill = 'capital' | 'mapCapital' | 'mapCountry';
 
@@ -26,7 +26,7 @@ export const SKILLS: Skill[] = ['capital', 'mapCapital', 'mapCountry'];
 const SKILL_CHAR: Record<Skill, string> = {capital: 't', mapCapital: 'm', mapCountry: 'c'};
 const CHAR_SKILL: Record<string, Skill> = {t: 'capital', m: 'mapCapital', c: 'mapCountry'};
 
-/** Ett svar på ett land. `score` er fra 0 (feil/vet ikke) til 1 (helt riktig). */
+/** One answer for one country. `score` is from 0 (wrong/don't know) to 1 (fully correct). */
 export interface Attempt {
   code: CountryCode;
   score: number;
@@ -34,25 +34,25 @@ export interface Attempt {
 
 export interface SheetRecord {
   skill: Skill;
-  /** Tidspunkt for rettingen, ms siden 1970. Lagres med sekundoppløsning. */
+  /** Time of the correction, ms since 1970. Stored with second resolution. */
   time: number;
   /**
-   * Identifiserer arket, så en ny retting av samme ark erstatter den forrige
-   * i stedet for å telle dobbelt. Se `sheetKey`.
+   * Identifies the sheet, so a new correction of the same sheet replaces the previous one
+   * instead of counting twice. See `sheetKey`.
    */
   key: string;
   attempts: Attempt[];
 }
 
-/** Score lagres som ett tegn i base 36: 0–35. */
+/** Score is stored as one character in base 36: 0–35. */
 const LEVELS = 35;
 const RECORD_PREFIX = 'g1';
-/** Mappenavn kan være opptil 255 byte; hold god avstand. */
+/** Folder names can be up to 255 bytes; keep a good margin. */
 export const MAX_NAME_LENGTH = 240;
 
 // ---------------------------------------------------------------- score
 
-/** Score for et svar på tabellarket. «Nesten» teller som nesten helt riktig. */
+/** Score for an answer on the table sheet. "Almost" counts as almost fully correct. */
 export function verdictScore(verdict: Verdict): number {
   switch (verdict) {
     case 'correct':
@@ -64,12 +64,12 @@ export function verdictScore(verdict: Verdict): number {
   }
 }
 
-/** Score for en hovedstad på kartet: andelen av full pott. */
+/** Score for a capital on the map: the share of the full pot. */
 export function mapPointsScore(points: number, max = 1000): number {
   return max > 0 ? Math.max(0, Math.min(1, points / max)) : 0;
 }
 
-/** En score på minst dette regnes som «kunne det». */
+/** A score of at least this counts as "knew it". */
 export const PASS = 0.7;
 
 export const passed = (score: number) => score >= PASS;
@@ -97,8 +97,8 @@ function fnv1a(text: string, seed = 0x811c9dc5): number {
 /* eslint-enable no-bitwise */
 
 /**
- * Nøkkel for et ark: notatet og hvilke land som står på siden. Landene er med
- * så nøkkelen ikke endres om sider settes inn eller flyttes i notatet.
+ * Key for a sheet: the note and which countries are on the page. The countries are included
+ * so the key doesn't change if pages are inserted or moved in the note.
  */
 export const KEY_LENGTH = 14;
 
@@ -110,8 +110,8 @@ export function sheetKey(notePath: string, skill: Skill, codes: readonly Country
 }
 
 /**
- * «g1.t.<tid>.<nøkkel>.<land og score>», f.eks. «g1.t.lx2k1a.0abc….noz.se0».
- * Én post per land er tre tegn: landkoden og scoren.
+ * "g1.t.<time>.<key>.<country and score>", e.g. "g1.t.lx2k1a.0abc….noz.se0".
+ * One record per country is three characters: the country code and the score.
  */
 export function encodeRecord(r: SheetRecord): string {
   const time = Math.floor(r.time / 1000).toString(36);
@@ -143,8 +143,8 @@ export function decodeRecord(name: string): SheetRecord | null {
 }
 
 /**
- * Deler et ark i flere poster hvis det er for mange land for ett mappenavn.
- * Delene får egne nøkler (`<nøkkel>`, `<nøkkel>1`, …), så de erstattes sammen.
+ * Splits a sheet into several records if there are too many countries for one folder name.
+ * The parts get their own keys (`<key>`, `<key>1`, …), so they are replaced together.
  */
 export function splitRecord(r: SheetRecord): SheetRecord[] {
   const header = encodeRecord({...r, key: r.key + 'zz', attempts: []}).length;
@@ -160,7 +160,7 @@ export function splitRecord(r: SheetRecord): SheetRecord[] {
   return out;
 }
 
-/** Hører posten til samme ark som nøkkelen (inkludert delene fra `splitRecord`)? */
+/** Does the record belong to the same sheet as the key (including the parts from `splitRecord`)? */
 export function sameSheet(recordKey: string, key: string): boolean {
   return recordKey.slice(0, KEY_LENGTH) === key.slice(0, KEY_LENGTH);
 }
@@ -168,12 +168,12 @@ export function sameSheet(recordKey: string, key: string): boolean {
 // ---------------------------------------------------------------- statistikk
 
 /**
- * Hvor lenge et land kan vente før det bør øves igjen, etter hvor mange ganger
- * på rad det er kunnet (Leitner-bokser). Boks 0 = øv nå.
+ * How long a country can wait before it should be practiced again, by how many times
+ * in a row it has been known (Leitner boxes). Box 0 = practice now.
  */
 export const BOX_INTERVAL_DAYS = [0, 1, 3, 7, 14, 30, 60];
 export const MAX_BOX = BOX_INTERVAL_DAYS.length - 1;
-/** Fra denne boksen regnes landet som «kan». */
+/** From this box the country counts as "known". */
 export const KNOWN_BOX = 3;
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -181,25 +181,25 @@ const DAY = 24 * 60 * 60 * 1000;
 export interface CountryStats {
   code: CountryCode;
   attempts: number;
-  /** Antall ganger det ble kunnet (score ≥ PASS). */
+  /** Number of times it was known (score ≥ PASS). */
   passes: number;
-  /** Glidende snitt av scorene, vektet mot de siste forsøkene (0–1). */
+  /** Moving average of the scores, weighted toward the latest attempts (0–1). */
   mastery: number;
-  /** Antall ganger på rad det er kunnet, fra det siste forsøket og bakover. */
+  /** Number of times in a row it has been known, from the latest attempt backwards. */
   streak: number;
-  /** Leitner-boks: øker med én når landet kunnes, faller til 0 når det ikke gjør det. */
+  /** Leitner box: increases by one when the country was known, falls to 0 when it wasn't. */
   box: number;
   firstSeen: number;
   lastSeen: number;
   lastScore: number;
 }
 
-/** Hvor mye det siste forsøket teller i `mastery`. */
+/** How much the latest attempt counts in `mastery`. */
 const MASTERY_WEIGHT = 0.4;
 
 /**
- * Regner ut statistikk per land for én ferdighet. Poster med samme nøkkel
- * (samme ark rettet flere ganger) teller bare én gang: den siste rettingen.
+ * Computes statistics per country for one skill. Records with the same key
+ * (the same sheet corrected several times) count only once: the latest correction.
  */
 export function computeStats(records: readonly SheetRecord[], skill: Skill): Map<CountryCode, CountryStats> {
   const latest = new Map<string, SheetRecord>();
@@ -244,18 +244,18 @@ export function computeStats(records: readonly SheetRecord[], skill: Skill): Map
   return stats;
 }
 
-/** Når landet bør øves neste gang (ms). */
+/** When the country should next be practiced (ms). */
 export function dueAt(s: CountryStats): number {
   return s.lastSeen + BOX_INTERVAL_DAYS[s.box] * DAY;
 }
 
-/** Hvor mange intervaller landet er på overtid (0 = akkurat nå, negativ = ikke ennå). */
+/** How many intervals the country is overdue (0 = right now, negative = not yet). */
 export function overdue(s: CountryStats, now: number): number {
   const interval = Math.max(BOX_INTERVAL_DAYS[s.box] * DAY, DAY / 4);
   return (now - dueAt(s)) / interval;
 }
 
-/** new = aldri øvd, learning = øvd men ikke sikker ennå, known = kunnet flere ganger på rad. */
+/** new = never practiced, learning = practiced but not sure yet, known = known several times in a row. */
 export type Level = 'new' | 'learning' | 'known';
 
 export function levelOf(s: CountryStats | undefined): Level {
@@ -270,14 +270,14 @@ export interface Summary {
   new: number;
   learning: number;
   known: number;
-  /** Til repetisjon nå: øvd før og på overtid. */
+  /** For review now: practiced before and overdue. */
   due: number;
   attempts: number;
-  /** Snitt av `mastery` for landene som er øvd, eller null. */
+  /** Average of `mastery` for the countries that have been practiced, or null. */
   mastery: number | null;
 }
 
-/** Oppsummering for et utvalg land (f.eks. en verdensdel). */
+/** Summary for a selection of countries (e.g. a continent). */
 export function summarize(
   stats: ReadonlyMap<CountryCode, CountryStats>,
   codes: readonly CountryCode[],
@@ -302,7 +302,7 @@ export function summarize(
   return out;
 }
 
-/** De landene som er øvd, svakest først (lav mastery, så flest forsøk). */
+/** The countries that have been practiced, weakest first (low mastery, then most attempts). */
 export function weakest(
   stats: ReadonlyMap<CountryCode, CountryStats>,
   codes: readonly CountryCode[],
@@ -320,12 +320,12 @@ export function weakest(
 export interface SessionSummary {
   sheets: number;
   attempts: number;
-  /** Snittscore over alle forsøk, eller null. */
+  /** Average score over all attempts, or null. */
   score: number | null;
   last: number | null;
 }
 
-/** Hvor mange ark som er rettet for en ferdighet. */
+/** How many sheets have been corrected for a skill. */
 export function sessions(records: readonly SheetRecord[], skill: Skill): SessionSummary {
   const latest = new Map<string, SheetRecord>();
   for (const r of records) {
@@ -337,7 +337,7 @@ export function sessions(records: readonly SheetRecord[], skill: Skill): Session
   const rs = [...latest.values()];
   const attempts = rs.reduce((n, r) => n + r.attempts.length, 0);
   const total = rs.reduce((n, r) => n + r.attempts.reduce((m, a) => m + a.score, 0), 0);
-  // Deler av samme ark (splitRecord) telles som ett ark.
+  // Parts of the same sheet (splitRecord) count as one sheet.
   const sheets = new Set(rs.map(r => r.key.slice(0, KEY_LENGTH))).size;
   return {
     sheets,

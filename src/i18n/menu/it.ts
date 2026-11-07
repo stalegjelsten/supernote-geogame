@@ -1,4 +1,4 @@
-// Menytekster på italiensk, oversatt fra menu/en.ts.
+// Menu texts in Italian, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

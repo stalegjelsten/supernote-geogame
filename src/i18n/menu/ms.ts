@@ -1,4 +1,4 @@
-// Menytekster på malayisk, oversatt fra menu/en.ts.
+// Menu texts in Malay, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

@@ -1,8 +1,8 @@
 /**
- * Engelsk mal for menytekstene. Brukes ikke av engelsk selv (en.ts, map.ts osv.
- * er skrevet for hånd), men er fasiten for nøkler og plassholdere som de andre
- * språkene oversettes fra. «World Capitals Quiz» er navnet på pluginen og
- * oversettes ikke.
+ * English template for the menu texts. Not used by English itself (en.ts, map.ts
+ * etc. are written by hand), but it is the reference for the keys and
+ * placeholders the other languages are translated from. "World Capitals Quiz"
+ * is the plugin's name and is not translated.
  */
 import type {MenuStrings} from './types';
 

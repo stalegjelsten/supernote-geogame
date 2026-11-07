@@ -1,7 +1,7 @@
 /**
- * Noe som skal tegnes på siden. Samles opp og settes inn i ett kall
- * (`insertDrafts` i src/sdk/notes.ts). Ligger her, uten SDK-import, så den
- * rene logikken kan lage tegningene og testes.
+ * Something to be drawn on the page. Collected and inserted in a single call
+ * (`insertDrafts` in src/sdk/notes.ts). Lives here, without an SDK import, so the
+ * pure logic can produce the drawings and be tested.
  */
 import type {Rect} from './layout';
 
@@ -21,7 +21,7 @@ export type Draft =
       locked?: boolean;
     }
   | {kind: 'line'; a: DraftPoint; b: DraftPoint; color: number; width: number}
-  /** Fri polygon, brukes til håndtegnede merker. */
+  /** Free polygon, used for hand-drawn marks. */
   | {kind: 'path'; points: DraftPoint[]; color: number; width: number}
-  /** Bilde fra en fil på enheten, tegnet nøyaktig i `rect`. */
+  /** Image from a file on the device, drawn exactly in `rect`. */
   | {kind: 'picture'; path: string; rect: Rect};

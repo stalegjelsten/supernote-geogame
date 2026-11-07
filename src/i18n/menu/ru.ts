@@ -1,4 +1,4 @@
-// Menytekster på russisk, oversatt fra menu/en.ts.
+// Menu texts in Russian, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

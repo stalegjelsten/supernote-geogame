@@ -1,4 +1,4 @@
-// Menytekster på cebuano, oversatt fra menu/en.ts.
+// Menu texts in Cebuano, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

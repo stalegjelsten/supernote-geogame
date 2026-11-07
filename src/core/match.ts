@@ -1,30 +1,30 @@
 /**
- * Sammenligning av gjenkjent håndskrift mot fasit.
+ * Comparison of recognized handwriting against the answer key.
  *
- * Gjenkjenningen er ikke perfekt, så vi er rause: store/små bokstaver,
- * aksenter, mellomrom og tegnsetting ignoreres, og noen få skrivefeil
- * godtas avhengig av ordlengde.
+ * Recognition is not perfect, so we are lenient: upper/lower case,
+ * accents, spaces and punctuation are ignored, and a few typos
+ * are accepted depending on word length.
  */
 
 export type Verdict = 'correct' | 'close' | 'wrong' | 'blank';
 
 export interface MatchResult {
   verdict: Verdict;
-  /** Hvilken skrivemåte svaret ble sammenlignet best med. */
+  /** Which spelling the answer was best compared with. */
   matched?: string;
   distance: number;
 }
 
 /**
- * Bokstaver som beholdes etter normalisering: a–z, 0–9 og bokstavene i skriftene
- * Supernote gjenkjenner (latinsk utvidet, gresk, kyrillisk, armensk, georgisk,
- * hangul, kana og CJK). Alt annet (mellomrom, tegnsetting, symboler) fjernes.
- * Bevisst uten \p{L}, som ikke er sikkert støttet i Hermes.
+ * Letters kept after normalization: a–z, 0–9 and the letters in the scripts
+ * Supernote recognizes (extended Latin, Greek, Cyrillic, Armenian, Georgian,
+ * Hangul, kana and CJK). Everything else (spaces, punctuation, symbols) is removed.
+ * Deliberately without \p{L}, which is not guaranteed to be supported in Hermes.
  */
 const NOT_LETTER =
   /[^a-z0-9\u00df-\u00f6\u00f8-\u024f\u0370-\u03ff\u0400-\u052f\u0531-\u0587\u10a0-\u10ff\u1100-\u11ff\u3041-\u30fa\u30fc-\u30ff\u3131-\u318e\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af\uf900-\ufaff]/g;
 
-/** Gjør om til små bokstaver uten aksenter, mellomrom og tegnsetting. */
+/** Converts to lowercase without accents, spaces and punctuation. */
 export function normalize(text: string): string {
   return text
     .toLowerCase()
@@ -45,7 +45,7 @@ export function normalize(text: string): string {
 
 const normCache = new Map<string, string>();
 
-/** Som normalize, men husker resultatet (fasitlistene er store med mange språk). */
+/** Like normalize, but remembers the result (the answer lists are large with many languages). */
 export function normalizeCached(text: string): string {
   let n = normCache.get(text);
   if (n === undefined) {
@@ -72,8 +72,8 @@ export function levenshtein(a: string, b: string): number {
 }
 
 /**
- * Hvor mange skrivefeil vi tåler for et fasitord av gitt (normalisert) lengde.
- * Rause grenser: både stavefeil og feillesing fra håndskriftgjenkjenningen skal godtas.
+ * How many typos we tolerate for an answer word of a given (normalized) length.
+ * Lenient limits: both misspellings and misreadings by the handwriting recognition should be accepted.
  */
 export function allowedErrors(length: number): number {
   if (length <= 3) {
@@ -89,11 +89,56 @@ export function allowedErrors(length: number): number {
 }
 
 /**
- * @param accepted Skrivemåter som godtas, også med noen skrivefeil.
- * @param rejected Svar som aldri skal godtas som «nesten», typisk hovedstedene i
- *   andre land. Skriver du nøyaktig en annen hovedstad, er det feil selv om den
- *   ligner på fasiten. Et Set regnes som allerede normalisert.
- * @param exactOnly Skrivemåter som bare godtas helt riktig (f.eks. på andre språk).
+ * Latin letters that look exactly like Cyrillic or Greek
+ * ones (A/А, B/В, E/Е, K/К, O/О, P/Р, C/С, T/Т, X/Х …), after normalization to
+ * lowercase. Recognition often mixes the scripts for such characters.
+ * Letters that merely resemble each other (N for И, R for Я) are real typos and
+ * are not converted.
+ */
+const LATIN_TO_CYRILLIC: Record<string, string> = {
+  a: 'а', b: 'в', c: 'с', e: 'е', h: 'н', k: 'к', m: 'м', o: 'о',
+  p: 'р', t: 'т', x: 'х', y: 'у', '3': 'з',
+};
+const LATIN_TO_GREEK: Record<string, string> = {
+  a: 'α', b: 'β', e: 'ε', h: 'η', i: 'ι', k: 'κ', m: 'μ', n: 'ν', o: 'ο',
+  p: 'ρ', t: 'τ', x: 'χ', y: 'υ', z: 'ζ',
+};
+const CYRILLIC = /[\u0400-\u052f]/;
+const GREEK = /[\u0370-\u03ff]/;
+const LATIN = /[a-z]/;
+
+function mapChars(text: string, table: Record<string, string>): string {
+  let out = '';
+  for (const ch of text) {
+    out += table[ch] ?? ch;
+  }
+  return out;
+}
+
+/**
+ * The answer as read, plus variants where Latin letters are converted
+ * to Cyrillic or Greek, when the answer key is written in that script.
+ */
+function readings(answer: string, targets: string[]): string[] {
+  const out = [answer];
+  if (!LATIN.test(answer) && !/3/.test(answer)) {
+    return out;
+  }
+  if (targets.some(t => CYRILLIC.test(t))) {
+    out.push(mapChars(answer, LATIN_TO_CYRILLIC));
+  }
+  if (targets.some(t => GREEK.test(t))) {
+    out.push(mapChars(answer, LATIN_TO_GREEK));
+  }
+  return [...new Set(out)];
+}
+
+/**
+ * @param accepted Spellings that are accepted, also with some typos.
+ * @param rejected Answers that should never be accepted as "almost", typically the capitals of
+ *   other countries. If you write exactly another capital, it is wrong even if it
+ *   resembles the answer key. A Set is treated as already normalized.
+ * @param exactOnly Spellings that are only accepted when exactly right (e.g. in other languages).
  */
 export function matchAnswer(
   recognized: string,
@@ -103,14 +148,16 @@ export function matchAnswer(
 ): MatchResult {
   const answer = normalize(recognized);
   if (!answer) {return {verdict: 'blank', distance: Infinity};}
-  const exact = [...accepted, ...exactOnly].find(a => normalizeCached(a) === answer);
+  const answers = readings(answer, accepted.map(normalizeCached));
+  const exact = [...accepted, ...exactOnly].find(a => answers.includes(normalizeCached(a)));
   if (exact !== undefined) {
     return {verdict: 'correct', matched: exact, distance: 0};
   }
-  const isRejected = Array.isArray(rejected)
-    ? rejected.some(r => normalizeCached(r) === answer)
-    : (rejected as ReadonlySet<string>).has(answer);
-  if (isRejected) {
+  const isRejected = (a: string) =>
+    Array.isArray(rejected)
+      ? rejected.some(r => normalizeCached(r) === a)
+      : (rejected as ReadonlySet<string>).has(a);
+  if (answers.some(isRejected)) {
     return {verdict: 'wrong', distance: Infinity};
   }
 
@@ -118,11 +165,12 @@ export function matchAnswer(
   for (const option of accepted) {
     const target = normalizeCached(option);
     if (!target) {continue;}
-    const d = levenshtein(answer, target);
-    if (d === 0) {return {verdict: 'correct', matched: option, distance: 0};}
-    if (d < best.distance) {
-      const verdict = d <= allowedErrors(target.length) ? 'close' : 'wrong';
-      best = {verdict, matched: option, distance: d};
+    for (const a of answers) {
+      const d = levenshtein(a, target);
+      if (d < best.distance) {
+        const verdict = d <= allowedErrors(target.length) ? 'close' : 'wrong';
+        best = {verdict, matched: option, distance: d};
+      }
     }
   }
   return best;

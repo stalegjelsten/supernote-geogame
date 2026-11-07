@@ -1,4 +1,4 @@
-// Menytekster på baskisk, oversatt fra menu/en.ts.
+// Menu texts in Basque, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

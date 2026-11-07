@@ -1,4 +1,4 @@
-// Menytekster på latvisk, oversatt fra menu/en.ts.
+// Menu texts in Latvian, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

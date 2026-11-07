@@ -1,4 +1,4 @@
-// Menytekster på portugisisk, oversatt fra menu/en.ts.
+// Menu texts in Portuguese (Portugal), translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

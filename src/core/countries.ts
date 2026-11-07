@@ -1,12 +1,12 @@
 /**
- * Land på et bestemt språk, bygget fra de språkuavhengige dataene og språkfilene.
+ * Countries in a given language, built from the language-independent data and the language files.
  */
 import {CONTINENT_OF, COUNTRY_CODES, type Continent, type CountryCode} from '../data/countries';
 import {LANGUAGES, type Language} from '../i18n';
 
 export interface Country {
   code: CountryCode;
-  /** Språket navnene er på. */
+  /** The language the names are in. */
   lang: string;
   name: string;
   capital: string;
@@ -36,8 +36,8 @@ export function countriesIn(lang: Language): Country[] {
 }
 
 /**
- * Finner et land på navnet slik det står på arket. Arkets språk prøves først,
- * deretter de andre inkluderte språkene.
+ * Finds a country by its name as written on the sheet. The sheet's language is tried first,
+ * then the other included languages.
  */
 export function findCountryByName(name: string, preferred?: Language): Country | undefined {
   const key = name.trim();
@@ -52,9 +52,9 @@ export function findCountryByName(name: string, preferred?: Language): Country |
 }
 
 /**
- * Velger språket et ark er skrevet på blant kandidatene fra overskriften:
- * det språket der flest av tekstene på siden er landnavn. Ved likt antall
- * vinner den første kandidaten.
+ * Picks the language a sheet is written in among the candidates from the heading:
+ * the language in which most of the texts on the page are country names. On a tie,
+ * the first candidate wins.
  */
 export function pickSheetLanguage(texts: string[], candidates: Language[]): Language {
   let best = candidates[0];

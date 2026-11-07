@@ -1,16 +1,16 @@
 /**
- * Fotnoter om hovedsteder på tabellarket: et lite tall i resultatcellen og
- * merknaden nederst på siden, til venstre for (eller under) poengsummen.
+ * Footnotes about capitals on the table sheet: a small number in the result cell and
+ * the note at the bottom of the page, to the left of (or below) the total score.
  *
- * Plassen er knapp på en full side, så merknadene krympes ned til `minFont`.
- * Får de fortsatt ikke plass, droppes merknader fra bunnen av arket, først for
- * land som ble besvart riktig.
+ * Space is tight on a full page, so the notes are shrunk down to `minFont`.
+ * If they still don't fit, notes are dropped from the bottom of the sheet, starting with
+ * countries that were answered correctly.
  */
 import {LINE_HEIGHT, fitFontSize, type Rect} from './layout';
 
 const SUPERSCRIPT = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'];
 
-/** 12 → «¹²» */
+/** 12 → "¹²" */
 export function noteMarker(n: number): string {
   return String(n)
     .split('')
@@ -18,7 +18,7 @@ export function noteMarker(n: number): string {
     .join('');
 }
 
-/** Fotnoteteksten starter med et hevet tall; brukes til å fjerne den ved ny retting. */
+/** The footnote text starts with a superscript number; used to remove it on re-correction. */
 export function isNotesText(text: string): boolean {
   return SUPERSCRIPT.includes(text.trimStart().charAt(0));
 }
@@ -26,12 +26,12 @@ export function isNotesText(text: string): boolean {
 export interface NoteItem {
   row: number;
   text: string;
-  /** Svaret var ikke riktig; disse merknadene beholdes lengst. */
+  /** The answer was not correct; these notes are kept the longest. */
   important: boolean;
 }
 
 export interface NotesPlan {
-  /** Radene som får fotnote, med tallet som skal stå i resultatcellen. */
+  /** The rows that get a footnote, with the number to put in the result cell. */
   markers: Map<number, string>;
   text: string;
   rect: Rect;
@@ -59,7 +59,7 @@ export function planNotes(items: NoteItem[], area: Rect, maxFont: number, minFon
         fontSize,
       };
     }
-    // Dropp den nederste merknaden for et riktig svar, ellers den nederste av alle.
+    // Drop the bottom-most note for a correct answer, otherwise the bottom-most of all.
     let drop = -1;
     for (let i = shown.length - 1; i >= 0; i--) {
       if (!shown[i].important) {

@@ -1,21 +1,21 @@
 /**
- * Menytekster for språkene som ikke er skrevet for hånd (alle utenom nb og en).
+ * Menu texts for the languages that are not written by hand (all except nb and en).
  *
- * Hver tekst er en mal der `{navn}` byttes ut med en verdi. Nøkler som slutter
- * på `_one` brukes når tallet er 1 (entall); ellers brukes nøkkelen uten
- * `_one`. Plassholderne må være de samme som i menu/en.ts (det sjekkes i
+ * Each text is a template where `{name}` is replaced with a value. Keys ending
+ * in `_one` are used when the number is 1 (singular); otherwise the key without
+ * `_one` is used. The placeholders must match those in menu/en.ts (checked in
  * __tests__/menuTexts.test.ts).
  *
- * Tekst som skrives på arket står ikke her: den leses tilbake ved retting og
- * må holdes stabil (se map.ts og hotseat.ts).
+ * Text written on the sheet is not here: it is read back when grading and must
+ * stay stable (see map.ts and hotseat.ts).
  */
 export interface MenuStrings {
-  /** Tusenskille i store tall: ',', '.' eller '\u00a0' (hardt mellomrom). */
+  /** Thousands separator in large numbers: ',', '.' or '\u00a0' (no-break space). */
   thousandsSep: string;
-  /** Desimaltegn, '.' eller ','. */
+  /** Decimal separator, '.' or ','. */
   decimalSep: string;
 
-  // Menyen (Language.ui)
+  // Menu (Language.ui)
   newSheet: string;
   region: string;
   count: string;
@@ -42,7 +42,7 @@ export interface MenuStrings {
   pageScore: string; // {part} {points} {total}
   gradedIn: string; // {seconds}
 
-  // Fremdrift (Language.progress)
+  // Progress (Language.progress)
   newPages_one: string;
   newPages: string; // {n}
   drawing: string;
@@ -54,7 +54,7 @@ export interface MenuStrings {
   rereadingRow: string; // {row}
   writingResults: string;
 
-  // Feilmeldinger (Language.errors)
+  // Error messages (Language.errors)
   noSheet: string;
   noCountries: string;
   openNote: string;
@@ -63,7 +63,7 @@ export interface MenuStrings {
   newPageNoTemplates: string;
   permission: string;
 
-  // Kartmodus (map.ts: ui, progress, errors)
+  // Map mode (map.ts: ui, progress, errors)
   mapMode: string;
   mapModeTable: string;
   mapModeMap: string;
@@ -85,7 +85,7 @@ export interface MenuStrings {
   mapFile: string; // {detail}
   mapNoEntries: string;
 
-  // Flerspiller (hotseat.ts: ui)
+  // Multiplayer (hotseat.ts: ui)
   hsPlayers: string;
   hsSolo: string;
   hsHowToPlay: string;
@@ -97,17 +97,17 @@ export interface MenuStrings {
   hsUnitCities: string;
   hsMade: string; // {players} {pages}
   hsWinner: string; // {k}
-  /** «Spiller 2» inne i en setning, brukt i hsTie og hsMissingPages. */
+  /** "player 2" inside a sentence, used in hsTie and hsMissingPages. */
   hsPlayer: string; // {k}
-  /** Skilletegnet i en liste, f.eks. ', ' eller '、'. */
+  /** The separator in a list, e.g. ', ' or '、'. */
   hsListSep: string;
-  /** Det som står mellom de to siste i en liste, med mellomrom, f.eks. ' og ' (eller 'と' uten). */
+  /** What goes between the last two items in a list, with spaces, e.g. ' and ' (or 'と' without). */
   hsAnd: string;
   hsTie: string; // {players}
   hsPlayerScore: string; // {k} {points} {max} {percent}
   hsMissingPages: string; // {players}
 
-  // Nivå (level.ts)
+  // Level (level.ts)
   levelLabel: string;
   levelMixed: string;
   levelEasy: string;
@@ -115,7 +115,7 @@ export interface MenuStrings {
   levelHard: string;
   levelHint: string;
 
-  // Statistikk (stats.ts)
+  // Statistics (stats.ts)
   statsSection: string;
   statsShow: string;
   statsHide: string;

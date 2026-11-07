@@ -1,6 +1,6 @@
 /**
- * Kartbildene må være `require`-t et sted for at Metro skal legge dem i pakken
- * (`drawable-mdpi/assets_maps_<fil>.png`). Selve stien på enheten finnes med
+ * The map images must be `require`d somewhere for Metro to include them in the bundle
+ * (`drawable-mdpi/assets_maps_<fil>.png`). The actual path on the device is found with
  * `bundledImagePath` i notes.ts.
  */
 export const MAP_ASSETS = {

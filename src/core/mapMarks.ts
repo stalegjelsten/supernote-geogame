@@ -1,20 +1,20 @@
 /**
- * Fra pennestrøk på kartet til merker, og fra merker til hovedsteder.
+ * From pen strokes on the map to marks, and from marks to capitals.
  *
- * Brukeren merker byene i samme rekkefølge som lista. Strøkene kommer i
- * tegnerekkefølge (`numInPage` øker for hvert nytt strøk). Ett merke er
- * - ett strøk (prikk, ring, lite kryss tegnet i ett), eller
- * - to rette strøk som krysser hverandre (et vanlig kryss), eller
- * - en ring med en prikk inni.
- * Alt annet er ett merke per strøk. Reglene er bevisst strenge, så to merker
- * som ligger tett (Roma og Vatikanstaten) ikke slås sammen ved en feil.
+ * The user marks the cities in the same order as the list. The strokes come in
+ * drawing order (`numInPage` increases for each new stroke). A mark is
+ * - one stroke (dot, ring, small cross drawn in one go), or
+ * - two straight strokes that cross each other (an ordinary cross), or
+ * - a ring with a dot inside.
+ * Anything else is one mark per stroke. The rules are deliberately strict, so two marks
+ * that lie close together (Rome and Vatican City) are not merged by mistake.
  */
 import type {Point} from './marks';
 
 export interface MapMark {
-  /** Indeksene til strøkene merket består av. */
+  /** The indices of the strokes the mark consists of. */
   strokes: number[];
-  /** Stedet merket peker på: krysningspunktet for et kryss, ellers midten. */
+  /** The place the mark points to: the crossing point for a cross, otherwise the center. */
   center: Point;
 }
 
@@ -58,7 +58,7 @@ function pathLength(points: Point[]): number {
   return len;
 }
 
-/** Et omtrent rett strøk: avstanden mellom endene er nesten like lang som streken. */
+/** A roughly straight stroke: the distance between the ends is almost as long as the line. */
 export function isStraight(points: Point[]): boolean {
   if (points.length < 2) {
     return false;
@@ -71,8 +71,8 @@ export function isStraight(points: Point[]): boolean {
 }
 
 /**
- * Skjæringspunktet mellom to linjestykker, der hvert stykke er forlenget med
- * `extend` (andel av lengden) i begge ender. Null hvis de ikke krysser.
+ * The intersection of two line segments, where each segment is extended by
+ * `extend` (fraction of the length) at both ends. Null if they don't cross.
  */
 export function segmentIntersection(
   a1: Point,
@@ -99,7 +99,7 @@ export function segmentIntersection(
   return {x: a1.x + t * rx, y: a1.y + t * ry};
 }
 
-/** Krysningspunktet hvis to strøk danner et kryss, ellers null. */
+/** The crossing point if two strokes form a cross, otherwise null. */
 function crossCenter(a: Point[], b: Point[]): Point | null {
   if (!isStraight(a) || !isStraight(b)) {
     return null;
@@ -113,7 +113,7 @@ function crossCenter(a: Point[], b: Point[]): Point | null {
   if (!p) {
     return null;
   }
-  // Strekene må stå på skrå mot hverandre, ikke nesten parallelt.
+  // The lines must be slanted against each other, not nearly parallel.
   const ax = a[a.length - 1].x - a[0].x;
   const ay = a[a.length - 1].y - a[0].y;
   const bx = b[b.length - 1].x - b[0].x;
@@ -123,7 +123,7 @@ function crossCenter(a: Point[], b: Point[]): Point | null {
   return sin >= 0.5 ? p : null;
 }
 
-/** En liten prikk inni en ring: ringens boks rommer prikken, og prikken er mye mindre. */
+/** A small dot inside a ring: the ring's box contains the dot, and the dot is much smaller. */
 function dotInRing(ring: Point[], dot: Point[]): Point | null {
   if (isStraight(ring)) {
     return null;
@@ -136,7 +136,7 @@ function dotInRing(ring: Point[], dot: Point[]): Point | null {
 }
 
 /**
- * Samler strøk (i tegnerekkefølge) til merker. Tomme strøk hoppes over.
+ * Groups strokes (in drawing order) into marks. Empty strokes are skipped.
  */
 export function groupMarks(strokes: Point[][]): MapMark[] {
   const marks: MapMark[] = [];
@@ -164,31 +164,31 @@ export type Assignment =
   | {kind: 'skipped'}
   | {kind: 'missing'};
 
-/** Hva det koster å la et merke stå ubrukt (antatt ekstra strek), i tapte poeng. */
+/** What it costs to leave a mark unused (assumed extra stroke), in lost points. */
 export const UNUSED_MARK_COST = 250;
-/** Hva det koster å la en by stå umerket: alle poengene for den. */
+/** What it costs to leave a city unmarked: all the points for it. */
 export const UNMARKED_ENTRY_COST = 1000;
 
 export interface MarkAlignment {
   byEntry: Assignment[];
-  /** Merker som ikke ble koblet til noen by (antatt ekstra streker). */
+  /** Marks that were not matched to any city (assumed extra strokes). */
   unused: number[];
 }
 
 /**
- * Kobler merkene (i tegnerekkefølge) til byene i lista (i listerekkefølge),
- * hoppet over de som er strøket ut.
+ * Matches the marks (in drawing order) to the cities in the list (in list order),
+ * skipping those that are crossed out.
  *
- * Rekkefølgen beholdes, men koblingen er «smart»: som en diff finner den
- * justeringen med lavest samlet kostnad, der
- * - et merke koblet til en by koster `cost(merke, by)` (tapte poeng, 0–1000),
- * - et merke som står ubrukt koster `UNUSED_MARK_COST`,
- * - en by uten merke koster `UNMARKED_ENTRY_COST`.
- * En ekstra strek midt i forskyver dermed ikke resten: det er billigere å
- * forkaste den enn å koble alle senere merker til feil by. Et merke som bommer
- * kraftig, blir likevel koblet til sin by, fordi «ubrukt + umerket» koster mer
- * enn et bom. Uten `cost` blir koblingen ren rekkefølge, og overskytende merker
- * på slutten står ubrukt.
+ * The order is kept, but the matching is "smart": like a diff, it finds the
+ * alignment with the lowest total cost, where
+ * - a mark matched to a city costs `cost(mark, city)` (lost points, 0–1000),
+ * - an unused mark costs `UNUSED_MARK_COST`,
+ * - a city without a mark costs `UNMARKED_ENTRY_COST`.
+ * An extra stroke in the middle thus doesn't shift the rest: it is cheaper to
+ * discard it than to match all later marks to the wrong city. A mark that misses
+ * badly is still matched to its city, because "unused + unmarked" costs more
+ * than a miss. Without `cost` the matching is pure order, and surplus marks
+ * at the end stay unused.
  */
 export function assignMarks(
   markCount: number,
@@ -198,8 +198,8 @@ export function assignMarks(
   const active = skipped.flatMap((skip, k) => (skip ? [] : [k]));
   const n = markCount;
   const m = active.length;
-  // E[i][j] = lavest kostnad for merkene i.. og byene j.. (regnet bakfra, så
-  // gjenoppbyggingen forfra kan foretrekke tidlige koblinger ved likhet).
+  // E[i][j] = lowest cost for marks i.. and cities j.. (computed from the back, so
+  // the reconstruction from the front can prefer early matchings on ties).
   const E: number[][] = Array.from({length: n + 1}, () =>
     new Array<number>(m + 1).fill(0),
   );

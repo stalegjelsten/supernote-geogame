@@ -1,4 +1,4 @@
-// Menytekster på serbisk (latinsk skrift), oversatt fra menu/en.ts.
+// Menu texts in Serbian (Latin), translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

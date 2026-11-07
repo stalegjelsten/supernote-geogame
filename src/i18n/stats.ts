@@ -1,6 +1,6 @@
 /**
- * Menytekst for statistikken. Norsk og engelsk er skrevet for hånd; de andre
- * språkene får teksten fra menu/<kode>.ts.
+ * Menu text for the statistics. Norwegian and English are written by hand; the
+ * other languages get their text from menu/<code>.ts.
  */
 import type {Skill} from '../core/stats';
 import {fmt, plural} from './menu/build';
@@ -11,16 +11,16 @@ export interface StatsTexts {
   section: string;
   show: string;
   hide: string;
-  /** Ferdigheten statistikken gjelder, etter valgt spill. */
+  /** The skill the statistics apply to, by selected game. */
   skill: Record<Skill, string>;
   loading: string;
   none: string;
   sheets: (sheets: number, answers: number, percent: number) => string;
-  /** «Europa: 12 kan, 5 øver på, 29 nye» */
+  /** "Europe: 12 known, 5 learning, 29 new" */
   region: (name: string, known: number, learning: number, fresh: number) => string;
   due: (n: number) => string;
   weakest: string;
-  /** Ett land i lista over svake land. */
+  /** One country in the list of weak countries. */
   weakItem: (country: string, answer: string, percent: number, attempts: number) => string;
   reset: string;
   confirmReset: string;

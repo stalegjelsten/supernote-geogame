@@ -1,13 +1,13 @@
 /**
- * Språkene som bygges inn i pluginen.
+ * The languages bundled into the plugin.
  *
- * Bare språkene som er importert her havner i bundelen. Fjern en import og
- * linja i LANGUAGES for å bygge uten et språk (engelsk må være med, siden de
- * andre språkene låner tittelen og tekst på kart- og flerspillerark derfra).
+ * Only the languages imported here end up in the bundle. Remove an import and
+ * its line in LANGUAGES to build without a language (English must stay, since the
+ * other languages borrow the title and the text on map and multiplayer sheets from it).
  *
- * nb og en er skrevet for hånd. De andre er språkene Supernote kan gjenkjenne
- * håndskrift på, og lages med `node scripts/gen-languages.js`. Menytekstene
- * deres står i menu/<kode>.ts.
+ * nb and en are written by hand. The others are the languages Supernote can
+ * recognize handwriting in, and are generated with `node scripts/gen-languages.js`.
+ * Their menu texts live in menu/<code>.ts.
  */
 import af from './af';
 import az from './az';
@@ -70,9 +70,9 @@ import type {Language} from './types';
 export type {Language} from './types';
 
 /**
- * Inkluderte språk. Det første er reservespråket for ukjente språk på enheten,
- * og rekkefølgen avgjør uavgjort når språket på et ark gjenkjennes.
- * Menyen bruker MENU_LANGUAGES.
+ * Included languages. The first is the fallback for unknown device languages,
+ * and the order breaks ties when a sheet's language is recognized.
+ * The menu uses MENU_LANGUAGES.
  */
 export const LANGUAGES: readonly Language[] = [
   en, nb, da, sv, fi, is, de, fr, es, it, pt, nl,
@@ -82,12 +82,12 @@ export const LANGUAGES: readonly Language[] = [
 ];
 
 /**
- * Språkene slik menyen viser dem: engelsk først, så resten sortert etter
- * navnet på språket selv. Aksenter ignoreres (Čeština under C, Íslenska
- * under I); latinske navn kommer før gresk, kyrillisk, armensk, georgisk,
- * kinesisk, japansk og koreansk.
+ * The languages as the menu shows them: English first, then the rest sorted by
+ * the language's own name. Accents are ignored (Čeština under C, Íslenska
+ * under I); Latin names come before Greek, Cyrillic, Armenian, Georgian,
+ * Chinese, Japanese and Korean.
  */
-/** Utvidede kyrilliske bokstaver sorteres som grunnbokstaven (Қазақ under К). */
+/** Extended Cyrillic letters sort as their base letter (Қазақ under К). */
 function menuSortKey(label: string): string {
   return normalize(label).replace(/[қҚ]/g, 'к').replace(/[ңҢ]/g, 'н').replace(/[үҮұҰ]/g, 'у').replace(/[өӨ]/g, 'о');
 }
@@ -101,7 +101,7 @@ export const MENU_LANGUAGES: readonly Language[] = [...LANGUAGES].sort((a, b) =>
   return keyA < keyB ? -1 : keyA > keyB ? 1 : a.label < b.label ? -1 : a.label > b.label ? 1 : 0;
 });
 
-/** Engelsk brukes som ekstra fasit hvis det er inkludert. */
+/** English is used as an extra answer key if it is included. */
 export const ENGLISH: Language | undefined = LANGUAGES.find(l => l.code === 'en');
 
 export function getLanguage(code: string | null | undefined): Language | undefined {
@@ -109,9 +109,9 @@ export function getLanguage(code: string | null | undefined): Language | undefin
 }
 
 /**
- * Finner språket som passer best til en språkkode fra enheten, f.eks. 'nb_NO',
- * 'nb-NO', 'no', 'en_US', 'zh_TW', 'zh-Hant-TW' eller Androids 'sr_RS_#Latn'.
- * Skrift og region prøves før selve språket, så zh_TW gir tradisjonell kinesisk.
+ * Finds the language that best matches a device language code, e.g. 'nb_NO',
+ * 'nb-NO', 'no', 'en_US', 'zh_TW', 'zh-Hant-TW' or Android's 'sr_RS_#Latn'.
+ * Script and region are tried before the language itself, so zh_TW gives Traditional Chinese.
  */
 export function resolveLocale(locale: string | null | undefined): Language {
   const tokens = (locale ?? '').trim().toLowerCase().replace(/#/g, '').split(/[-_]+/).filter(Boolean);
@@ -128,7 +128,7 @@ export function resolveLocale(locale: string | null | undefined): Language {
   return LANGUAGES[0];
 }
 
-/** Trekker ut en språkkode fra hendelsen, uansett om den er en streng eller et objekt. */
+/** Extracts a language code from the event, whether it is a string or an object. */
 export function localeFromEvent(msg: unknown): string | undefined {
   if (typeof msg === 'string') {
     return msg;
@@ -145,7 +145,7 @@ export function localeFromEvent(msg: unknown): string | undefined {
   return undefined;
 }
 
-/** 'auto' følger enhetens språk; ellers en språkkode valgt i menyen. */
+/** 'auto' follows the device language; otherwise a language code chosen in the menu. */
 export type LanguageChoice = 'auto' | string;
 
 let deviceLocale: string | undefined;
@@ -179,7 +179,7 @@ export function languageChoice(): LanguageChoice {
   return choice;
 }
 
-/** Språket som brukes i menyen, i feilmeldinger og på nye ark. */
+/** The language used in the menu, in error messages and on new sheets. */
 export function currentLanguage(): Language {
   return (choice !== 'auto' && getLanguage(choice)) || deviceLanguage();
 }

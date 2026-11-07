@@ -1,14 +1,14 @@
 /**
- * Lagrer svarhistorikken på enheten.
+ * Stores the answer history on the device.
  *
- * SDK-en kan ikke skrive vanlige filer, bare lage og slette mapper og liste
- * innholdet i en mappe. Hver post (ett rettet ark, se core/stats.ts) lagres
- * derfor som en tom mappe med posten kodet i navnet, i `<pluginmappe>/stats/`.
- * Å lese alt er ett kall til listFiles; å lagre et ark er én makeDir, pluss
- * én deleteDir hvis arket er rettet før.
+ * The SDK cannot write regular files, only create and delete folders and list
+ * the contents of a folder. Each record (one graded sheet, see core/stats.ts) is therefore
+ * stored as an empty folder with the record encoded in its name, in `<plugin folder>/stats/`.
+ * Reading everything is one call to listFiles; saving a sheet is one makeDir, plus
+ * one deleteDir if the sheet has been graded before.
  *
- * Lagring er en bekvemmelighet: feiler noe, mister vi statistikken for det
- * arket, men rettingen går som før.
+ * Saving is a convenience: if something fails, we lose the statistics for that
+ * sheet, but the grading proceeds as before.
  */
 import {FileUtils, PluginManager} from 'sn-plugin-lib';
 import {
@@ -21,7 +21,7 @@ import {
 
 const STATS_DIR = 'stats';
 
-/** Eldre poster slettes når det blir flere enn dette, så listen holder seg rask. */
+/** Older records are deleted when there are more than this, so the list stays fast. */
 export const MAX_RECORDS = 3000;
 
 interface Stored {
@@ -32,7 +32,7 @@ interface Stored {
 let cache: Stored[] | null = null;
 let dirPath: string | null = null;
 
-/** Glemmer det som er lest inn, som ved en omstart av pluginen (brukes i tester). */
+/** Forgets what has been read in, as on a restart of the plugin (used in tests). */
 export function forgetCache(): void {
   cache = null;
   dirPath = null;
@@ -57,9 +57,9 @@ async function statsDir(): Promise<string | null> {
 const baseName = (path: string) => path.replace(/\/+$/, '').split('/').pop() ?? path;
 
 /**
- * Navnene i en mappe. Typene i sn-plugin-lib sier at listFiles gir strenger,
- * men Java-koden gir objekter `{path, type}` (type 0 = mappe), og null for en
- * tom mappe. Vi godtar begge deler.
+ * The names in a folder. The types in sn-plugin-lib say that listFiles returns strings,
+ * but the Java code returns objects `{path, type}` (type 0 = folder), and null for an
+ * empty folder. We accept both.
  */
 async function listNames(dir: string): Promise<string[]> {
   const entries = ((await FileUtils.listFiles(dir)) ?? []) as unknown[];
@@ -88,7 +88,7 @@ async function loadStored(): Promise<Stored[]> {
   return out;
 }
 
-/** Alle lagrede poster. Tom liste hvis lagringen ikke er tilgjengelig. */
+/** All stored records. Empty list if the storage is not available. */
 export async function loadRecords(): Promise<SheetRecord[]> {
   try {
     return (await loadStored()).map(s => s.record);
@@ -98,8 +98,8 @@ export async function loadRecords(): Promise<SheetRecord[]> {
 }
 
 /**
- * Lagrer et rettet ark. Er samme ark rettet før, erstattes den forrige rettingen.
- * Kaster aldri; returnerer false hvis lagringen feilet.
+ * Saves a graded sheet. If the same sheet has been graded before, the previous grading is replaced.
+ * Never throws; returns false if saving failed.
  */
 export async function saveRecord(record: SheetRecord): Promise<boolean> {
   if (!record.attempts.length) {
@@ -139,20 +139,20 @@ export async function saveRecord(record: SheetRecord): Promise<boolean> {
     cache = all;
     return true;
   } catch {
-    // Ukjent tilstand på disk; les på nytt neste gang.
+    // Unknown state on disk; read again next time.
     cache = null;
     return false;
   }
 }
 
-/** Sletter all lagret statistikk. */
+/** Deletes all stored statistics. */
 export async function clearRecords(): Promise<void> {
   const dir = await statsDir();
   cache = null;
   if (!dir) {
     return;
   }
-  // Slett postene én for én; det er ikke sikkert deleteDir tar mapper med innhold.
+  // Delete the records one by one; deleteDir may not handle folders with contents.
   for (const name of await listNames(dir)) {
     await FileUtils.deleteDir(`${dir}/${name}`);
   }

@@ -1,6 +1,6 @@
 /**
- * Lagringen mot et falskt filsystem som oppfører seg som RTNFileModule.java:
- * listFiles gir objekter {path, type}, og null for en tom mappe.
+ * Storage against a fake file system that behaves like RTNFileModule.java:
+ * listFiles returns objects {path, type}, and null for an empty folder.
  */
 const mockDirs = new Set<string>();
 
@@ -46,7 +46,7 @@ beforeEach(() => {
   forgetCache();
 });
 
-test('postene overlever en omstart', async () => {
+test('the entries survive a restart', async () => {
   expect(await saveRecord(rec('aaaaaaaaaaaaaa', T0, 0))).toBe(true);
   expect(await saveRecord(rec('bbbbbbbbbbbbbb', T0 + 1000, 1))).toBe(true);
   forgetCache();
@@ -54,7 +54,7 @@ test('postene overlever en omstart', async () => {
   expect(loaded.map(r => r.key).sort()).toEqual(['aaaaaaaaaaaaaa', 'bbbbbbbbbbbbbb']);
 });
 
-test('ny retting av samme ark erstatter den gamle, også etter omstart', async () => {
+test('regrading the same sheet replaces the old one, also after a restart', async () => {
   await saveRecord(rec('aaaaaaaaaaaaaa', T0, 0));
   forgetCache();
   await saveRecord(rec('aaaaaaaaaaaaaa', T0 + 60_000, 1));
@@ -65,7 +65,7 @@ test('ny retting av samme ark erstatter den gamle, også etter omstart', async (
   expect([...mockDirs].filter(d => d.startsWith('/plugin/stats/'))).toHaveLength(1);
 });
 
-test('nullstilling sletter alt', async () => {
+test('reset deletes everything', async () => {
   await saveRecord(rec('aaaaaaaaaaaaaa', T0, 0));
   await clearRecords();
   forgetCache();

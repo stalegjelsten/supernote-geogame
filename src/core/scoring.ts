@@ -1,13 +1,13 @@
 /**
- * Poeng for én gjetning på kartet.
+ * Points for one guess on the map.
  *
- * Full pott (1000) innenfor en tidel av skalaen, så små unøyaktigheter i
- * pennemerket ikke koster noe. Deretter avtar poengene eksponentielt:
- * hver gang avstanden øker med én skala, faller poengene til ca. 37 %.
+ * Full pot (1000) within a tenth of the scale, so small inaccuracies in the
+ * pen mark cost nothing. After that the points decay exponentially:
+ * each time the distance increases by one scale, the points fall to about 37 %.
  *
- * Skalaen følger kartets størrelse (1/20 av diagonalen, se scripts/gen-maps.ts):
- * Europa ≈ 300 km, verden 1000 km. Bommer du med 300 km i Europa, får du 407 poeng;
- * på verdenskartet gir samme bom 819 poeng.
+ * The scale follows the map's size (1/20 of the diagonal, see scripts/gen-maps.ts):
+ * Europe ≈ 300 km, world 1000 km. Miss by 300 km in Europe and you get 407 points;
+ * on the world map the same miss gives 819 points.
  */
 export const MAX_POINTS = 1000;
 

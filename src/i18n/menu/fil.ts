@@ -1,4 +1,4 @@
-// Menytekster på filipino, oversatt fra menu/en.ts.
+// Menu texts in Filipino, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

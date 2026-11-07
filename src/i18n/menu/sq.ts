@@ -1,4 +1,4 @@
-// Menytekster på albansk, oversatt fra menu/en.ts.
+// Menu texts in Albanian, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

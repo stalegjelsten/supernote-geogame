@@ -1,19 +1,19 @@
 /**
- * Kartprojeksjoner og omregning mellom lengde/bredde, kartbilde og side.
+ * Map projections and conversion between longitude/latitude, map image and page.
  *
- * Kartbildene i `assets/maps/` er laget med nøyaktig disse funksjonene
- * (`scripts/gen-maps.ts`), så piksel ↔ lengde/bredde går begge veier uten tap.
+ * The map images in `assets/maps/` are made with exactly these functions
+ * (`scripts/gen-maps.ts`), so pixel ↔ longitude/latitude works both ways without loss.
  *
- * - Verdensdelene bruker Lamberts flatetro asimutale projeksjon (LAEA, sfærisk),
- *   sentrert midt i verdensdelen. Den har liten forvrengning over et kontinent
- *   og kan regnes tilbake med lukkede formler.
- * - Verdenskartet bruker Equal Earth (Šavrič, Patterson og Jenny 2018), som er
- *   flatetro og ser «vanlig» ut. Den inverse regnes med Newtons metode.
+ * - The continents use Lambert's azimuthal equal-area projection (LAEA, spherical),
+ *   centered in the middle of the continent. It has little distortion across a continent
+ *   and can be inverted with closed formulas.
+ * - The world map uses Equal Earth (Šavrič, Patterson and Jenny 2018), which is
+ *   equal-area and looks "ordinary". The inverse is computed with Newton's method.
  *
- * Projeksjonskoordinatene er for en enhetskule (radius 1), med y oppover.
- * Bildekoordinatene er piksler med origo øverst til venstre.
+ * Projection coordinates are for a unit sphere (radius 1), with y upward.
+ * Image coordinates are pixels with the origin at the top left.
  *
- * Filen har ingen import, så den kan kjøres direkte av Node i byggeskriptet.
+ * The file has no imports, so it can be run directly by Node in the build script.
  */
 
 export interface LonLat {
@@ -37,23 +37,23 @@ export interface Bounds {
   ymax: number;
 }
 
-/** Alt som trengs for å regne mellom et kartbilde og lengde/bredde. */
+/** Everything needed to convert between a map image and longitude/latitude. */
 export interface MapMeta {
-  /** Filnavn uten endelse i `assets/maps/`. */
+  /** File name without extension in `assets/maps/`. */
   file: string;
   projection: Projection;
-  /** Utsnittet i projeksjonskoordinater (enhetskule). */
+  /** The extent in projection coordinates (unit sphere). */
   bounds: Bounds;
-  /** Bildets størrelse i piksler. */
+  /** The image's size in pixels. */
   width: number;
   height: number;
-  /** Avstand (km) som gir poengkurven sin skala; større for større kart. */
+  /** Distance (km) that gives the score curve its scale; larger for larger maps. */
   scaleKm: number;
 }
 
 const RAD = Math.PI / 180;
 
-/** Lengdeforskjell i radianer, lagt i [-π, π). */
+/** Longitude difference in radians, wrapped into [-π, π). */
 function deltaLon(lon: number, lon0: number): number {
   let d = (lon - lon0) % 360;
   if (d < -180) {
@@ -72,22 +72,22 @@ function wrapLon(lon: number): number {
   return l;
 }
 
-// Equal Earth-konstanter.
+// Equal Earth constants.
 const A1 = 1.340264;
 const A2 = -0.081106;
 const A3 = 0.000893;
 const A4 = 0.003796;
 const M = Math.sqrt(3) / 2;
 
-/** Lengde/bredde (grader) → projeksjonskoordinater. */
+/** Longitude/latitude (degrees) → projection coordinates. */
 export function project(p: Projection, lon: number, lat: number): XY {
   return projectRelative(p, deltaLon(lon, p.lon0), lat);
 }
 
 /**
- * Som `project`, men med lengdeforskjellen fra midtmeridianen (radianer) gitt
- * direkte og uten å pakkes inn i [-π, π). Byggeskriptet bruker dette for å tegne
- * polygoner som krysser kanten av verdenskartet i ett stykke.
+ * Like `project`, but with the longitude difference from the central meridian (radians) given
+ * directly and not wrapped into [-π, π). The build script uses this to draw
+ * polygons that cross the edge of the world map in one piece.
  */
 export function projectRelative(p: Projection, lam: number, lat: number): XY {
   const phi = lat * RAD;
@@ -96,7 +96,7 @@ export function projectRelative(p: Projection, lam: number, lat: number): XY {
     const cosc =
       Math.sin(phi0) * Math.sin(phi) +
       Math.cos(phi0) * Math.cos(phi) * Math.cos(lam);
-    // Antipoden (cosc = -1) har ingen entydig plassering; den er uansett langt utenfor kartet.
+    // The antipode (cosc = -1) has no unique placement; it is far outside the map anyway.
     const k = Math.sqrt(2 / Math.max(1e-12, 1 + cosc));
     return {
       x: k * Math.cos(phi) * Math.sin(lam),
@@ -117,7 +117,7 @@ export function projectRelative(p: Projection, lam: number, lat: number): XY {
   };
 }
 
-/** Projeksjonskoordinater → lengde/bredde (grader). */
+/** Projection coordinates → longitude/latitude (degrees). */
 export function unproject(p: Projection, x: number, y: number): LonLat {
   if (p.kind === 'laea') {
     const phi0 = p.lat0 * RAD;
@@ -137,7 +137,7 @@ export function unproject(p: Projection, x: number, y: number): LonLat {
     );
     return {lon: wrapLon(p.lon0 + lam / RAD), lat: lat / RAD};
   }
-  // Newtons metode for θ ut fra y.
+  // Newton's method for θ from y.
   let theta = y / A1;
   for (let i = 0; i < 20; i++) {
     const t2 = theta * theta;
@@ -159,7 +159,7 @@ export function unproject(p: Projection, x: number, y: number): LonLat {
   return {lon: wrapLon(p.lon0 + lam / RAD), lat: lat / RAD};
 }
 
-/** Lengde/bredde → piksel i kartbildet. */
+/** Longitude/latitude → pixel in the map image. */
 export function lonLatToImage(meta: MapMeta, lon: number, lat: number): XY {
   const {x, y} = project(meta.projection, lon, lat);
   const b = meta.bounds;
@@ -169,7 +169,7 @@ export function lonLatToImage(meta: MapMeta, lon: number, lat: number): XY {
   };
 }
 
-/** Piksel i kartbildet → lengde/bredde. */
+/** Pixel in the map image → longitude/latitude. */
 export function imageToLonLat(meta: MapMeta, px: number, py: number): LonLat {
   const b = meta.bounds;
   const x = b.xmin + (px / meta.width) * (b.xmax - b.xmin);
@@ -177,7 +177,7 @@ export function imageToLonLat(meta: MapMeta, px: number, py: number): LonLat {
   return unproject(meta.projection, x, y);
 }
 
-/** Rektangel på siden (Android-piksler). Samme form som `Rect` i layout.ts. */
+/** Rectangle on the page (Android pixels). Same shape as `Rect` in layout.ts. */
 export interface PageRect {
   left: number;
   top: number;
@@ -185,7 +185,7 @@ export interface PageRect {
   bottom: number;
 }
 
-/** Lengde/bredde → punkt på siden, når kartet er tegnet i `rect`. */
+/** Longitude/latitude → point on the page, when the map is drawn in `rect`. */
 export function lonLatToPage(
   meta: MapMeta,
   rect: PageRect,
@@ -199,7 +199,7 @@ export function lonLatToPage(
   };
 }
 
-/** Punkt på siden → lengde/bredde, når kartet er tegnet i `rect`. */
+/** Point on the page → longitude/latitude, when the map is drawn in `rect`. */
 export function pageToLonLat(
   meta: MapMeta,
   rect: PageRect,
@@ -213,10 +213,10 @@ export function pageToLonLat(
   );
 }
 
-/** Jordens middelradius i km. */
+/** Earth's mean radius in km. */
 export const EARTH_RADIUS_KM = 6371.0088;
 
-/** Storsirkelavstand i km (haversine). */
+/** Great-circle distance in km (haversine). */
 export function haversineKm(a: LonLat, b: LonLat): number {
   const dLat = (b.lat - a.lat) * RAD;
   const dLon = (b.lon - a.lon) * RAD;

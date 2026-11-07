@@ -74,17 +74,17 @@ import {computeStats, sheetKey, verdictScore, type Attempt, type Skill} from './
 import {orderForTraining, type Strategy} from './core/training';
 import {loadRecords, saveRecord} from './sdk/statsStore';
 
-/** Strekbredde for tabellinjer; se kommentaren i createSheet. */
+/** Stroke width for table lines; see the comment in createSheet. */
 const LINE_WIDTH = 200;
 
-/** Strekbredde for rettemerkene (litt tykkere enn tabellinjene). Aldri under 200; se LINE_WIDTH. */
+/** Stroke width for the grading marks (slightly thicker than the table lines). Never below 200; see LINE_WIDTH. */
 const MARK_WIDTH = 300;
 
 export type Progress = (message: string) => void;
 
 /**
- * Rekkefølgen land skal trekkes i for en treningsmodus, eller undefined for
- * vanlig tilfeldig trekning. Leser statistikken for ferdigheten.
+ * The order countries should be drawn in for a training mode, or undefined for
+ * a plain random draw. Reads the statistics for the skill.
  */
 export async function trainingOrder(
   skill: Skill,
@@ -98,7 +98,7 @@ export async function trainingOrder(
   return pool => orderForTraining(pool, stats, strategy, now);
 }
 
-/** Lagrer resultatene fra en rettet side. Feil i lagringen stopper aldri rettingen. */
+/** Saves the results from a graded page. A saving error never stops the grading. */
 export async function recordResults(notePath: string, skill: Skill, attempts: Attempt[]): Promise<void> {
   if (!attempts.length) {
     return;
@@ -108,8 +108,8 @@ export async function recordResults(notePath: string, skill: Skill, attempts: At
 }
 
 /**
- * Hvor et nytt ark skal lages: på siden du står på hvis den er tom og har hvit
- * eller ingen mal, ellers på en ny side etter den.
+ * Where a new sheet should be created: on the current page if it is empty and has a white
+ * or no template, otherwise on a new page after it.
  */
 export async function sheetTarget(): Promise<'here' | 'newPage'> {
   await ensurePermissions();
@@ -120,7 +120,7 @@ export async function sheetTarget(): Promise<'here' | 'newPage'> {
   return isBlankTemplate(await pageTemplateName(ref)) ? 'here' : 'newPage';
 }
 
-/** Tekst som er loddrett midtstilt i cellen og krympet til den får plass. */
+/** Text that is vertically centered in the cell and shrunk until it fits. */
 function cellText(
   text: string,
   cell: Rect,
@@ -131,7 +131,7 @@ function cellText(
   return {kind: 'text', text, rect: centeredTextRect(text, cell, fontSize), fontSize, ...opts};
 }
 
-/** Alle elementene for én side av et arbeidsark. */
+/** All the elements for one page of a worksheet. */
 function sheetDrafts(
   size: Size,
   lang: Language,
@@ -142,9 +142,9 @@ function sheetDrafts(
   const L = computeLayout(size, countries.length);
   const drafts: Draft[] = [];
 
-  // Tabellinjer. Alle har penWidth 200: med bredde 100 lagrer enheten hver linje
-  // som ~90 kB (mot ~0,5 kB), og siden skrives på nytt ved hver lagring, så notatet
-  // vokser raskt. Indre linjer skilles ut med mørk grå farge i stedet for tynnere strek.
+  // Table lines. All have penWidth 200: with width 100 the device stores each line
+  // as ~90 kB (versus ~0.5 kB), and the page is rewritten on every save, so the note
+  // grows quickly. Inner lines are set apart with dark gray color instead of a thinner stroke.
   const [x0, x1, x2, x3] = L.columnX;
   const top = L.lineY[0];
   const bottom = L.lineY[L.lineY.length - 1];
@@ -196,7 +196,7 @@ function sheetDrafts(
   drafts.push(cellText(lang.sheet.colResult, h.result, L.smallFontSize, {bold: true, locked: true}));
   countries.forEach((c, i) => {
     drafts.push(cellText(c.name, L.rows[i].country, L.fontSize, {locked: true}));
-    // Felles ark: tallet til spilleren som skal svare, helt til venstre i svarruta.
+    // Shared sheet: the number of the player who should answer, at the far left of the answer box.
     const player = game?.rowPlayers?.[i];
     if (player) {
       const a = L.rows[i].answer;
@@ -207,7 +207,7 @@ function sheetDrafts(
   return drafts;
 }
 
-/** Siden mellom to spillere når enheten sendes rundt. */
+/** The page between two players when the device is passed around. */
 export function handoverDrafts(size: Size, lang: Language, player: number): Draft[] {
   const hs = hotSeatTexts(lang);
   const L = computeLayout(size, 1);
@@ -242,10 +242,10 @@ export interface CreateSummary {
 }
 
 /**
- * Lager et arbeidsark på språket `lang`, fordelt på flere sider hvis det er mer enn 20 land.
- * `strategy` velger landene (se core/training.ts); 'random' trekker tilfeldig.
- * @param where 'here' = første side på nåværende side, resten på nye sider etter den;
- *   'newPage' = alle sidene på nye sider rett etter nåværende side.
+ * Creates a worksheet in the language `lang`, spread over several pages if there are more than 20 countries.
+ * `strategy` picks the countries (see core/training.ts); 'random' draws at random.
+ * @param where 'here' = first page on the current page, the rest on new pages after it;
+ *   'newPage' = all pages on new pages right after the current page.
  */
 export async function createSheet(
   lang: Language,
@@ -262,13 +262,13 @@ export async function createSheet(
   const ui = currentLanguage();
   const multi = game && game.players > 1 ? game : undefined;
   const n = multi?.mode === 'shared' ? sharedCount(count, multi.players, regionSize(region)) : count;
-  // Bytt på: hver spiller får egne land, trukket så alle får omtrent like kjente
-  // (treningsmodusen brukes ikke der, siden spillerne har ulik statistikk).
+  // Taking turns: each player gets their own countries, drawn so everyone gets roughly equally familiar
+  // ones (the training mode is not used there, since the players have different statistics).
   const countries =
     multi?.mode === 'shared'
       ? pickFairCountries(lang, region, n, multi.players, Math.random, level)
       : pickCountries(lang, region, n, Math.random, await trainingOrder('capital', strategy), level);
-  // Færre land per side på mindre sider (Nomad, A5X), så radene blir høye nok til å skrive i.
+  // Fewer countries per page on smaller pages (Nomad, A5X), so the rows are tall enough to write in.
   const chunks = splitIntoPages(countries, maxRowsPerPage(ref.size));
   if (multi?.mode === 'pass') {
     return createPassGame(ref, lang, region, chunks, multi.players, where, progress);
@@ -285,7 +285,7 @@ export async function createSheet(
     progress(chunks.length > 1 ? ui.progress.drawingPage(k + 1, chunks.length) : ui.progress.drawing);
     const page = {...ref, page: firstPage + k};
     const title = sheetTitle(lang, region, chunk.length, k + 1, chunks.length);
-    // Felles ark: spillerne bytter på, regnet over hele settet (side 2 fortsetter der side 1 slapp).
+    // Shared sheet: the players take turns, counted over the whole set (page 2 continues where page 1 left off).
     const before = chunks.slice(0, k).reduce((a, c) => a + c.length, 0);
     const shared = multi
       ? {
@@ -302,7 +302,7 @@ export async function createSheet(
   return {countries: countries.length, pages: chunks.length};
 }
 
-/** Send rundt: samme land til alle, hver spiller på egne sider, med en «gi videre»-side imellom. */
+/** Pass around: the same countries for everyone, each player on their own pages, with a "hand over" page in between. */
 async function createPassGame(
   ref: PageRef,
   lang: Language,
@@ -353,13 +353,13 @@ export interface GradeSummary {
   points: number;
   total: number;
   pages: PageScore[];
-  /** Flerspiller: poeng per spiller. */
+  /** Multiplayer: points per player. */
   players?: PlayerScore[];
-  /** Send rundt: spillere der ingen sider ble funnet. */
+  /** Pass around: players for whom no pages were found. */
   missing?: number[];
 }
 
-/** Finner merkelappen for flerspiller («Spiller 2 av 3», «Duell for 2»). */
+/** Finds the multiplayer label ("Player 2 of 3", "Duel for 2"). */
 export function gameTagOf(elements: PageElement[]): GameTag | null {
   for (const e of elements) {
     const text = e.type === TYPE_TEXT ? e.textBox?.textContentFull : null;
@@ -371,7 +371,7 @@ export function gameTagOf(elements: PageElement[]): GameTag | null {
   return null;
 }
 
-/** Finner overskriften på en side og leser språk og «side k av n». */
+/** Finds the heading on a page and reads the language and "page k of n". */
 function sheetInfo(elements: PageElement[]): SheetInfo | null {
   for (const e of elements) {
     const text = e.type === TYPE_TEXT ? e.textBox?.textContentFull : null;
@@ -383,7 +383,7 @@ function sheetInfo(elements: PageElement[]): SheetInfo | null {
   return null;
 }
 
-/** Språket arket er skrevet på: overskriften gir kandidatene, landnavnene avgjør. */
+/** The language the sheet is written in: the heading gives the candidates, the country names decide. */
 function sheetLanguageOf(elements: PageElement[], info: SheetInfo): Language {
   if (info.candidates.length === 1) {
     return info.lang;
@@ -393,7 +393,7 @@ function sheetLanguageOf(elements: PageElement[], info: SheetInfo): Language {
 }
 
 /**
- * Retter siden du står på, eller alle sidene i settet den hører til.
+ * Grades the current page, or all the pages in the set it belongs to.
  */
 export async function gradeSheet(scope: 'page' | 'set', progress: Progress): Promise<GradeSummary> {
   await ensurePermissions();
@@ -421,7 +421,7 @@ export async function gradeSheet(scope: 'page' | 'set', progress: Progress): Pro
     };
   }
 
-  // Sidene i et sett ligger etter hverandre: side 1 er (nåværende - part + 1).
+  // The pages in a set follow one another: page 1 is (current - part + 1).
   const first = ref.page - (info.part - 1);
   const pages: PageScore[] = [];
   const playerScores: PlayerScore[] = [];
@@ -432,7 +432,7 @@ export async function gradeSheet(scope: 'page' | 'set', progress: Progress): Pro
     const els = pageIndex === ref.page ? elements : await getPageElements(pref);
     const pinfo = sheetInfo(els);
     if (!pinfo || pinfo.parts !== info.parts || pinfo.part !== k + 1 || !pinfo.candidates.includes(lang)) {
-      // Siden er flyttet eller slettet; hopp over den i stedet for å rette feil side.
+      // The page has been moved or deleted; skip it instead of grading the wrong page.
       continue;
     }
     const score = await gradePage(pref, els, lang, m => progress(label + m), tag);
@@ -444,7 +444,7 @@ export async function gradeSheet(scope: 'page' | 'set', progress: Progress): Pro
   return {points, total, pages, players: tag ? sumScores(playerScores) : undefined};
 }
 
-/** Send rundt: retter alle spillernes sider og summerer per spiller. */
+/** Pass around: grades all the players' pages and sums per player. */
 async function gradePassGame(
   ref: PageRef,
   info: SheetInfo,
@@ -515,8 +515,8 @@ async function gradePage(
   const ui = currentLanguage();
   const texts = elements.filter(e => e.type === TYPE_TEXT && e.textBox?.textContentFull);
 
-  // Landene står i venstre kolonne. Vi finner dem på navn (arkets språk først)
-  // og regner ut layouten på nytt. Fasit og resultater skrives på arkets språk.
+  // The countries are in the left column. We find them by name (the sheet's language first)
+  // and recompute the layout. The answer key and results are written in the sheet's language.
   const countryBoxes: Array<{country: Country; el: PageElement}> = [];
   for (const e of texts) {
     const c = findCountryByName(e.textBox!.textContentFull!, lang);
@@ -541,7 +541,7 @@ async function gradePage(
     }
   }
 
-  // Felles ark: tallet i svarruta sier hvilken spiller raden tilhører.
+  // Shared sheet: the number in the answer box says which player the row belongs to.
   const rowPlayer: Array<number | undefined> = L.rows.map(() => undefined);
   if (tag?.mode === 'shared') {
     for (const e of texts) {
@@ -561,7 +561,7 @@ async function gradePage(
   const boxes = (await strokePointsAll(strokes)).map(boxOf);
   const byRow = assignToRows(boxes, L.rows, {left: L.columnX[1], right: L.columnX[2]});
 
-  // Gjenkjenn hele svarkolonnen i ett kall og del på linjeskift.
+  // Recognize the whole answer column in one call and split on line breaks.
   const rowsWithInk = rowCountry
     .map((c, i) => (c && byRow[i].length ? i : -1))
     .filter(i => i >= 0);
@@ -584,8 +584,8 @@ async function gradePage(
     }
     let recognized = recognizedByRow?.get(i) ?? '';
     let result = gradeAnswer(country, recognized);
-    // Gjenkjenn raden alene hvis samlet lesing ikke lot seg fordele på radene,
-    // eller hvis svaret ble vurdert som feil (dobbeltsjekk at det ikke var en feilkobling).
+    // Recognize the row alone if the combined reading could not be split across the rows,
+    // or if the answer was judged wrong (double-check that it was not a mismatch).
     const needsOwnRead = byRow[i].length > 0 && (!recognizedByRow || result.verdict === 'wrong');
     if (needsOwnRead) {
       progress(ui.progress.rereadingRow(i + 1));
@@ -599,8 +599,8 @@ async function gradePage(
     graded.push({row: i, country, recognized, result});
   }
 
-  // Fjern resultater fra en tidligere retting, så arket kan rettes på nytt:
-  // tekst og merker som ligger inne i resultatkolonnen, pluss poengsummen.
+  // Remove results from an earlier grading, so the sheet can be graded again:
+  // text and marks inside the result column, plus the score.
   const resultArea = {
     left: L.columnX[2] + 2,
     right: L.columnX[3] - 2,
@@ -640,7 +640,7 @@ async function gradePage(
   }
   const scoreFont = Math.round(L.fontSize * 1.2);
 
-  // Merknader om hovedsteder (forvekslinger, flere hovedsteder) som fotnoter nederst.
+  // Notes about capitals (mix-ups, multiple capitals) as footnotes at the bottom.
   const noteTexts = capitalNotes(lang);
   const noteItems = graded.flatMap(g => {
     const note = noteTexts[g.country.code];
@@ -657,7 +657,7 @@ async function gradePage(
     }
     const marker = notes?.markers.get(g.row);
     const base = resultText(g.country, g.recognized, g.result, lang);
-    // Fotnotetallet står etter hovedstaden (første linje), eller alene ved et riktig svar.
+    // The footnote number goes after the capital (first line), or alone for a correct answer.
     const text = marker ? (base ? base.replace(/^([^\n]*)/, `$1 ${marker}`) : marker) : base;
     if (text) {
       drafts.push(cellText(text, textCell, L.fontSize, {bold: g.result.verdict !== 'wrong'}));
@@ -676,7 +676,7 @@ async function gradePage(
   });
   await insertDrafts(ref, drafts);
   await saveNote();
-  // Statistikk bare for én spiller; på flerspillerark tilhører svarene flere.
+  // Statistics only for a single player; on multiplayer sheets the answers belong to several.
   if (!tag) {
     const attempts = graded.map(g => ({code: g.country.code, score: verdictScore(g.result.verdict)}));
     await recordResults(ref.notePath, 'capital', attempts);
@@ -684,13 +684,13 @@ async function gradePage(
   return {points, total, players};
 }
 
-/** Minste skrift for fotnotene (ca. 1,7 mm på Manta). */
+/** Smallest font size for the footnotes (about 1.7 mm on Manta). */
 const NOTE_MIN_FONT = 20;
 
 /**
- * Plassen til fotnotene: til venstre for poengsummen og ned mot bunnen av siden.
- * Blir det for smalt ved siden av poengsummen (lang poenglinje på flerspillerark),
- * brukes plassen under den i stedet.
+ * The space for the footnotes: to the left of the score and down toward the bottom of the page.
+ * If it becomes too narrow next to the score (long score line on multiplayer sheets),
+ * the space below it is used instead.
  */
 function notesArea(L: SheetLayout, size: Size, scoreText: string, scoreFont: number): Rect {
   const bottom = Math.round(size.height * 0.985);
@@ -703,8 +703,8 @@ function notesArea(L: SheetLayout, size: Size, scoreText: string, scoreFont: num
 }
 
 /**
- * Hvor mange land som får plass per side på notatet som er åpent nå.
- * Brukes av menyen til å si hvor mange sider et ark blir. Null hvis ingen notatside er åpen.
+ * How many countries fit per page on the note that is open now.
+ * Used by the menu to say how many pages a sheet will be. Null if no note page is open.
  */
 export async function rowsPerPageNow(): Promise<number | null> {
   try {

@@ -1,4 +1,4 @@
-// Menytekster på katalansk, oversatt fra menu/en.ts.
+// Menu texts in Catalan, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

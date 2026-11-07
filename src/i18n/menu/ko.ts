@@ -1,4 +1,4 @@
-// Menytekster på koreansk, oversatt fra menu/en.ts.
+// Menu texts in Korean, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

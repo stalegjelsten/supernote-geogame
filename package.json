@@ -1,6 +1,6 @@
 {
   "name": "geogame",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -40,5 +40,5 @@
   "engines": {
     "node": ">=18"
   },
-  "description": "Arbeidsark for å øve på land og hovedsteder på Supernote."
+  "description": "Worksheets for practicing countries and capitals on Supernote."
 }

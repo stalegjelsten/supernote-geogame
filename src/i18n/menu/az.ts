@@ -1,4 +1,4 @@
-// Menytekster på aserbajdsjansk, oversatt fra menu/en.ts.
+// Menu texts in Azerbaijani, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

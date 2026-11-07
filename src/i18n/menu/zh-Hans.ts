@@ -1,4 +1,4 @@
-// Menytekster på kinesisk (forenklet), oversatt fra menu/en.ts.
+// Menu texts in Simplified Chinese, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

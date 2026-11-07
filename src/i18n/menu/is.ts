@@ -1,4 +1,4 @@
-// Menytekster på íslensku, oversatt fra menu/en.ts.
+// Menu texts in Icelandic, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

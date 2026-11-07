@@ -1,4 +1,4 @@
-// Menytekster på Afrikaans, oversatt fra menu/en.ts.
+// Menu texts in Afrikaans, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

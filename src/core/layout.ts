@@ -1,12 +1,12 @@
 /**
- * Plassering av arbeidsarket på siden, i Android-piksler.
+ * Placement of the worksheet on the page, in Android pixels.
  *
- * Alt er proporsjonalt med sidestørrelsen, så samme kode fungerer på
- * Manta (1920×2560), Nomad og A5X (1404×1872) og A6X. Marger og radhøyde har i
- * tillegg et minimum i piksler: Nomad har samme pikseltetthet som Manta (~300 ppi),
- * så verktøylinja er like mange piksler bred der, men siden er mye mindre.
- * Både «Nytt ark» og «Rett ark» bruker denne funksjonen, slik at radene
- * alltid ligger der grading forventer dem.
+ * Everything is proportional to the page size, so the same code works on
+ * Manta (1920×2560), Nomad and A5X (1404×1872) and A6X. Margins and row height also have
+ * a minimum in pixels: Nomad has the same pixel density as Manta (~300 ppi),
+ * so the toolbar is just as many pixels wide there, but the page is much smaller.
+ * Both "New sheet" and "Correct sheet" use this function, so the rows
+ * are always where grading expects them.
  */
 
 export interface Rect {
@@ -24,9 +24,9 @@ export interface Size {
 export interface SheetLayout {
   title: Rect;
   subtitle: Rect;
-  /** x-posisjoner for loddrette linjer: venstre kant, kolonneskiller, høyre kant. */
+  /** x positions for vertical lines: left edge, column divider, right edge. */
   columnX: [number, number, number, number];
-  /** y-posisjoner for vannrette linjer, fra toppen av overskriftsraden. */
+  /** y positions for horizontal lines, from the top of the heading row. */
   lineY: number[];
   header: {country: Rect; answer: Rect; result: Rect};
   rows: Array<{country: Rect; answer: Rect; result: Rect; band: {top: number; bottom: number}}>;
@@ -38,30 +38,30 @@ export interface SheetLayout {
 const r = (v: number) => Math.round(v);
 
 /**
- * Layoutversjoner. Retting må regne ut nøyaktig samme layout som arket ble laget med,
- * så gamle versjoner beholdes og gjenkjennes ut fra hvor landnavnene står (se guessLayoutVersion).
- *  1: 6 % sidemarg (til og med 0.6.2).
- *  2: Sikre marger, så verktøylinja ikke dekker tabellen når den er festet til
- *     venstre, høyre eller toppen (0.6.3–0.7.0).
- *  3: Som 2, men med minimum i piksler, så margene holder også på Nomad (fra 0.7.1).
- *     På Manta gir 2 og 3 samme layout.
+ * Layout versions. Correction must compute exactly the same layout the sheet was made with,
+ * so old versions are kept and recognized from where the country names are (see guessLayoutVersion).
+ *  1: 6 % side margin (up to and including 0.6.2).
+ *  2: Safe margins, so the toolbar doesn't cover the table when it is docked
+ *     left, right or at the top (0.6.3–0.7.0).
+ *  3: Like 2, but with a minimum in pixels, so the margins hold on Nomad too (from 0.7.1).
+ *     On Manta, 2 and 3 give the same layout.
  */
 export type LayoutVersion = 1 | 2 | 3;
 export const CURRENT_LAYOUT: LayoutVersion = 3;
 
-/** Minste marg i piksler mot verktøylinja (ca. 120–140 px bred på Manta og Nomad). */
+/** Smallest margin in pixels toward the toolbar (about 120–140 px wide on Manta and Nomad). */
 export const SAFE_MARGIN_MIN_PX = 150;
 
 const MARGINS: Record<LayoutVersion, {side: number; top: number; minPx: number}> = {
   1: {side: 0.06, top: 0.035, minPx: 0},
-  // Verktøylinja på Manta er ca. 120–140 px bred av 1920; 9 % gir litt luft.
+  // The toolbar on Manta is about 120–140 px wide out of 1920; 9 % gives some breathing room.
   2: {side: 0.09, top: 0.065, minPx: 0},
   3: {side: 0.09, top: 0.065, minPx: SAFE_MARGIN_MIN_PX},
 };
 
-/** Laveste radhøyde i piksler, så det er plass til å skrive (ca. 7 mm ved 300 ppi). */
+/** Lowest row height in pixels, so there is room to write (about 7 mm at 300 ppi). */
 export const MIN_ROW_PX = 84;
-/** Høyst så mange rader per side, også på store skjermer. */
+/** At most this many rows per page, even on large screens. */
 export const MAX_ROWS = 20;
 
 export function computeLayout(page: Size, rowCount: number, version: LayoutVersion = CURRENT_LAYOUT): SheetLayout {
@@ -82,7 +82,7 @@ export function computeLayout(page: Size, rowCount: number, version: LayoutVersi
   const headerH = H * 0.03;
   const rowH = Math.min(H * 0.05, (tableBottomLimit - tableTop - headerH) / Math.max(rowCount, 1));
 
-  // Land | Hovedstad (skriv her, bred) | Resultat (smal)
+  // Country | Capital (write here, wide) | Result (narrow)
   const c0 = left;
   const c1 = left + tableW * 0.3;
   const c2 = left + tableW * 0.8;
@@ -133,30 +133,47 @@ export function computeLayout(page: Size, rowCount: number, version: LayoutVersi
       right: r(right),
       bottom: r(tableBottom + H * 0.01 + scoreH),
     },
-    // Et minimum i piksler holder teksten lesbar på små sider (Nomad), så lenge raden har plass.
+    // A minimum in pixels keeps the text legible on small pages (Nomad), as long as the row has room.
     fontSize: r(Math.min(rowH * 0.42, Math.max(W * 0.022, 30))),
     smallFontSize: r(Math.min(rowH * 0.32, Math.max(W * 0.017, 26))),
   };
 }
 
-/** Linjehøyde som andel av skriftstørrelsen. */
+/** Line height as a fraction of the font size. */
 export const LINE_HEIGHT = 1.35;
 
 /**
- * Skriftstørrelse som får teksten (evt. flere linjer med \n) til å passe i cellen,
- * både i bredden og i høyden.
+ * Font size that makes the text (possibly several lines with \n) fit in the cell,
+ * in both width and height.
  */
-/** Fulle bredder: CJK, kana, hangul og fullbredde tegnsetting. */
+/** Full widths: CJK, kana, hangul and full-width punctuation. */
 const WIDE = /[\u1100-\u11ff\u2e80-\u9fff\uac00-\ud7af\uf900-\ufaff\uff00-\uffef]/;
 
+/** Cyrillic and Greek letters that are extra wide (ш, щ, ж, ю, м, ы, ф, ω …). */
+const EXTRA_WIDE = /[шщжюмыфШЩЖЮМЫФωΩΨψΦφ]/;
+/** Capital letters in Cyrillic and Greek script. */
+const UPPER_CYRL_GREEK = /[\u0391-\u03a9\u0400-\u042f\u0460-\u0481\u048a-\u04c0\u04d0-\u04fe]/;
+/** Cyrillic, Greek, Armenian and Georgian: wider than Latin letters in the same script. */
+const CYRL_GREEK = /[\u0370-\u03ff\u0400-\u052f\u0531-\u0587\u10a0-\u10ff]/;
+
 /**
- * Omtrentlig bredde på en linje i em: vanlige tegn er ca. 0,55 × skriftstørrelsen,
- * brede tegn (kinesisk, japansk, koreansk) ca. 1.
+ * Approximate width of a line in em: Latin characters are about 0.55 × the font size,
+ * Cyrillic and Greek 0.62–0.85, wide characters (Chinese, Japanese, Korean) about 1.
  */
 export function textWidthEm(line: string): number {
   let w = 0;
   for (const ch of line) {
-    w += WIDE.test(ch) ? 1 : 0.55;
+    if (WIDE.test(ch)) {
+      w += 1;
+    } else if (EXTRA_WIDE.test(ch)) {
+      w += 0.85;
+    } else if (UPPER_CYRL_GREEK.test(ch)) {
+      w += 0.72;
+    } else if (CYRL_GREEK.test(ch)) {
+      w += 0.62;
+    } else {
+      w += 0.55;
+    }
   }
   return w;
 }
@@ -172,8 +189,8 @@ export function fitFontSize(text: string, cell: Rect, maxSize: number): number {
 }
 
 /**
- * Tekstbokser tegnes fra toppen av rektangelet. For å midtstille teksten
- * loddrett i cellen lager vi et lavere rektangel rundt cellens midtlinje.
+ * Text boxes are drawn from the top of the rectangle. To center the text
+ * vertically in the cell we make a shorter rectangle around the cell's midline.
  */
 export function centeredTextRect(text: string, cell: Rect, fontSize: number): Rect {
   const lines = text.split('\n').length;
@@ -184,15 +201,15 @@ export function centeredTextRect(text: string, cell: Rect, fontSize: number): Re
 }
 
 /**
- * Finner hvilken layoutversjon et eksisterende ark ble laget med, ut fra hvor
- * landnavnene (venstre kolonne) begynner.
+ * Finds which layout version an existing sheet was made with, from where the
+ * country names (left column) begin.
  */
 export function guessLayoutVersion(page: Size, rowCount: number, countryLefts: number[]): LayoutVersion {
   if (!countryLefts.length) {
     return CURRENT_LAYOUT;
   }
   const minLeft = Math.min(...countryLefts);
-  // Nyeste først, så den vinner når to versjoner gir samme layout (Manta: 2 og 3).
+  // Newest first, so it wins when two versions give the same layout (Manta: 2 and 3).
   const versions = (Object.keys(MARGINS).map(Number) as LayoutVersion[]).sort((a, b) => b - a);
   let best = CURRENT_LAYOUT;
   let bestD = Infinity;
@@ -207,8 +224,8 @@ export function guessLayoutVersion(page: Size, rowCount: number, countryLefts: n
 }
 
 /**
- * Hvor mange land som får plass på én side med radhøyde på minst MIN_ROW_PX.
- * Manta: 20. Nomad og A5X: færre, siden sidene er mindre.
+ * How many countries fit on one page with a row height of at least MIN_ROW_PX.
+ * Manta: 20. Nomad and A5X: fewer, since the pages are smaller.
  */
 export function maxRowsPerPage(page: Size): number {
   let n = MAX_ROWS;

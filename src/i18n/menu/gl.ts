@@ -1,4 +1,4 @@
-// Menytekster på galisisk, oversatt fra menu/en.ts.
+// Menu texts in Galician, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

@@ -1,4 +1,4 @@
-// Menytekster på slovakisk, oversatt fra menu/en.ts.
+// Menu texts in Slovak, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

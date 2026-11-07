@@ -1,4 +1,4 @@
-// Menytekster på suomi, oversatt fra menu/en.ts.
+// Menu texts in Finnish, translated from menu/en.ts.
 import type {MenuStrings} from './types';
 
 const menu: MenuStrings = {

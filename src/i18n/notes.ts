@@ -1,10 +1,10 @@
 /**
- * Korte merknader til hovedsteder som ofte forveksles med en annen by, eller der
- * landet har flere hovedsteder. Vises som fotnote nederst på tabellarket ved retting.
+ * Short notes on capitals that are often confused with another city, or where the
+ * country has several capitals. Shown as a footnote at the bottom of the table sheet when grading.
  *
- * Bare norsk og engelsk er skrevet; de andre språkene får engelsk tekst, som
- * kartmodusen (se map.ts). Hold hver merknad kort (helst under 60 tegn), så flere
- * får plass på en full side.
+ * Only Norwegian and English are written; the other languages get English text, like
+ * the map mode (see map.ts). Keep each note short (preferably under 60 characters), so
+ * several fit on a full page.
  */
 import type {CountryCode} from '../data/countries';
 import type {Language} from './types';
@@ -12,7 +12,7 @@ import type {Language} from './types';
 export type CapitalNotes = Partial<Record<CountryCode, string>>;
 
 const nb: CapitalNotes = {
-  // Europa
+  // Europe
   DE: 'Bonn var hovedstad i Vest-Tyskland 1949–1990.',
   NL: 'Regjeringen og nasjonalforsamlingen sitter i Haag.',
   CH: 'Har ingen offisiell hovedstad; Bern er forbundsby.',
@@ -35,7 +35,7 @@ const nb: CapitalNotes = {
   LK: 'Colombo er største by og handelshovedstad.',
   VN: 'Ho Chi Minh-byen er største by.',
   YE: 'Sanaa styres av houthiene; regjeringen sitter i Aden.',
-  // Afrika
+  // Africa
   BJ: 'Regjeringen sitter i Cotonou, største by.',
   BI: 'Bujumbura var hovedstad til 2019, nå økonomisk hovedstad.',
   CI: 'Abidjan er største by og regjeringssete.',
@@ -46,16 +46,16 @@ const nb: CapitalNotes = {
   SZ: 'Lobamba er kongelig og lovgivende hovedstad.',
   ZA: 'Tre hovedsteder: Pretoria, Kapp og Bloemfontein.',
   TZ: 'Dar es Salaam var hovedstad til 1996 og er største by.',
-  // Nord- og Mellom-Amerika
+  // North and Central America
   BZ: 'Belize City var hovedstad til 1970 og er største by.',
   CA: 'Toronto er største by.',
   US: 'New York er største by.',
-  // Sør-Amerika
+  // South America
   BO: 'Sucre er grunnlovsfestet; regjeringen sitter i La Paz.',
   BR: 'Rio de Janeiro var hovedstad til 1960.',
   CL: 'Nasjonalforsamlingen sitter i Valparaíso.',
   EC: 'Guayaquil er største by.',
-  // Oseania
+  // Oceania
   AU: 'Sydney er største by; Melbourne var midlertidig hovedstad.',
   NR: 'Har ingen offisiell hovedstad; regjeringen sitter i Yaren.',
   NZ: 'Auckland er største by (hovedstad til 1865).',
@@ -115,10 +115,10 @@ const en: CapitalNotes = {
 
 const OWN: Record<string, CapitalNotes> = {nb, en};
 
-/** Merknadene på arkets språk, med engelsk som reserve. */
+/** The notes in the sheet's language, with English as fallback. */
 export function capitalNotes(lang: Language): CapitalNotes {
   return OWN[lang.code] ?? en;
 }
 
-/** For tester: alle språkene som har egne merknader. */
+/** For tests: all languages that have their own notes. */
 export const ALL_CAPITAL_NOTES: Record<string, CapitalNotes> = OWN;
