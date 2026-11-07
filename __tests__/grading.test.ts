@@ -52,8 +52,9 @@ jest.mock('sn-plugin-lib', () => ({
 }));
 
 import {gradeSheet} from '../src/actions';
-import {ENGLISH as MAYBE_ENGLISH} from '../src/i18n';
+import {ENGLISH as MAYBE_ENGLISH, getLanguage} from '../src/i18n';
 import {hotSeatTexts} from '../src/i18n/hotseat';
+import {rowLabel} from '../src/core/hotseat';
 import {computeLayout, type Rect} from '../src/core/layout';
 import {sheetTitle} from '../src/core/sheet';
 import {countryIn} from '../src/core/countries';
@@ -166,4 +167,38 @@ test('regrading the same sheet replaces the result, also after the note is renam
   expect(statsRecords().length).toBe(1);
   // The ID is never removed as an old result.
   expect(mockDeleted).not.toContain(id.numInPage);
+});
+
+test('a Serbian (Latin) sheet is graded in Serbian, not Bosnian, thanks to the stamp', async () => {
+  const sr = getLanguage('sr-Latn')!;
+  const codes: CountryCode[] = ['AR', 'EC'];
+  const L = computeLayout(SIZE, codes.length);
+  const stamp = sheetIdDraft(SIZE, 'lx2k1a00', sr);
+  mockPages.set(0, [
+    text(sheetTitle(sr, 'SA', codes.length), L.title),
+    text(sr.sheet.subtitle, L.subtitle),
+    ...codes.map((c, i) => text(countryIn(sr, c).name, L.rows[i].country)),
+    ...(stamp.kind === 'text' ? [text(stamp.text, stamp.rect)] : []),
+  ]);
+  await gradeSheet('page', () => {});
+  const keys = insertedTexts().map(t => t.textContentFull.split(/ [⁰-⁹¹²³]+$/)[0]);
+  expect(keys).toEqual(expect.arrayContaining(['Buenos Ajres', 'Kito']));
+});
+
+test('shared sheet, page 2: a row whose player number cannot be read keeps the turn order', async () => {
+  const hs = hotSeatTexts(ENGLISH);
+  const codes: CountryCode[] = ['NO', 'SE', 'DK'];
+  const L = computeLayout(SIZE, codes.length);
+  // Page 1 had an odd number of rows, so page 2 starts with player 2: 2, 1, 2.
+  // The label in the middle row is missing.
+  const label = (row: number, player: number) => {
+    const a = L.rows[row].answer;
+    return text(rowLabel(player), {...a, right: a.left + 30});
+  };
+  mockPages.set(0, [...sheetPage(codes, hs.tableShared(2), 2, 2), label(0, 2), label(2, 2)]);
+  const r = await gradeSheet('page', () => {});
+  expect(r.players?.map(p => [p.player, p.max])).toEqual([
+    [1, 1],
+    [2, 2],
+  ]);
 });

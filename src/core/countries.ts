@@ -53,7 +53,8 @@ export function findCountryByName(name: string, preferred?: Language): Country |
 
 /**
  * Picks the language a sheet is written in among the candidates from the heading:
- * the language in which most of the texts on the page are country names. On a tie,
+ * the language in which most of the texts on the page are country names or the sheet's own
+ * texts (subtitle, column headings: Macedonian and Serbian Cyrillic differ there). On a tie,
  * the first candidate wins.
  */
 export function pickSheetLanguage(texts: string[], candidates: Language[]): Language {
@@ -61,7 +62,8 @@ export function pickSheetLanguage(texts: string[], candidates: Language[]): Lang
   let bestHits = -1;
   for (const lang of candidates) {
     const byName = indexFor(lang).byName;
-    const hits = texts.filter(t => byName.has(t.trim())).length;
+    const own = new Set([lang.sheet.subtitle, lang.sheet.colCountry, lang.sheet.colAnswer, lang.sheet.colResult]);
+    const hits = texts.filter(t => byName.has(t.trim()) || own.has(t.trim())).length;
     if (hits > bestHits) {
       best = lang;
       bestHits = hits;

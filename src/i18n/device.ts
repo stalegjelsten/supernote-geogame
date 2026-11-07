@@ -47,21 +47,22 @@ async function pluginDir(): Promise<string | null> {
   }
 }
 
-async function loadChoice(): Promise<void> {
+/** The language saved last time, or null. */
+async function loadChoice(): Promise<string | null> {
   const dir = await pluginDir();
   if (!dir) {
-    return;
+    return null;
   }
   for (const l of LANGUAGES) {
     try {
       if (await FileUtils.exists(`${dir}/${markerName(l.code)}`)) {
-        setLanguageChoice(l.code);
-        return;
+        return l.code;
       }
     } catch {
-      return;
+      return null;
     }
   }
+  return null;
 }
 
 async function saveChoice(): Promise<void> {
@@ -98,13 +99,33 @@ export function startLanguageTracking(): void {
   } catch {
     // Older SDK without a language listener.
   }
-  loadChoice().finally(() => {
-    let last = languageChoice();
-    onLanguageChange(() => {
-      if (languageChoice() !== last) {
-        last = languageChoice();
-        saveChoice();
-      }
-    });
+  // Listen from the start: a language chosen in the menu while the saved one is still being
+  // looked for (dozens of file checks) must win and be saved, not be overwritten.
+  let loading = true;
+  let chosenWhileLoading = false;
+  let last = languageChoice();
+  onLanguageChange(() => {
+    if (languageChoice() === last) {
+      return;
+    }
+    last = languageChoice();
+    if (loading) {
+      chosenWhileLoading = true;
+    } else {
+      saveChoice();
+    }
   });
+  loadChoice()
+    .catch(() => null)
+    .then(saved => {
+      if (chosenWhileLoading) {
+        saveChoice();
+      } else if (saved) {
+        last = saved;
+        setLanguageChoice(saved);
+      }
+    })
+    .finally(() => {
+      loading = false;
+    });
 }

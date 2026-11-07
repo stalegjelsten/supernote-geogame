@@ -36,9 +36,11 @@ import {
   type MapEntryStyle,
   type MapTarget,
   type MapSheetInfo,
+  MAP_COUNTS,
+  titlePrefixFor,
 } from './core/mapSheet';
 import type {Region} from './core/sheet';
-import {newSheetId, sheetIdDraft, sheetIdIn} from './core/sheetId';
+import {newSheetId, sheetIdDraft, sheetIdIn, sheetStampIn} from './core/sheetId';
 import type {Level} from './core/fairDraw';
 import {MAP_ASSETS} from './sdk/mapAssets';
 import {
@@ -170,7 +172,7 @@ export async function createMapSheet(
       options.style,
       options.target,
       tag,
-    ).concat(tag ? [] : [sheetIdDraft(page.size, newSheetId())]),
+    ).concat(tag ? [] : [sheetIdDraft(page.size, newSheetId(), lang)]),
   );
   if (page.page !== ref.page) {
     await jumpToPage(page.page);
@@ -221,11 +223,15 @@ async function createPassMapGame(
 }
 
 function mapInfo(elements: PageElement[]): MapSheetInfo | null {
-  for (const e of elements) {
-    const text = e.type === TYPE_TEXT ? e.textBox?.textContentFull : null;
+  const texts = elements.map(e => (e.type === TYPE_TEXT ? e.textBox?.textContentFull : null));
+  for (const text of texts) {
     const info = text ? parseMapTitle(text) : null;
     if (info) {
-      return info;
+      // Several languages share a heading (Bosnian, Croatian, Serbian); newer sheets say which.
+      const stamped = sheetStampIn(texts)?.lang;
+      return stamped && titlePrefixFor(stamped, info.target) === titlePrefixFor(info.lang, info.target)
+        ? {...info, lang: stamped}
+        : info;
     }
   }
   return null;
@@ -319,31 +325,38 @@ async function gradePassMapGame(
   const missing: number[] = [];
   for (let p = 1; p <= tag.players; p++) {
     const pageIndex = passPageIndex(first, p, 1, 1);
+    // Only a page that is missing or isn't this player's map counts as missing; errors while
+    // grading a page that is there (writing the results, for instance) are shown to the user.
+    let pref: PageRef;
+    let elements: PageElement[];
     try {
       if (pageIndex < 0) {
-        throw new Error('page');
+        missing.push(p);
+        continue;
       }
-      const pref = pageIndex === ref.page ? ref : await pageRefAt(ref, pageIndex);
-      const elements = await getPageElements(pref);
-      const pinfo = mapInfo(elements);
-      const ptag = gameTagOf(elements);
-      if (
-        !pinfo ||
-        pinfo.region !== info.region ||
-        pinfo.target !== info.target ||
-        ptag?.mode !== 'pass' ||
-        ptag.player !== p ||
-        ptag.players !== tag.players
-      ) {
-        throw new Error('page');
-      }
-      const prefix = `${hotSeatTexts(ui).player(p)} · `;
-      // Pass the tag on, so the page is treated as multiplayer (no statistics).
-      const g = await gradeMapPage(pref, elements, pinfo, ptag, m => progress(prefix + m));
-      scores.push({player: p, points: g.points, max: g.max});
+      pref = pageIndex === ref.page ? ref : await pageRefAt(ref, pageIndex);
+      elements = await getPageElements(pref);
     } catch {
       missing.push(p);
+      continue;
     }
+    const pinfo = mapInfo(elements);
+    const ptag = gameTagOf(elements);
+    if (
+      !pinfo ||
+      pinfo.region !== info.region ||
+      pinfo.target !== info.target ||
+      ptag?.mode !== 'pass' ||
+      ptag.player !== p ||
+      ptag.players !== tag.players
+    ) {
+      missing.push(p);
+      continue;
+    }
+    const prefix = `${hotSeatTexts(ui).player(p)} · `;
+    // Pass the tag on, so the page is treated as multiplayer (no statistics).
+    const g = await gradeMapPage(pref, elements, pinfo, ptag, m => progress(prefix + m));
+    scores.push({player: p, points: g.points, max: g.max});
   }
   const players = sumScores(scores);
   return {
@@ -378,7 +391,13 @@ async function gradeMapPage(
   if (!entries.length) {
     throw new Error(mapTexts(ui).errors.noEntries);
   }
-  const count = Math.max(...entries.map(e => e.n));
+  // The number of entries decides the layout. Count every numbered line in the list, also one
+  // whose country could not be read, so the cells don't shift if the last one is unreadable.
+  const numbered = elements.flatMap(e => {
+    const m = e.type === TYPE_TEXT ? e.textBox?.textContentFull?.trim().match(/^(\d+)\.\s+\S/) : null;
+    return m ? [Number(m[1])] : [];
+  });
+  const count = Math.max(...entries.map(e => e.n), ...numbered.filter(n => n <= Math.max(...MAP_COUNTS)));
   const L = mapLayoutFor(ref.size, region, count);
   progress(mapTexts(ui).progress.findingMap);
   const mapRect = findMapRect(elements, region, L.map);

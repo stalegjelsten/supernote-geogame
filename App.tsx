@@ -3,7 +3,7 @@
  *
  * Made for e-ink: black on white, compact but clear touch targets, no animations.
  */
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {PluginManager} from 'sn-plugin-lib';
 import {createSheet, gradeSheet, rowsPerPageNow, sheetTarget} from './src/actions';
@@ -220,13 +220,21 @@ function App(): React.JSX.Element {
     }
     setTab(next);
   };
+  // A double tap on "Delete" must not start two deletions (the second fails on folders that are gone).
+  const resetting = useRef(false);
   const resetStats = async () => {
+    if (resetting.current) {
+      return;
+    }
+    resetting.current = true;
     setConfirmReset(false);
     try {
       await clearRecords();
       setStatsMessage(stx.resetDone);
     } catch (e) {
       setStatsMessage(ui.somethingWrong((e as Error).message ?? String(e)));
+    } finally {
+      resetting.current = false;
     }
     refreshStats();
   };

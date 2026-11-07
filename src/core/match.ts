@@ -113,6 +113,8 @@ export function allowedErrors(length: number): number {
 const LATIN_TO_CYRILLIC: Record<string, string> = {
   a: 'а', b: 'в', c: 'с', e: 'е', h: 'н', k: 'к', m: 'м', o: 'о',
   p: 'р', t: 'т', x: 'х', y: 'у', '3': 'з',
+  // Ukrainian, Belarusian and Kazakh і, Serbian and Macedonian ј, Macedonian ѕ.
+  i: 'і', j: 'ј', s: 'ѕ',
 };
 const LATIN_TO_GREEK: Record<string, string> = {
   a: 'α', b: 'β', e: 'ε', h: 'η', i: 'ι', k: 'κ', m: 'μ', n: 'ν', o: 'ο',

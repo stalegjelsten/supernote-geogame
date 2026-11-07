@@ -3,7 +3,12 @@
  * tell a new grading of the same sheet (which replaces the old result) from a new sheet with
  * the same countries (which counts again). Without it, every sheet with all the countries of a
  * small region (South America, Oceania) got the same key, and only the last one counted.
+ *
+ * The sheet's language goes after the ID ("ID s1.lx2k1a7q.sr-Latn"): the heading is the same in
+ * some languages (Bosnian, Croatian and Serbian: "Glavni gradovi"), and the names on the sheet
+ * don't always tell them apart.
  */
+import {getLanguage, type Language} from '../i18n';
 import type {Draft} from './draft';
 import type {Size} from './layout';
 
@@ -20,33 +25,47 @@ export function newSheetId(now: number = Date.now(), random: () => number = Math
 
 export const isSheetId = (id: string) => ID_PATTERN.test(id);
 
-export function parseSheetId(text: string): string | null {
+export interface SheetStamp {
+  id: string;
+  /** The language the sheet was made in, if it is one of the included languages. */
+  lang?: Language;
+}
+
+export function parseSheetStamp(text: string): SheetStamp | null {
   const t = text.trim();
   if (!t.startsWith(SHEET_ID_PREFIX)) {
     return null;
   }
-  const id = t.slice(SHEET_ID_PREFIX.length);
-  return isSheetId(id) ? id : null;
+  const [id, code, ...rest] = t.slice(SHEET_ID_PREFIX.length).split('.');
+  if (!isSheetId(id) || rest.length) {
+    return null;
+  }
+  const lang = code ? getLanguage(code) : undefined;
+  return lang ? {id, lang} : {id};
 }
 
-/** The first sheet ID among the texts on a page, or null (sheets made before the ID existed). */
-export function sheetIdIn(texts: Array<string | null | undefined>): string | null {
+export const parseSheetId = (text: string) => parseSheetStamp(text)?.id ?? null;
+
+/** The first sheet stamp among the texts on a page, or null (sheets made before the ID existed). */
+export function sheetStampIn(texts: Array<string | null | undefined>): SheetStamp | null {
   for (const t of texts) {
-    const id = t ? parseSheetId(t) : null;
-    if (id) {
-      return id;
+    const stamp = t ? parseSheetStamp(t) : null;
+    if (stamp) {
+      return stamp;
     }
   }
   return null;
 }
 
+export const sheetIdIn = (texts: Array<string | null | undefined>) => sheetStampIn(texts)?.id ?? null;
+
 /** The ID in tiny print at the very bottom right, below the score and the footnotes. */
-export function sheetIdDraft(size: Size, id: string): Draft {
+export function sheetIdDraft(size: Size, id: string, lang?: Language): Draft {
   const {width: W, height: H} = size;
   const marginX = Math.max(W * 0.09, 150);
   return {
     kind: 'text',
-    text: SHEET_ID_PREFIX + id,
+    text: SHEET_ID_PREFIX + id + (lang ? `.${lang.code}` : ''),
     rect: {
       left: Math.round(W / 2),
       top: Math.round(H * 0.986),

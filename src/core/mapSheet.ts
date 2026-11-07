@@ -76,7 +76,7 @@ export function mapLayoutFor(
 /** What is to be marked: the capital (points by distance) or the country (right/wrong). */
 export type MapTarget = 'capital' | 'country';
 
-function titlePrefixFor(lang: Language, target: MapTarget): string {
+export function titlePrefixFor(lang: Language, target: MapTarget): string {
   const t = mapTexts(lang);
   return target === 'country' ? t.countryTitlePrefix : t.titlePrefix;
 }

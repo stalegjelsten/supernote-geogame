@@ -71,3 +71,9 @@ test('reset deletes everything', async () => {
   forgetCache();
   expect(await loadRecords()).toEqual([]);
 });
+
+test('two saves at the same time both end up in the cache', async () => {
+  await Promise.all([saveRecord(rec('aaaaaaaaaaaaaa', T0, 0)), saveRecord(rec('bbbbbbbbbbbbbb', T0 + 1000, 1))]);
+  // No forgetCache(): the cache itself must have both.
+  expect((await loadRecords()).map(r => r.key).sort()).toEqual(['aaaaaaaaaaaaaa', 'bbbbbbbbbbbbbb']);
+});

@@ -49,7 +49,7 @@ import {
   type Region,
   type SheetInfo,
 } from './core/sheet';
-import {newSheetId, sheetIdDraft, sheetIdIn} from './core/sheetId';
+import {newSheetId, sheetIdDraft, sheetIdIn, sheetStampIn} from './core/sheetId';
 import {
   COLOR_BLACK,
   COLOR_DARK_GRAY,
@@ -310,7 +310,7 @@ export async function createSheet(
         }
       : undefined;
     const drafts = sheetDrafts(ref.size, lang, title, chunk, shared);
-    await insertDrafts(page, multi ? drafts : [...drafts, sheetIdDraft(ref.size, id)]);
+    await insertDrafts(page, multi ? drafts : [...drafts, sheetIdDraft(ref.size, id, lang)]);
   }
   if (firstPage !== ref.page) {
     await jumpToPage(firstPage);
@@ -406,6 +406,11 @@ function sheetLanguageOf(elements: PageElement[], info: SheetInfo): Language {
     return info.lang;
   }
   const texts = elements.flatMap(e => (e.type === TYPE_TEXT && e.textBox?.textContentFull ? [e.textBox.textContentFull] : []));
+  // Newer sheets say which language they are in (src/core/sheetId.ts).
+  const stamped = sheetStampIn(texts)?.lang;
+  if (stamped && info.candidates.some(c => c.code === stamped.code)) {
+    return stamped;
+  }
   return pickSheetLanguage(texts, info.candidates);
 }
 
@@ -662,9 +667,13 @@ async function gradePage(
   let players: PlayerScore[] | undefined;
   let scoreText = lang.sheet.score(points, total);
   if (tag?.mode === 'shared') {
+    // A row label that can't be read: the players take turns over the whole set, so on page 2
+    // the turn order continues from page 1. Take the offset from a label that can be read.
+    const known = rowPlayer.findIndex(p => p !== undefined);
+    const offset = known >= 0 ? rowPlayer[known]! - 1 - known : 0;
     players = sumScores(
       graded.map(g => ({
-        player: rowPlayer[g.row] ?? playerAt(g.row, tag.players),
+        player: rowPlayer[g.row] ?? playerAt(g.row + offset + tag.players * L.rows.length, tag.players),
         points: isPoint(g.result) ? 1 : 0,
         max: 1,
       })),

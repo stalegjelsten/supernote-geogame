@@ -101,7 +101,22 @@ export async function loadRecords(): Promise<SheetRecord[]> {
  * Saves a graded sheet. If the same sheet has been graded before, the previous grading is replaced.
  * Never throws; returns false if saving failed.
  */
-export async function saveRecord(record: SheetRecord): Promise<boolean> {
+export function saveRecord(record: SheetRecord): Promise<boolean> {
+  return serial(() => saveRecordNow(record));
+}
+
+/**
+ * Writes run one at a time: each one reads the stored records, changes them and puts the
+ * result in the cache, so two at once would drop one of them from the cache.
+ */
+let queue: Promise<unknown> = Promise.resolve();
+function serial<T>(task: () => Promise<T>): Promise<T> {
+  const next = queue.then(task, task);
+  queue = next.catch(() => undefined);
+  return next;
+}
+
+async function saveRecordNow(record: SheetRecord): Promise<boolean> {
   if (!record.attempts.length) {
     return true;
   }
@@ -146,7 +161,11 @@ export async function saveRecord(record: SheetRecord): Promise<boolean> {
 }
 
 /** Deletes all stored statistics. */
-export async function clearRecords(): Promise<void> {
+export function clearRecords(): Promise<void> {
+  return serial(clearRecordsNow);
+}
+
+async function clearRecordsNow(): Promise<void> {
   const dir = await statsDir();
   cache = null;
   if (!dir) {

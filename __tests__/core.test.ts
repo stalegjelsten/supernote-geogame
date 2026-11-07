@@ -439,6 +439,15 @@ describe('other languages', () => {
     expect(no.code).toBe('NO');
     expect(gradeAnswer(no, 'Осло').verdict).toBe('correct');
     expect(gradeAnswer(no, 'Oslo').verdict).toBe('correct');
+    // Latin i/j/s read inside a Ukrainian, Serbian or Macedonian word.
+    const grade = (lang: string, code: string, answer: string) =>
+      gradeAnswer(countriesIn(getLanguage(lang)!).find(c => c.code === code)!, answer).verdict;
+    const uk = getLanguage('uk')!;
+    const ge = countriesIn(uk).find(c => c.code === 'GE')!;
+    expect(grade('uk', 'GE', ge.capital.replace(/і/g, 'i'))).toBe('correct');
+    const srBA = countriesIn(getLanguage('sr-Cyrl')!).find(c => c.code === 'BA')!;
+    expect(srBA.capital).toContain('ј');
+    expect(grade('sr-Cyrl', 'BA', srBA.capital.replace(/ј/g, 'j'))).toBe('correct');
     const jp = findIn('日本', ja)!;
     expect(jp.code).toBe('JP');
     expect(gradeAnswer(jp, jp.capital).verdict).toBe('correct');
