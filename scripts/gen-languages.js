@@ -14,6 +14,8 @@
  * - Cities that are de facto also capitals (seat of government, several official capitals):
  *   Wikidata labels in scripts/data/co-capitals-wikidata.json. They are accepted as answers
  *   in the language itself and in English. Former capitals are not listed there.
+ * - Short forms without administrative affixes (東京 for 東京都, Тиран for Тиран хот) and
+ *   some extra spellings: ADMIN_SUFFIXES and EXTRA_ALTERNATIVES below.
  * - The sheet texts in the table below are translated by hand.
  * - The menu texts live in src/i18n/menu/<code>.ts (translated from menu/en.ts) and
  *   are not written by this script. Likewise the capital notes in
@@ -88,6 +90,57 @@ const TABLE = [
 /** Continents CLDR has no names for. */
 const CONTINENT_OVERRIDES = {
   mg: {EU: 'Eoropa', AS: 'Azia', AF: 'Afrika', NA: 'Amerika Avaratra', SA: 'Amerika Atsimo', OC: 'Oseania', world: 'Izao tontolo izao'},
+};
+
+/**
+ * Administrative affixes Wikidata includes in the capital's name (東京都, 北京市, 서울특별시,
+ * Тиран хот, Әбү-Дәби шәһәре). Nobody writes them, and short CJK names tolerate no
+ * typos, so the name without the affix is accepted too. Longest affix first.
+ */
+const ADMIN_SUFFIXES = {
+  ja: ['特別市', '地区', 'D.C.', '都', '市', '島'],
+  'zh-Hans': ['哥伦比亚特区', '市', '都', '区'],
+  'zh-Hant': ['哥倫比亞特區', '市', '都', '區'],
+  ko: ['특별시', ' 시국', ' D.C.', ' 시', '시', '도', '구'],
+  mn: [' хот', ' Хот'],
+  tt: [' шәһәре'],
+};
+/** Capitals where the last character is part of the name itself. */
+const KEEP_SUFFIX = new Set(['트빌리시', '네피도', '와가두구', '加德满都', '加德滿都', '自由市']);
+
+function withoutAdminSuffix(code, name) {
+  if (KEEP_SUFFIX.has(name)) {
+    return undefined;
+  }
+  for (const suffix of ADMIN_SUFFIXES[code] ?? []) {
+    const short = name.endsWith(suffix) ? name.slice(0, -suffix.length).trim() : '';
+    if ([...short].length >= 2) {
+      return short;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Common spellings that neither CLDR nor Wikidata has: kana for capitals written
+ * with Chinese characters, older and more common transliterations, and "city" names
+ * where the affix inflects the rest of the name (Greek Πόλη του Μεξικού, Irish
+ * Cathair Chuáit), so it cannot simply be removed.
+ * Jerusalem for Palestine is added in every language (see main), as in nb and en.
+ */
+const EXTRA_ALTERNATIVES = {
+  ja: {
+    JP: ['トウキョウ'], CN: ['ペキン'], KP: ['ピョンヤン'], TW: ['タイペイ', 'タイホク'],
+    UA: ['キエフ'], AF: ['カブール'], AM: ['エレバン'], IN: ['デリー'], LT: ['ビリニュス'],
+    PA: ['パナマシティ'], IQ: ['バグダッド'], YE: ['サナア'], KW: ['クウェート'],
+  },
+  'zh-Hant': {TW: ['台北']},
+  ko: {UA: ['키예프']},
+  el: {MX: ['Μεξικό'], GT: ['Γουατεμάλα'], PA: ['Παναμάς', 'Παναμά'], SM: ['Σαν Μαρίνο']},
+  ga: {
+    BE: ['an Bhruiséil'], KW: ['Cuáit'], DZ: ['an Ailgéir'], GT: ['Guatamala'], MX: ['Meicsiceo'],
+    SM: ['San Mairíne'], SC: ['Victoria'], CR: ['San José'], NR: ['Yaren'],
+  },
 };
 
 const CLDR_REGION = {EU: '150', AS: '142', AF: '002', NA: '003', SA: '005', OC: '009', world: '001'};
@@ -173,7 +226,17 @@ function main() {
       // Also accepted: the English capital, and cities that are de facto capitals (seat of
       // government etc.) in the language itself and in English.
       const alts = [];
-      for (const alt of [en[cc], ...(coCaps[cc] ?? []).flatMap(c => [capitalFor(c.labels, wd), c.en])]) {
+      for (const alt of [
+        withoutAdminSuffix(code, capital),
+        ...(EXTRA_ALTERNATIVES[code]?.[cc] ?? []),
+        // Wikidata has East Jerusalem; Jerusalem is accepted too, as in nb and en.
+        cc === 'PS' ? capitalFor(caps.IL.labels, wd) : undefined,
+        en[cc],
+        ...(coCaps[cc] ?? []).flatMap(c => {
+          const local = capitalFor(c.labels, wd);
+          return [local, withoutAdminSuffix(code, local), c.en];
+        }),
+      ]) {
         if (alt && alt !== capital && !alts.includes(alt)) {
           alts.push(alt);
         }

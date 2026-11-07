@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Taso riippuu siitä, kuinka tunnettu pääkaupunki (tai maa) on Wikipedian sivunkatselujen perusteella.',
 
   statsSection: 'Tilastot',
-  statsShow: 'Näytä tilastot',
-  statsHide: 'Piilota tilastot',
   statsSkillCapital: 'Pääkaupunkien kirjoittaminen',
   statsSkillMapCapital: 'Pääkaupungit kartalla',
   statsSkillMapCountry: 'Maat kartalla',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Poistetaanko kaikki tilastot? Tätä ei voi kumota.',
   statsConfirm: 'Poista',
   statsResetDone: 'Tilastot poistettu.',
+  statsRecent: 'Viimeisimmät arkit (% oikein)',
 };
 
 export default menu;

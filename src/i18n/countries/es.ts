@@ -87,7 +87,7 @@ const countries: CountryNames = {
   KP: ['Corea del Norte', 'Pionyang', ['Pyongyang']],
   OM: ['Omán', 'Mascate', ['Muscat']],
   PK: ['Pakistán', 'Islamabad'],
-  PS: ['Territorios Palestinos', 'Jerusalén Este', ['East Jerusalem', 'Ramala', 'Ramallah']],
+  PS: ['Territorios Palestinos', 'Jerusalén Este', ['Jerusalén', 'East Jerusalem', 'Ramala', 'Ramallah']],
   QA: ['Catar', 'Doha'],
   SA: ['Arabia Saudí', 'Riad', ['Riyadh']],
   SG: ['Singapur', 'Singapur', ['Singapore']],

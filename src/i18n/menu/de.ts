@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Die Schwierigkeit hängt davon ab, wie bekannt die Hauptstadt (oder das Land) ist, gemessen an den Wikipedia-Seitenaufrufen.',
 
   statsSection: 'Statistik',
-  statsShow: 'Statistik anzeigen',
-  statsHide: 'Statistik ausblenden',
   statsSkillCapital: 'Hauptstädte schreiben',
   statsSkillMapCapital: 'Hauptstädte auf der Karte',
   statsSkillMapCountry: 'Länder auf der Karte',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Gesamte Statistik löschen? Das kann nicht rückgängig gemacht werden.',
   statsConfirm: 'Löschen',
   statsResetDone: 'Statistik gelöscht.',
+  statsRecent: 'Letzte Blätter (% richtig)',
 };
 
 export default menu;

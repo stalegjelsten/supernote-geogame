@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Tingkat bergantung pada seberapa dikenal ibu kota (atau negaranya), diukur dari jumlah tayangan halaman Wikipedia.',
 
   statsSection: 'Statistik',
-  statsShow: 'Tampilkan statistik',
-  statsHide: 'Sembunyikan statistik',
   statsSkillCapital: 'Menulis ibu kota',
   statsSkillMapCapital: 'Ibu kota di peta',
   statsSkillMapCountry: 'Negara di peta',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Hapus semua statistik? Tindakan ini tidak dapat dibatalkan.',
   statsConfirm: 'Hapus',
   statsResetDone: 'Statistik telah dihapus.',
+  statsRecent: 'Lembar terbaru (% benar)',
 };
 
 export default menu;

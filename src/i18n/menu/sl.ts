@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Raven je odvisna od tega, kako znano je glavno mesto (ali država), merjeno z ogledi strani na Wikipediji.',
 
   statsSection: 'Statistika',
-  statsShow: 'Pokaži statistiko',
-  statsHide: 'Skrij statistiko',
   statsSkillCapital: 'Pisanje glavnih mest',
   statsSkillMapCapital: 'Glavna mesta na zemljevidu',
   statsSkillMapCountry: 'Države na zemljevidu',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Želite izbrisati vso statistiko? Tega ni mogoče razveljaviti.',
   statsConfirm: 'Izbriši',
   statsResetDone: 'Statistika je izbrisana.',
+  statsRecent: 'Zadnji listi (% pravilno)',
 };
 
 export default menu;

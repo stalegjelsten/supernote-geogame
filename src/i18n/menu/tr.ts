@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Seviye, başkentin (veya ülkenin) ne kadar tanındığına bağlıdır; Vikipedi sayfa görüntülemeleriyle ölçülür.',
 
   statsSection: 'İstatistikler',
-  statsShow: 'İstatistikleri göster',
-  statsHide: 'İstatistikleri gizle',
   statsSkillCapital: 'Başkentleri yazma',
   statsSkillMapCapital: 'Haritada başkentler',
   statsSkillMapCountry: 'Haritada ülkeler',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Tüm istatistikler silinsin mi? Bu işlem geri alınamaz.',
   statsConfirm: 'Sil',
   statsResetDone: 'İstatistikler silindi.',
+  statsRecent: 'Son sayfalar (% doğru)',
 };
 
 export default menu;

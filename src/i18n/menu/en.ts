@@ -104,8 +104,6 @@ const menu: MenuStrings = {
   levelHint: 'The level depends on how well known the capital (or country) is, measured by Wikipedia page views.',
 
   statsSection: 'Statistics',
-  statsShow: 'Show statistics',
-  statsHide: 'Hide statistics',
   statsSkillCapital: 'Writing capitals',
   statsSkillMapCapital: 'Capitals on the map',
   statsSkillMapCountry: 'Countries on the map',
@@ -125,6 +123,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Delete all statistics? This cannot be undone.',
   statsConfirm: 'Delete',
   statsResetDone: 'Statistics deleted.',
+  statsRecent: 'Latest sheets (% right)',
 };
 
 export default menu;

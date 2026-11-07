@@ -9,8 +9,6 @@ import type {Language} from './types';
 
 export interface StatsTexts {
   section: string;
-  show: string;
-  hide: string;
   /** The skill the statistics apply to, by selected game. */
   skill: Record<Skill, string>;
   loading: string;
@@ -27,12 +25,12 @@ export interface StatsTexts {
   confirm: string;
   cancel: string;
   resetDone: string;
+  /** Heading over the chart of the latest sheets. */
+  recent: string;
 }
 
 const nb: StatsTexts = {
   section: 'Statistikk',
-  show: 'Vis statistikk',
-  hide: 'Skjul statistikk',
   skill: {
     capital: 'Skrive hovedsteder',
     mapCapital: 'Hovedsteder på kartet',
@@ -52,12 +50,11 @@ const nb: StatsTexts = {
   confirm: 'Slett',
   cancel: 'Avbryt',
   resetDone: 'Statistikken er slettet.',
+  recent: 'Siste ark (% riktig)',
 };
 
 const en: StatsTexts = {
   section: 'Statistics',
-  show: 'Show statistics',
-  hide: 'Hide statistics',
   skill: {
     capital: 'Writing capitals',
     mapCapital: 'Capitals on the map',
@@ -77,6 +74,7 @@ const en: StatsTexts = {
   confirm: 'Delete',
   cancel: 'Cancel',
   resetDone: 'Statistics deleted.',
+  recent: 'Latest sheets (% right)',
 };
 
 const OWN: Record<string, StatsTexts> = {nb, en};
@@ -84,8 +82,6 @@ const OWN: Record<string, StatsTexts> = {nb, en};
 function fromMenu(m: MenuStrings): StatsTexts {
   return {
     section: m.statsSection,
-    show: m.statsShow,
-    hide: m.statsHide,
     skill: {
       capital: m.statsSkillCapital,
       mapCapital: m.statsSkillMapCapital,
@@ -105,6 +101,7 @@ function fromMenu(m: MenuStrings): StatsTexts {
     confirm: m.statsConfirm,
     cancel: m.cancel,
     resetDone: m.statsResetDone,
+    recent: m.statsRecent,
   };
 }
 

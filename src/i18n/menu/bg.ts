@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Нивото зависи от това колко известна е столицата (или държавата), измерено по прегледите в Уикипедия.',
 
   statsSection: 'Статистика',
-  statsShow: 'Покажи статистиката',
-  statsHide: 'Скрий статистиката',
   statsSkillCapital: 'Писане на столици',
   statsSkillMapCapital: 'Столици на картата',
   statsSkillMapCountry: 'Държави на картата',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Да се изтрие ли цялата статистика? Това не може да бъде отменено.',
   statsConfirm: 'Изтрий',
   statsResetDone: 'Статистиката е изтрита.',
+  statsRecent: 'Последни листове (% вярно)',
 };
 
 export default menu;

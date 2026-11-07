@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: "Miankina amin'ny halaza ny renivohitra (na ny firenena) ny ambaratonga, refesina amin'ny isan'ny fijerena ny pejy Wikipedia.",
 
   statsSection: "Antontan'isa",
-  statsShow: "Asehoy ny antontan'isa",
-  statsHide: "Afeno ny antontan'isa",
   statsSkillCapital: 'Fanoratana renivohitra',
   statsSkillMapCapital: "Renivohitra eo amin'ny sarintany",
   statsSkillMapCountry: "Firenena eo amin'ny sarintany",
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: "Hofafana daholo ve ny antontan'isa? Tsy azo averina izany.",
   statsConfirm: 'Fafao',
   statsResetDone: "Voafafa ny antontan'isa.",
+  statsRecent: 'Taratasy farany (% marina)',
 };
 
 export default menu;

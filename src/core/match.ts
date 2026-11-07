@@ -24,10 +24,25 @@ export interface MatchResult {
 const NOT_LETTER =
   /[^a-z0-9\u00df-\u00f6\u00f8-\u024f\u0370-\u03ff\u0400-\u052f\u0531-\u0587\u10a0-\u10ff\u1100-\u11ff\u3041-\u30fa\u30fc-\u30ff\u3131-\u318e\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af\uf900-\ufaff]/g;
 
+/** The ヴ sounds are just as often written with the バ row (サラエヴォ/サラエボ). */
+const VU: Record<string, string> = {ァ: 'バ', ィ: 'ビ', ェ: 'ベ', ォ: 'ボ'};
+
+/**
+ * Japanese spellings that mean the same: hiragana as katakana, ヴ as the バ row,
+ * and without the long vowel mark (カーブル/カブール), which is also often misread as 一.
+ */
+function foldKana(text: string): string {
+  return text
+    .replace(/[\u3041-\u3096]/g, ch => String.fromCharCode(ch.charCodeAt(0) + 0x60))
+    .replace(/ヴ([ァィェォ]?)/g, (_, small: string) => (small ? VU[small] : 'ブ'))
+    .replace(/ー/g, '');
+}
+
 /** Converts to lowercase without accents, spaces and punctuation. */
 export function normalize(text: string): string {
-  return text
+  return foldKana(text)
     .toLowerCase()
+    .replace(/臺/g, '台')
     .replace(/æ/g, 'ae')
     .replace(/ø/g, 'o')
     .replace(/å/g, 'a')

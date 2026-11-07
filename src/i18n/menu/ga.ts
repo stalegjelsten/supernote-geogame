@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Braitheann an leibhéal ar chomh haithnid is atá an phríomhchathair (nó an tír), de réir líon na n-amharc ar a leathanach Vicipéide.',
 
   statsSection: 'Staitisticí',
-  statsShow: 'Taispeáin staitisticí',
-  statsHide: 'Folaigh staitisticí',
   statsSkillCapital: 'Príomhchathracha a scríobh',
   statsSkillMapCapital: 'Príomhchathracha ar an léarscáil',
   statsSkillMapCountry: 'Tíortha ar an léarscáil',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Scrios na staitisticí go léir? Ní féidir é seo a chealú.',
   statsConfirm: 'Scrios',
   statsResetDone: 'Scriosadh na staitisticí.',
+  statsRecent: 'Na bileoga is déanaí (% ceart)',
 };
 
 export default menu;

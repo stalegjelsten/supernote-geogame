@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Līmenis ir atkarīgs no tā, cik pazīstama ir galvaspilsēta (vai valsts), vērtējot pēc Vikipēdijas lapu skatījumiem.',
 
   statsSection: 'Statistika',
-  statsShow: 'Rādīt statistiku',
-  statsHide: 'Paslēpt statistiku',
   statsSkillCapital: 'Galvaspilsētu rakstīšana',
   statsSkillMapCapital: 'Galvaspilsētas kartē',
   statsSkillMapCountry: 'Valstis kartē',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Dzēst visu statistiku? To nevar atsaukt.',
   statsConfirm: 'Dzēst',
   statsResetDone: 'Statistika izdzēsta.',
+  statsRecent: 'Pēdējās lapas (% pareizi)',
 };
 
 export default menu;

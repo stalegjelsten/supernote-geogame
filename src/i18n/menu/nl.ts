@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Het niveau hangt af van hoe bekend de hoofdstad (of het land) is, gemeten aan paginaweergaven op Wikipedia.',
 
   statsSection: 'Statistieken',
-  statsShow: 'Statistieken tonen',
-  statsHide: 'Statistieken verbergen',
   statsSkillCapital: 'Hoofdsteden schrijven',
   statsSkillMapCapital: 'Hoofdsteden op de kaart',
   statsSkillMapCountry: 'Landen op de kaart',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Alle statistieken verwijderen? Dit kan niet ongedaan worden gemaakt.',
   statsConfirm: 'Verwijderen',
   statsResetDone: 'Statistieken verwijderd.',
+  statsRecent: 'Laatste bladen (% goed)',
 };
 
 export default menu;

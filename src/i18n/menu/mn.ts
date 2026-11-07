@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Түвшин нь нийслэл (эсвэл улс) хэр алдартайгаас хамаарах бөгөөд Википедиагийн хуудас үзэлтээр хэмжигдэнэ.',
 
   statsSection: 'Статистик',
-  statsShow: 'Статистик харуулах',
-  statsHide: 'Статистик нуух',
   statsSkillCapital: 'Нийслэл бичих',
   statsSkillMapCapital: 'Газрын зураг дээрх нийслэлүүд',
   statsSkillMapCountry: 'Газрын зураг дээрх улсууд',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Бүх статистикийг устгах уу? Үүнийг буцаах боломжгүй.',
   statsConfirm: 'Устгах',
   statsResetDone: 'Статистикийг устгалаа.',
+  statsRecent: 'Сүүлийн хуудаснууд (% зөв)',
 };
 
 export default menu;

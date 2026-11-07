@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: '难度取决于首都（或国家）的知名度，按维基百科页面浏览量衡量。',
 
   statsSection: '统计',
-  statsShow: '显示统计',
-  statsHide: '隐藏统计',
   statsSkillCapital: '书写首都',
   statsSkillMapCapital: '地图上的首都',
   statsSkillMapCountry: '地图上的国家',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: '删除所有统计？此操作无法撤销。',
   statsConfirm: '删除',
   statsResetDone: '统计已删除。',
+  statsRecent: '最近的练习纸（正确率 %）',
 };
 
 export default menu;

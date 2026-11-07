@@ -445,6 +445,62 @@ describe('other languages', () => {
     expect(gradeAnswer(jp, 'Tokyo').verdict).toBe('correct');
   });
 
+  it('accepts Chinese, Japanese and Korean capitals without administrative affixes', () => {
+    const grade = (lang: string, code: string, answer: string) =>
+      gradeAnswer(countriesIn(getLanguage(lang)!).find(c => c.code === code)!, answer).verdict;
+    // Wikidata has 東京都, 北京市, ソウル特別市 etc.; nobody writes the affix.
+    for (const [lang, code, answer] of [
+      ['ja', 'JP', '東京'], ['ja', 'CN', '北京'], ['ja', 'KR', 'ソウル'], ['ja', 'TW', '台北'],
+      ['ja', 'NR', 'ヤレン'], ['ja', 'US', 'ワシントン'],
+      ['zh-Hans', 'JP', '东京'], ['zh-Hans', 'CN', '北京'], ['zh-Hans', 'BD', '达卡'], ['zh-Hans', 'US', '华盛顿'],
+      ['zh-Hant', 'TW', '台北'], ['zh-Hant', 'TW', '臺北'], ['zh-Hant', 'JP', '东京'],
+      ['ko', 'KR', '서울'], ['ko', 'VA', '바티칸'],
+    ]) {
+      expect([lang, code, answer, grade(lang, code, answer)]).toEqual([lang, code, answer, 'correct']);
+    }
+    // Names that merely end in such a character are not shortened.
+    expect(grade('ko', 'GE', '트빌리')).not.toBe('correct');
+    expect(grade('zh-Hans', 'NP', '加德满')).not.toBe('correct');
+    // One character off is still a different place.
+    expect(grade('ja', 'JP', '北京')).toBe('wrong');
+  });
+
+  it('accepts kana, ヴ/バ and spellings with and without the long vowel mark', () => {
+    const grade = (code: string, answer: string) =>
+      gradeAnswer(countriesIn(ja).find(c => c.code === code)!, answer).verdict;
+    expect(grade('JP', 'とうきょう')).toBe('correct');
+    expect(grade('CN', 'ペキン')).toBe('correct');
+    expect(grade('KP', 'ピョンヤン')).toBe('correct');
+    expect(grade('BA', 'サラエボ')).toBe('correct');
+    expect(grade('LT', 'ビリニュス')).toBe('correct');
+    expect(grade('IS', 'レイキャビク')).toBe('correct');
+    expect(grade('AF', 'カブール')).toBe('correct');
+    expect(grade('UA', 'キエフ')).toBe('correct');
+    expect(normalize('ヴィエンチャン')).toBe(normalize('ビエンチャン'));
+    expect(normalize('マナーマ')).toBe(normalize('マナマ'));
+  });
+
+  it('accepts capitals without the "city" affix in Greek, Mongolian, Tatar and Irish', () => {
+    const grade = (lang: string, code: string, answer: string) =>
+      gradeAnswer(countriesIn(getLanguage(lang)!).find(c => c.code === code)!, answer).verdict;
+    for (const [lang, code, answer] of [
+      ['el', 'MX', 'Μεξικό'], ['el', 'GT', 'Γουατεμάλα'], ['el', 'PA', 'Παναμάς'], ['el', 'SM', 'Σαν Μαρίνο'],
+      ['mn', 'AL', 'Тиран'], ['mn', 'YE', 'Санаа'], ['mn', 'CI', 'Ямусукро'],
+      ['tt', 'AE', 'Әбү-Дәби'], ['tt', 'LY', 'Триполи'],
+      ['ga', 'BE', 'an Bhruiséil'], ['ga', 'KW', 'Cuáit'], ['ga', 'MX', 'Meicsiceo'],
+    ]) {
+      expect([lang, code, answer, grade(lang, code, answer)]).toEqual([lang, code, answer, 'correct']);
+    }
+  });
+
+  it('accepts Jerusalem for Palestine in every language', () => {
+    for (const lang of LANGUAGES) {
+      const ps = countriesIn(lang).find(c => c.code === 'PS')!;
+      const il = countriesIn(lang).find(c => c.code === 'IL')!;
+      expect([lang.code, gradeAnswer(ps, il.capital).verdict]).toEqual([lang.code, 'correct']);
+    }
+  });
+
   it('tells apart languages that share a heading using the country names', () => {
     const title = sheetTitle(es, 'EU', 3);
     const info = parseSheetTitle(title)!;

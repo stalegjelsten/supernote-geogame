@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Cấp độ phụ thuộc vào mức độ nổi tiếng của thủ đô (hoặc quốc gia), đo bằng lượt xem trang Wikipedia.',
 
   statsSection: 'Thống kê',
-  statsShow: 'Hiện thống kê',
-  statsHide: 'Ẩn thống kê',
   statsSkillCapital: 'Viết thủ đô',
   statsSkillMapCapital: 'Thủ đô trên bản đồ',
   statsSkillMapCountry: 'Quốc gia trên bản đồ',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Xóa toàn bộ thống kê? Không thể hoàn tác.',
   statsConfirm: 'Xóa',
   statsResetDone: 'Đã xóa thống kê.',
+  statsRecent: 'Các tờ gần đây (% đúng)',
 };
 
 export default menu;

@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Mailak hiriburua (edo herrialdea) zein ezaguna den adierazten du, Wikipediako orrialdearen bisiten arabera.',
 
   statsSection: 'Estatistikak',
-  statsShow: 'Erakutsi estatistikak',
-  statsHide: 'Ezkutatu estatistikak',
   statsSkillCapital: 'Hiriburuak idaztea',
   statsSkillMapCapital: 'Hiriburuak mapan',
   statsSkillMapCountry: 'Herrialdeak mapan',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Estatistika guztiak ezabatu? Ezin da desegin.',
   statsConfirm: 'Ezabatu',
   statsResetDone: 'Estatistikak ezabatu dira.',
+  statsRecent: 'Azken orriak (% zuzen)',
 };
 
 export default menu;

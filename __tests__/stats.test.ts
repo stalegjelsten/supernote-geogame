@@ -10,6 +10,7 @@ import {
   dueAt,
   encodeRecord,
   levelOf,
+  recentSheets,
   mapPointsScore,
   sameSheet,
   sessions,
@@ -157,6 +158,24 @@ describe('statistics', () => {
     expect(r.focus.region).toBe('EU');
     expect(r.regions).toHaveLength(7);
     expect(r.weakest[0]).toMatchObject({code: 'NO', name: 'Norge', answer: 'Oslo', percent: 0, attempts: 1});
+  });
+});
+
+describe('latest sheets', () => {
+  test('one result per sheet, oldest first, regrading replaces and split parts are merged', () => {
+    const key = 'a'.repeat(KEY_LENGTH);
+    const records = [
+      rec(T0 + 2 * DAY, [['NO', 1], ['SE', 0]], 'b'.repeat(KEY_LENGTH)),
+      rec(T0, [['NO', 0]], key),
+      rec(T0 + DAY, [['NO', 1]], key), // regrading of the same sheet
+      rec(T0 + DAY, [['FR', 0]], key + '1'), // second part of the same sheet
+      rec(T0 + 3 * DAY, [['NO', 1]], 'c'.repeat(KEY_LENGTH), 'mapCapital'),
+    ];
+    expect(recentSheets(records, 'capital', 10)).toEqual([
+      {time: T0 + DAY, score: 0.5, answers: 2},
+      {time: T0 + 2 * DAY, score: 0.5, answers: 2},
+    ]);
+    expect(recentSheets(records, 'capital', 1)).toEqual([{time: T0 + 2 * DAY, score: 0.5, answers: 2}]);
   });
 });
 
