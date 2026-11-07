@@ -494,7 +494,12 @@ async function gradeMapPage(
   );
   // Statistics only for a single player; on multiplayer sheets the answers belong to several.
   if (!tag) {
-    await recordResults(ref.notePath, skillOfTarget(target), attempts);
+    await recordResults(
+      ref.notePath,
+      skillOfTarget(target),
+      attempts,
+      grade.results.map(r => r.country.code),
+    );
   }
   return {points: grade.points, max: grade.max, target, players};
 }

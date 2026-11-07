@@ -22,17 +22,29 @@ To update, install the new `geogame.snplg` from a later release the same way.
 3. Write the capitals in the middle column.
 4. Tap **Plugins → World Capitals Quiz → Grade this page**. The result is written in the right column. You can grade again after changing answers.
 
-For capitals that are often confused, or where the country has several capitals (for example Tanzania, South Africa, Bolivia and Nigeria), the result cell gets a small number and a short note is printed at the bottom of the sheet. Example: "¹ Dar es Salaam was capital until 1996 and is the largest city." The notes live in `src/i18n/notes.ts` (Norwegian and English; other languages get English).
+## Map quiz
+
+Choose **Game: Map** in the menu to mark places with a cross on a high-contrast map instead of writing. Choose whether to mark **Capitals** or **Countries**, what the list shows (city and country, city only or country only) and how many (5, 10 or 15). Grade with **Grade this page**. Capitals score up to 1000 points each depending on how many kilometres off the cross is; countries are right or wrong. To skip one, draw a line in the box in front of it in the list.
+
+## Languages
+
+The sheets and the menu are available in 55 languages. By default the plugin follows the device language; another language can be chosen in the **Language** tab. Answers are read with Supernote's handwriting recognition, which uses the recognition language set on the device, so set it to the language you write in.
+
+Everything runs on the device; the maps and data are bundled with the plugin and nothing is sent anywhere.
+
+## Footnotes
+
+For capitals that are often confused, or where the country has several capitals (for example Tanzania, South Africa, Bolivia and Nigeria), the result cell gets a small number and a short note is printed at the bottom of the sheet. Example: "¹ Dar es Salaam was capital until 1996 and is the largest city." The notes are available in all 55 languages: Norwegian and English are written in `src/i18n/notes.ts`, and the other languages are translated from English in `src/i18n/capital-notes/<code>.ts`.
 
 ## Level
 
-Choose **Mixed**, **Easy**, **Medium** or **Hard**. The countries of the continent are sorted by how well known the capital is (the country, when the map asks you to mark countries), and the level draws from the best known, middle or least known third. Familiarity is based on Wikipedia page views in 13 languages (`src/data/familiarity.ts`, generated with `node scripts/gen-familiarity.js`; sources: Wikimedia and Wikidata, CC0).
+Choose **Mixed**, **Easy**, **Medium** or **Hard** (hidden when a table sheet uses every country of the continent). The countries of the continent are sorted by how well known the capital is (the country, when the map asks you to mark countries), and the level draws from the best known, middle or least known third (widened if the sheet needs more countries than a third holds). Familiarity is based on Wikipedia page views in 13 languages (`src/data/familiarity.ts`, generated with `node scripts/gen-familiarity.js`; sources: Wikimedia and Wikidata, CC0).
 
 ## Multiple players (hot seat)
 
 Choose **Players: 2–4** in the menu and how you play:
 
-- **Pass around** – the device is hidden from the others. Each player gets their own pages with *the same* countries, with a "Pass the device to player 2" page in between. Tap **Grade the whole set** on any player's page to grade everyone and see who won.
+- **Pass around** – the device is hidden from the others. Each player gets their own pages with *the same* countries, with a "Pass the device to player 2" page in between. Tap **Grade the whole set** on any player's page to grade everyone and see who won. The same button also grades all pages of a long single-player table sheet.
 - **Take turns** – everyone sees the device. You share one sheet and answer in turn; each player has *their own* countries, drawn so everyone gets roughly equally well-known ones, so looking at the others' answers doesn't help. The number in the answer box (table) or the number in the list (map) shows whose turn it is. Points per player are written at the bottom.
 
 Which game a page belongs to is stated first in the subtitle ("Player 2 of 3 · …", "Duel for 2 · …") and read when grading (`src/core/hotseat.ts`).
@@ -43,8 +55,8 @@ Every grading of a single-player sheet is saved: which countries, which skill (w
 
 - **Score per country:** correct = 1, almost = 0.8, wrong or blank = 0. On the map, capitals score points/1000 and countries right/wrong; cities you skip count as 0, and cities without a mark are left out.
 - **Grading the same sheet again** replaces the previous result. The sheet is recognized by the note and the countries on the page, so it survives pages being moved.
-- **Level:** a country is *new* until it has been practiced, and *known* after three correct in a row (Leitner box 3). The box also decides when the country is due for review (0, 1, 3, 7, 14, 30 and 60 days).
-- **In the menu** the **Statistics** tab shows, for the chosen skill (it follows the selected game, but you can pick another), the average score, the number of graded sheets and how many countries are due for review. A column chart shows the score on the last ten sheets, and each continent gets a bar with known (black), learning (gray) and new (white) countries; tap a continent to see the five countries you should practice more there. **Reset statistics** deletes everything (with confirmation).
+- **Level:** a country is *new* until it has been practiced, and *known* after three passes in a row (score at least 0.7, so "almost" counts; Leitner box 3). The box also decides when the country is due for review (0, 1, 3, 7, 14, 30 and 60 days).
+- **In the menu** the **Statistics** tab shows, for the chosen skill (it follows the selected game, but you can pick another), the average score, the number of graded sheets and how many countries in the selected continent are due for review. Once two or more sheets are graded, a column chart shows the score on the last ten. Each continent, and the whole world, gets a bar with known (black), learning (gray) and new (white) countries; tap one to see up to five countries you should practice more. **Reset statistics** deletes everything (with confirmation).
 - **Storage:** the SDK cannot write file contents, so each graded sheet is stored as an empty folder with the result encoded in its name, in `<plugin folder>/stats/` (e.g. `g1.t.<time>.<key>.noz…`). At most 3000 entries; the oldest are deleted first. Nothing is sent from the device.
 - **Training modes:** `src/core/training.ts` has strategies for choosing countries for new sheets based on the statistics. `createSheet` and `createMapSheet` accept a strategy, but the menu has no option for it yet, so sheets are still drawn at random.
 
@@ -52,7 +64,7 @@ Every grading of a single-player sheet is saved: which countries, which skill (w
 
 ```bash
 npm install
-npm test          # unit tests for answer matching, layout and row distribution
+npm test          # unit tests (matching, layout, map scoring, hot seat, statistics, notes, translations)
 npm run typecheck
 npm run build     # creates build/outputs/geogame.snplg
 ```
@@ -61,20 +73,22 @@ Install the build the same way as under [Installation](#installation). Publish v
 
 ## Structure
 
-- `src/data/countries.ts` – countries, capitals and accepted alternative answers
-- `src/core/` – pure logic without the SDK (matching, layout, row distribution), tested in `__tests__/`
+- `src/data/countries.ts` – country codes and continents; `src/data/capitals.ts` – capital coordinates
+- `src/i18n/countries/<code>.ts` – country names, capitals and accepted alternative answers per language (nb and en by hand, the rest generated by `scripts/gen-languages.js`)
+- `src/core/` – pure logic without the SDK (matching, layout, row distribution, map scoring, hot seat, statistics, footnotes), tested in `__tests__/`
 - `src/core/stats.ts` – answer history and per-country statistics (mastery, Leitner box, review schedule)
 - `src/core/training.ts` – strategies for choosing countries for new sheets (`random`, `smart`, `weak`, `due`, `new`)
 - `src/sdk/notes.ts` – wrapper around `sn-plugin-lib`
 - `src/sdk/statsStore.ts` – stores the history as empty folders in `<plugin folder>/stats/` (the SDK cannot write files)
-- `src/actions.ts` – "New sheet" and "Grade the sheet"
+- `src/actions.ts` – creating and grading table sheets, and saving statistics
+- `src/mapActions.ts` – creating and grading map sheets; `src/sdk/mapAssets.ts` – the bundled maps
 - `App.tsx` – the menu opened from the toolbar, with the tabs New worksheet, Statistics and Language
 
 ## Which countries and capitals are included
 
 **197 countries:** the 193 UN member states ([UN list of member states](https://www.un.org/en/about-us/member-states)), the two observer states Vatican City and Palestine, and Kosovo and Taiwan, which are recognized by many countries but are not UN members. Other territories (for example Western Sahara, Greenland and the Cook Islands) are not included. The continent of each country is listed in `src/data/countries.ts`.
 
-**Capitals:** the answer key is the country's capital (P36) in [Wikidata](https://www.wikidata.org). If the country has several capitals, the key is the one usually given as the official capital. Cities that are de facto also capitals (seat of government, shared capitals) are accepted as answers, but former capitals are not. See `scripts/data/co-capitals-wikidata.json` and the notes in `src/i18n/notes.ts`.
+**Capitals:** the answer key is the country's capital (P36) in [Wikidata](https://www.wikidata.org). If the country has several capitals, the key is the one usually given as the official capital. Cities that today also serve as capitals (seat of government, shared, economic or commercial capital, such as The Hague, La Paz and Bujumbura) are accepted as answers. Cities that are only former capitals (such as Dar es Salaam, Lagos and Almaty) are not. See `scripts/data/co-capitals-wikidata.json` and the notes in `src/i18n/notes.ts`.
 
 ## License and data sources
 

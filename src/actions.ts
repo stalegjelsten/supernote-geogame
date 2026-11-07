@@ -74,6 +74,7 @@ import {
 import {computeStats, sheetKey, verdictScore, type Attempt, type Skill} from './core/stats';
 import {orderForTraining, type Strategy} from './core/training';
 import {loadRecords, saveRecord} from './sdk/statsStore';
+import type {CountryCode} from './data/countries';
 
 /** Stroke width for table lines; see the comment in createSheet. */
 const LINE_WIDTH = 200;
@@ -99,12 +100,22 @@ export async function trainingOrder(
   return pool => orderForTraining(pool, stats, strategy, now);
 }
 
-/** Saves the results from a graded page. A saving error never stops the grading. */
-export async function recordResults(notePath: string, skill: Skill, attempts: Attempt[]): Promise<void> {
+/**
+ * Saves the results from a graded page. A saving error never stops the grading.
+ * `sheetCodes` are all the countries on the page and make up the sheet key; pass them when
+ * some countries are left out of `attempts` (unmarked cities on a map), so grading again
+ * with other cities marked still replaces the earlier result.
+ */
+export async function recordResults(
+  notePath: string,
+  skill: Skill,
+  attempts: Attempt[],
+  sheetCodes: readonly CountryCode[] = attempts.map(a => a.code),
+): Promise<void> {
   if (!attempts.length) {
     return;
   }
-  const key = sheetKey(notePath, skill, attempts.map(a => a.code));
+  const key = sheetKey(notePath, skill, sheetCodes);
   await saveRecord({skill, time: Date.now(), key, attempts});
 }
 
