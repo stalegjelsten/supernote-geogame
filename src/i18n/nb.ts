@@ -43,7 +43,7 @@ const nb: Language = {
     makeOnNewPage: 'Lag på ny side',
     putOnThisPage: 'Legg oppå denne siden',
     cancel: 'Avbryt',
-    doneWriting: 'Ferdig med å skrive?',
+    checkAnswers: 'Rett svarene',
     gradePage: 'Rett denne siden',
     gradeSet: 'Rett hele settet',
     showSheet: 'Vis arket',

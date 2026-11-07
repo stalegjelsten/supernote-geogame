@@ -42,7 +42,7 @@ const en: Language = {
     makeOnNewPage: 'Make on a new page',
     putOnThisPage: 'Put on this page',
     cancel: 'Cancel',
-    doneWriting: 'Done writing?',
+    checkAnswers: 'Check answers',
     gradePage: 'Grade this page',
     gradeSet: 'Grade the whole set',
     showSheet: 'Show sheet',
