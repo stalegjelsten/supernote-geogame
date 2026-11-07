@@ -56,7 +56,8 @@ SPDX-License-Identifier: Unicode-3.0
 
 ## Wikidata – capital names and coordinates
 
-Capital names in all languages (`scripts/data/capitals-wikidata.json`) and capital
+Capital names in all languages (`scripts/data/capitals-wikidata.json`, and
+`scripts/data/co-capitals-wikidata.json` for de facto co-capitals) and capital
 coordinates (`scripts/data/capitals-coords-wikidata.json`, `src/data/capitals.ts`)
 come from Wikidata (properties P36 and P625). Wikidata's structured data is
 available under CC0 1.0 (public domain dedication).

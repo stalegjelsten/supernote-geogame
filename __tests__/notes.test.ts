@@ -90,22 +90,22 @@ describe('fotnoter', () => {
   });
 });
 
-describe('bare fasit godtas for forvekslede hovedsteder', () => {
+describe('de facto-hovedsteder godtas, avskaffede hovedsteder ikke', () => {
   const en = getLanguage('en')!;
   const nbLang = getLanguage('nb')!;
+  const de = getLanguage('de')!;
 
   test.each([
     ['TZ', 'Dar es Salaam'],
-    ['CI', 'Abidjan'],
-    ['BI', 'Bujumbura'],
-    ['BJ', 'Cotonou'],
     ['IL', 'Tel Aviv'],
-    ['MY', 'Putrajaya'],
-    ['LK', 'Colombo'],
-    ['PS', 'Ramallah'],
+    ['NG', 'Lagos'],
+    ['KZ', 'Almaty'],
+    ['MM', 'Yangon'],
+    ['BR', 'Rio de Janeiro'],
   ])('%s: %s er feil', (code, answer) => {
-    expect(gradeAnswer(countryIn(en, code as CountryCode), answer).verdict).toBe('wrong');
-    expect(gradeAnswer(countryIn(nbLang, code as CountryCode), answer).verdict).toBe('wrong');
+    for (const lang of [en, nbLang, de]) {
+      expect(gradeAnswer(countryIn(lang, code as CountryCode), answer).verdict).toBe('wrong');
+    }
   });
 
   test.each([
@@ -113,8 +113,22 @@ describe('bare fasit godtas for forvekslede hovedsteder', () => {
     ['ZA', 'Bloemfontein'],
     ['BO', 'La Paz'],
     ['SZ', 'Lobamba'],
+    ['CI', 'Abidjan'],
+    ['BJ', 'Cotonou'],
+    ['BI', 'Bujumbura'],
+    ['MY', 'Putrajaya'],
+    ['LK', 'Colombo'],
+    ['PS', 'Ramallah'],
+    ['NL', 'The Hague'],
     ['TZ', 'Dodoma'],
   ])('%s: %s er riktig', (code, answer) => {
-    expect(gradeAnswer(countryIn(en, code as CountryCode), answer).verdict).toBe('correct');
+    for (const lang of [en, nbLang, de]) {
+      expect(gradeAnswer(countryIn(lang, code as CountryCode), answer).verdict).toBe('correct');
+    }
+  });
+
+  test('på tysk godtas Kapstadt og Den Haag', () => {
+    expect(gradeAnswer(countryIn(de, 'ZA'), 'Kapstadt').verdict).toBe('correct');
+    expect(gradeAnswer(countryIn(de, 'NL'), 'Den Haag').verdict).toBe('correct');
   });
 });

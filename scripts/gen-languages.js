@@ -11,6 +11,9 @@
  * - Hovedsteder: Wikidata-etiketter, lagret i scripts/data/capitals-wikidata.json
  *   (hentet med wbgetentities for hovedstaden (P36) til hvert land).
  *   Mangler et språk etikett, prøves reservespråkene i `wd`, så 'mul' og 'en'.
+ * - Byer som de facto også er hovedstad (regjeringssete, flere offisielle hovedsteder):
+ *   Wikidata-etiketter i scripts/data/co-capitals-wikidata.json. De godtas som svar
+ *   på språket selv og på engelsk. Tidligere hovedsteder står ikke der.
  * - Arktekstene i tabellen under er oversatt for hånd.
  *
  * Skriver src/i18n/countries/<kode>.ts og src/i18n/<kode>.ts. Hvilke språk som
@@ -138,6 +141,7 @@ function main() {
     throw new Error(`fant ${codes.length} land i src/data/countries.ts`);
   }
   const caps = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/capitals-wikidata.json'), 'utf8'));
+  const coCaps = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/co-capitals-wikidata.json'), 'utf8'));
   const en = Object.fromEntries(
     [...fs.readFileSync(path.join(I18N, 'countries/en.ts'), 'utf8').matchAll(/^ {2}([A-Z]{2}): \[(['"])(.*?)\2, (['"])(.*?)\4/gm)].map(
       m => [m[1], m[5]],
@@ -163,7 +167,14 @@ function main() {
       }
       seen.set(name, cc);
       const capital = capitalFor(caps[cc].labels, wd);
-      const alts = en[cc] && en[cc] !== capital ? [en[cc]] : [];
+      // Godtas også: engelsk hovedstad, og byer som de facto er hovedstad (regjeringssete o.l.)
+      // på språket selv og på engelsk.
+      const alts = [];
+      for (const alt of [en[cc], ...(coCaps[cc] ?? []).flatMap(c => [capitalFor(c.labels, wd), c.en])]) {
+        if (alt && alt !== capital && !alts.includes(alt)) {
+          alts.push(alt);
+        }
+      }
       lines.push(`  ${cc}: [${q(name)}, ${q(capital)}${alts.length ? `, [${alts.map(q).join(', ')}]` : ''}],`);
     }
     fs.writeFileSync(
