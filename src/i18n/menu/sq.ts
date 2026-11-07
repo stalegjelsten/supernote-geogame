@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Fshi',
   statsResetDone: 'Statistikat u fshinë.',
   statsRecent: 'Fletët e fundit (% saktë)',
+  statsSkillOutline: 'Vendet sipas konturit',
+
+  outlineMode: 'Kontur',
+  outlineHint: 'Shkruaj emrin e vendit poshtë çdo konturi.',
+  outlineTitle: 'Vendet sipas konturit',
+  outlineSubtitle: 'Shkruaj emrin e vendit në vijën e çdo kutie.\nKorrigjo faqen nga menyja e World Capitals Quiz.',
+  outlineSize: 'Madhësia',
+  outlineSizeLarge: 'E madhe',
+  outlineSizeMedium: 'Mesatare',
+  outlineSizeSmall: 'E vogël',
+  outlineScale: 'Shkalla',
+  outlineScaleFit: 'Mbush kutinë',
+  outlineScaleBar: 'Mbush kutinë, me shkallë grafike',
+  outlineScaleSame: 'Madhësia relative',
+  outlineScaleHint: 'Vendet vizatohen në përpjesëtim me njëri-tjetrin në shkallë logaritmike: një vend dhjetë herë më i gjatë vizatohet rreth 1,4 herë më i madh, që vendet e vogla të duken ende.',
+  outlineRotation: 'Rrotullimi',
+  outlineRotationNone: 'Pa',
+  outlineRotationSome: 'Pak',
+  outlineRotationAny: 'Çdo kënd',
+  outlineMade: 'U krijua një fletë konturesh me {count} vende.',
+  outlineResult: 'Njohe {correct} nga {total} vende ({percent}%).',
 };
 
 export default menu;

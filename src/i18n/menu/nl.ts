@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Verwijderen',
   statsResetDone: 'Statistieken verwijderd.',
   statsRecent: 'Laatste bladen (% goed)',
+  statsSkillOutline: 'Landen aan hun contour',
+
+  outlineMode: 'Contour',
+  outlineHint: 'Schrijf de naam van het land onder elke contour.',
+  outlineTitle: 'Landen aan hun contour',
+  outlineSubtitle: 'Schrijf de naam van het land op de lijn in elk vak.\nKijk de pagina na via het World Capitals Quiz-menu.',
+  outlineSize: 'Grootte',
+  outlineSizeLarge: 'Groot',
+  outlineSizeMedium: 'Gemiddeld',
+  outlineSizeSmall: 'Klein',
+  outlineScale: 'Schaal',
+  outlineScaleFit: 'Vak vullen',
+  outlineScaleBar: 'Vak vullen, met schaalbalk',
+  outlineScaleSame: 'Relatieve grootte',
+  outlineScaleHint: 'De landen worden op een logaritmische schaal in verhouding tot elkaar getekend: een land dat tien keer zo lang is, wordt ongeveer 1,4 keer zo groot getekend, zodat kleine landen zichtbaar blijven.',
+  outlineRotation: 'Draaiing',
+  outlineRotationNone: 'Geen',
+  outlineRotationSome: 'Een beetje',
+  outlineRotationAny: 'Elke hoek',
+  outlineMade: 'Contourblad gemaakt met {count} landen.',
+  outlineResult: 'Je hebt {correct} van de {total} landen herkend ({percent}%).',
 };
 
 export default menu;

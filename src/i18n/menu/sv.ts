@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Radera',
   statsResetDone: 'Statistiken har raderats.',
   statsRecent: 'Senaste arken (% rätt)',
+  statsSkillOutline: 'Länder efter kontur',
+
+  outlineMode: 'Kontur',
+  outlineHint: 'Skriv landets namn under varje kontur.',
+  outlineTitle: 'Länder efter kontur',
+  outlineSubtitle: 'Skriv landets namn på linjen i varje ruta.\nRätta sidan från World Capitals Quiz-menyn.',
+  outlineSize: 'Storlek',
+  outlineSizeLarge: 'Stor',
+  outlineSizeMedium: 'Medel',
+  outlineSizeSmall: 'Liten',
+  outlineScale: 'Skala',
+  outlineScaleFit: 'Fyll rutan',
+  outlineScaleBar: 'Fyll rutan, med skalstock',
+  outlineScaleSame: 'Relativ storlek',
+  outlineScaleHint: 'Länderna ritas i proportion till varandra på en logaritmisk skala: ett land som är tio gånger så långt ritas ungefär 1,4 gånger så stort, så att små länder fortfarande syns.',
+  outlineRotation: 'Rotation',
+  outlineRotationNone: 'Ingen',
+  outlineRotationSome: 'Lite',
+  outlineRotationAny: 'Valfri vinkel',
+  outlineMade: 'Skapade ett konturblad med {count} länder.',
+  outlineResult: 'Du kände igen {correct} av {total} länder ({percent} %).',
 };
 
 export default menu;

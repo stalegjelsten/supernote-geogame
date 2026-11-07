@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: '삭제',
   statsResetDone: '통계를 삭제했습니다.',
   statsRecent: '최근 시트 (정답률 %)',
+  statsSkillOutline: '윤곽으로 나라 맞히기',
+
+  outlineMode: '윤곽',
+  outlineHint: '각 윤곽 아래에 나라 이름을 쓰세요.',
+  outlineTitle: '윤곽으로 나라 맞히기',
+  outlineSubtitle: '각 칸의 줄 위에 나라 이름을 쓰세요.\nWorld Capitals Quiz 메뉴에서 페이지를 채점하세요.',
+  outlineSize: '크기',
+  outlineSizeLarge: '큼',
+  outlineSizeMedium: '보통',
+  outlineSizeSmall: '작음',
+  outlineScale: '축척',
+  outlineScaleFit: '칸 채우기',
+  outlineScaleBar: '칸 채우기(축척 막대 포함)',
+  outlineScaleSame: '상대적 크기',
+  outlineScaleHint: '나라들은 로그 척도로 서로 비례하게 그려집니다. 길이가 10배인 나라는 약 1.4배 크게 그려지므로 작은 나라도 보입니다.',
+  outlineRotation: '회전',
+  outlineRotationNone: '없음',
+  outlineRotationSome: '조금',
+  outlineRotationAny: '모든 각도',
+  outlineMade: '나라 {count}개가 있는 윤곽 학습지를 만들었습니다.',
+  outlineResult: '{total}개 나라 중 {correct}개를 알아맞혔습니다({percent}%).',
 };
 
 export default menu;

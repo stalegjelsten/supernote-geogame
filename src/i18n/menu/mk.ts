@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Избриши',
   statsResetDone: 'Статистиката е избришана.',
   statsRecent: 'Последни листови (% точно)',
+  statsSkillOutline: 'Држави по контура',
+
+  outlineMode: 'Контура',
+  outlineHint: 'Напишете го името на државата под секоја контура.',
+  outlineTitle: 'Држави по контура',
+  outlineSubtitle: 'Напишете го името на државата на линијата во секоја рамка.\nПроверете ја страницата од менито на World Capitals Quiz.',
+  outlineSize: 'Големина',
+  outlineSizeLarge: 'Голема',
+  outlineSizeMedium: 'Средна',
+  outlineSizeSmall: 'Мала',
+  outlineScale: 'Размер',
+  outlineScaleFit: 'Пополни ја рамката',
+  outlineScaleBar: 'Пополни ја рамката, со линија за размер',
+  outlineScaleSame: 'Релативна големина',
+  outlineScaleHint: 'Државите се нацртани пропорционално една на друга на логаритамска скала: држава десет пати подолга е нацртана околу 1,4 пати поголема, па и малите држави се гледаат.',
+  outlineRotation: 'Ротација',
+  outlineRotationNone: 'Без',
+  outlineRotationSome: 'Малку',
+  outlineRotationAny: 'Кој било агол',
+  outlineMade: 'Направен е лист со контури и {count} држави.',
+  outlineResult: 'Препознавте {correct} од {total} држави ({percent} %).',
 };
 
 export default menu;

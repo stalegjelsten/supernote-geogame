@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Xóa',
   statsResetDone: 'Đã xóa thống kê.',
   statsRecent: 'Các tờ gần đây (% đúng)',
+  statsSkillOutline: 'Nhận biết quốc gia qua đường viền',
+
+  outlineMode: 'Đường viền',
+  outlineHint: 'Viết tên quốc gia dưới mỗi đường viền.',
+  outlineTitle: 'Nhận biết quốc gia qua đường viền',
+  outlineSubtitle: 'Viết tên quốc gia lên dòng trong mỗi ô.\nChấm trang từ menu World Capitals Quiz.',
+  outlineSize: 'Kích thước',
+  outlineSizeLarge: 'Lớn',
+  outlineSizeMedium: 'Vừa',
+  outlineSizeSmall: 'Nhỏ',
+  outlineScale: 'Tỉ lệ',
+  outlineScaleFit: 'Lấp đầy ô',
+  outlineScaleBar: 'Lấp đầy ô, có thước tỉ lệ',
+  outlineScaleSame: 'Kích thước tương đối',
+  outlineScaleHint: 'Các quốc gia được vẽ theo tỉ lệ với nhau trên thang logarit: quốc gia dài gấp mười lần được vẽ lớn hơn khoảng 1,4 lần, nên các quốc gia nhỏ vẫn nhìn thấy được.',
+  outlineRotation: 'Xoay',
+  outlineRotationNone: 'Không',
+  outlineRotationSome: 'Một chút',
+  outlineRotationAny: 'Góc bất kỳ',
+  outlineMade: 'Đã tạo phiếu đường viền gồm {count} quốc gia.',
+  outlineResult: 'Bạn nhận ra {correct}/{total} quốc gia ({percent}%).',
 };
 
 export default menu;

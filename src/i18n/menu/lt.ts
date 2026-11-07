@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Ištrinti',
   statsResetDone: 'Statistika ištrinta.',
   statsRecent: 'Paskutiniai lapai (% teisingai)',
+  statsSkillOutline: 'Šalys pagal kontūrą',
+
+  outlineMode: 'Kontūras',
+  outlineHint: 'Po kiekvienu kontūru parašykite šalies pavadinimą.',
+  outlineTitle: 'Šalys pagal kontūrą',
+  outlineSubtitle: 'Kiekviename langelyje ant linijos parašykite šalies pavadinimą.\nPatikrinkite puslapį per World Capitals Quiz meniu.',
+  outlineSize: 'Dydis',
+  outlineSizeLarge: 'Didelis',
+  outlineSizeMedium: 'Vidutinis',
+  outlineSizeSmall: 'Mažas',
+  outlineScale: 'Mastelis',
+  outlineScaleFit: 'Užpildyti langelį',
+  outlineScaleBar: 'Užpildyti langelį, su mastelio juosta',
+  outlineScaleSame: 'Santykinis dydis',
+  outlineScaleHint: 'Šalys nupieštos proporcingai viena kitai logaritminiu masteliu: dešimt kartų ilgesnė šalis nupiešta maždaug 1,4 karto didesnė, todėl matyti ir mažos šalys.',
+  outlineRotation: 'Pasukimas',
+  outlineRotationNone: 'Nėra',
+  outlineRotationSome: 'Šiek tiek',
+  outlineRotationAny: 'Bet koks kampas',
+  outlineMade: 'Sukurtas kontūrų lapas (šalių: {count}).',
+  outlineResult: 'Atpažintos šalys: {correct} iš {total} ({percent} %).',
 };
 
 export default menu;

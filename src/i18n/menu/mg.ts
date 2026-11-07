@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Fafao',
   statsResetDone: "Voafafa ny antontan'isa.",
   statsRecent: 'Taratasy farany (% marina)',
+  statsSkillOutline: 'Firenena araka ny endriny',
+
+  outlineMode: 'Endrika',
+  outlineHint: "Soraty eo ambanin'ny endrika tsirairay ny anaran'ny firenena.",
+  outlineTitle: 'Firenena araka ny endriny',
+  outlineSubtitle: "Soraty eo amin'ny tsipika ao anatin'ny efajoro tsirairay ny anaran'ny firenena.\nHamarino ny pejy avy ao amin'ny menu World Capitals Quiz.",
+  outlineSize: 'Habe',
+  outlineSizeLarge: 'Lehibe',
+  outlineSizeMedium: 'Antonony',
+  outlineSizeSmall: 'Kely',
+  outlineScale: 'Mizana',
+  outlineScaleFit: 'Fenoy ny efajoro',
+  outlineScaleBar: 'Fenoy ny efajoro, misy tsipika mizana',
+  outlineScaleSame: 'Habe mifandraika',
+  outlineScaleHint: "Sarihana mifandanja amin'ny mizana logaritma ny firenena: ny firenena lava im-polo dia sarihana lehibe eo amin'ny im-1,4 eo ho eo, ka mbola hita ny firenena kely.",
+  outlineRotation: 'Fihodinana',
+  outlineRotationNone: 'Tsy misy',
+  outlineRotationSome: 'Kely monja',
+  outlineRotationAny: 'Zoro rehetra',
+  outlineMade: 'Vita ny takelaka endrika misy firenena {count}.',
+  outlineResult: "Fantatrao ny firenena {correct} amin'ny {total} ({percent}%).",
 };
 
 export default menu;

@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Löschen',
   statsResetDone: 'Statistik gelöscht.',
   statsRecent: 'Letzte Blätter (% richtig)',
+  statsSkillOutline: 'Länder nach Umriss',
+
+  outlineMode: 'Umriss',
+  outlineHint: 'Schreibe den Namen des Landes unter jeden Umriss.',
+  outlineTitle: 'Länder nach Umriss',
+  outlineSubtitle: 'Schreibe den Namen des Landes auf die Linie in jedem Kasten.\nKorrigiere die Seite über das World-Capitals-Quiz-Menü.',
+  outlineSize: 'Größe',
+  outlineSizeLarge: 'Groß',
+  outlineSizeMedium: 'Mittel',
+  outlineSizeSmall: 'Klein',
+  outlineScale: 'Maßstab',
+  outlineScaleFit: 'Kasten füllen',
+  outlineScaleBar: 'Kasten füllen, mit Maßstabsleiste',
+  outlineScaleSame: 'Relative Größe',
+  outlineScaleHint: 'Die Länder werden auf einer logarithmischen Skala im Verhältnis zueinander gezeichnet: Ein zehnmal so langes Land wird etwa 1,4-mal so groß gezeichnet, sodass auch kleine Länder sichtbar bleiben.',
+  outlineRotation: 'Drehung',
+  outlineRotationNone: 'Keine',
+  outlineRotationSome: 'Etwas',
+  outlineRotationAny: 'Beliebiger Winkel',
+  outlineMade: 'Umrissblatt mit {count} Ländern erstellt.',
+  outlineResult: 'Du hast {correct} von {total} Ländern erkannt ({percent} %).',
 };
 
 export default menu;

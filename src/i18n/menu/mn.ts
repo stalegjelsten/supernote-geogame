@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Устгах',
   statsResetDone: 'Статистикийг устгалаа.',
   statsRecent: 'Сүүлийн хуудаснууд (% зөв)',
+  statsSkillOutline: 'Хэлбэрээр нь улс таних',
+
+  outlineMode: 'Хэлбэр',
+  outlineHint: 'Хэлбэр бүрийн доор улсын нэрийг бичнэ үү.',
+  outlineTitle: 'Хэлбэрээр нь улс таних',
+  outlineSubtitle: 'Хүрээ бүрийн зураас дээр улсын нэрийг бичнэ үү.\nWorld Capitals Quiz цэснээс хуудсыг шалгана уу.',
+  outlineSize: 'Хэмжээ',
+  outlineSizeLarge: 'Том',
+  outlineSizeMedium: 'Дунд',
+  outlineSizeSmall: 'Жижиг',
+  outlineScale: 'Масштаб',
+  outlineScaleFit: 'Хүрээг дүүргэх',
+  outlineScaleBar: 'Хүрээг дүүргэх, масштабын шугамтай',
+  outlineScaleSame: 'Харьцангуй хэмжээ',
+  outlineScaleHint: 'Улсуудыг логарифм масштабаар бие биетэйгээ харьцуулан зурсан: арав дахин урт улсыг ойролцоогоор 1.4 дахин том зурдаг тул жижиг улсууд ч харагдана.',
+  outlineRotation: 'Эргүүлэлт',
+  outlineRotationNone: 'Үгүй',
+  outlineRotationSome: 'Бага зэрэг',
+  outlineRotationAny: 'Дурын өнцөг',
+  outlineMade: 'Хэлбэрийн хуудас үүсгэлээ: {count} улс.',
+  outlineResult: 'Танисан улс: {correct} / {total} ({percent}%).',
 };
 
 export default menu;

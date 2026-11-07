@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Scrios',
   statsResetDone: 'Scriosadh na staitisticí.',
   statsRecent: 'Na bileoga is déanaí (% ceart)',
+  statsSkillOutline: 'Tíortha de réir imlíne',
+
+  outlineMode: 'Imlíne',
+  outlineHint: 'Scríobh ainm na tíre faoi gach imlíne.',
+  outlineTitle: 'Tíortha de réir imlíne',
+  outlineSubtitle: 'Scríobh ainm na tíre ar an líne i ngach bosca.\nCeartaigh an leathanach ó roghchlár World Capitals Quiz.',
+  outlineSize: 'Méid',
+  outlineSizeLarge: 'Mór',
+  outlineSizeMedium: 'Meánach',
+  outlineSizeSmall: 'Beag',
+  outlineScale: 'Scála',
+  outlineScaleFit: 'Líon an bosca',
+  outlineScaleBar: 'Líon an bosca, le barra scála',
+  outlineScaleSame: 'Méid choibhneasta',
+  outlineScaleHint: 'Tarraingítear na tíortha i gcomhréir lena chéile ar scála logartamach: tarraingítear tír atá deich n-uaire níos faide thart ar 1.4 oiread níos mó, ionas go bhfeictear tíortha beaga fós.',
+  outlineRotation: 'Rothlú',
+  outlineRotationNone: 'Gan rothlú',
+  outlineRotationSome: 'Beagán',
+  outlineRotationAny: 'Uillinn ar bith',
+  outlineMade: 'Rinneadh bileog imlínte (tíortha: {count}).',
+  outlineResult: 'Tíortha aitheanta: {correct} as {total} ({percent}%).',
 };
 
 export default menu;

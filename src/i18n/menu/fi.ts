@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Poista',
   statsResetDone: 'Tilastot poistettu.',
   statsRecent: 'Viimeisimmät arkit (% oikein)',
+  statsSkillOutline: 'Maat ääriviivoista',
+
+  outlineMode: 'Ääriviiva',
+  outlineHint: 'Kirjoita maan nimi jokaisen ääriviivan alle.',
+  outlineTitle: 'Maat ääriviivoista',
+  outlineSubtitle: 'Kirjoita maan nimi kunkin ruudun viivalle.\nTarkista sivu World Capitals Quiz -valikosta.',
+  outlineSize: 'Koko',
+  outlineSizeLarge: 'Suuri',
+  outlineSizeMedium: 'Keskikokoinen',
+  outlineSizeSmall: 'Pieni',
+  outlineScale: 'Mittakaava',
+  outlineScaleFit: 'Täytä ruutu',
+  outlineScaleBar: 'Täytä ruutu, mittakaavapalkilla',
+  outlineScaleSame: 'Suhteellinen koko',
+  outlineScaleHint: 'Maat piirretään suhteessa toisiinsa logaritmisella asteikolla: kymmenen kertaa pidempi maa piirretään noin 1,4 kertaa suurempana, joten pienetkin maat näkyvät.',
+  outlineRotation: 'Kierto',
+  outlineRotationNone: 'Ei',
+  outlineRotationSome: 'Vähän',
+  outlineRotationAny: 'Mikä tahansa kulma',
+  outlineMade: 'Luotiin ääriviiva-arkki, jossa on {count} maata.',
+  outlineResult: 'Tunnistit {correct}/{total} maata ({percent} %).',
 };
 
 export default menu;

@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Διαγραφή',
   statsResetDone: 'Τα στατιστικά διαγράφηκαν.',
   statsRecent: 'Τελευταία φύλλα (% σωστά)',
+  statsSkillOutline: 'Χώρες από το περίγραμμα',
+
+  outlineMode: 'Περίγραμμα',
+  outlineHint: 'Γράψε το όνομα της χώρας κάτω από κάθε περίγραμμα.',
+  outlineTitle: 'Χώρες από το περίγραμμα',
+  outlineSubtitle: 'Γράψε το όνομα της χώρας στη γραμμή κάθε πλαισίου.\nΔιόρθωσε τη σελίδα από το μενού του World Capitals Quiz.',
+  outlineSize: 'Μέγεθος',
+  outlineSizeLarge: 'Μεγάλο',
+  outlineSizeMedium: 'Μεσαίο',
+  outlineSizeSmall: 'Μικρό',
+  outlineScale: 'Κλίμακα',
+  outlineScaleFit: 'Γέμισμα πλαισίου',
+  outlineScaleBar: 'Γέμισμα πλαισίου, με κλίμακα',
+  outlineScaleSame: 'Σχετικό μέγεθος',
+  outlineScaleHint: 'Οι χώρες σχεδιάζονται αναλογικά μεταξύ τους σε λογαριθμική κλίμακα: μια χώρα δέκα φορές μακρύτερη σχεδιάζεται περίπου 1,4 φορές μεγαλύτερη, ώστε να φαίνονται και οι μικρές χώρες.',
+  outlineRotation: 'Περιστροφή',
+  outlineRotationNone: 'Καμία',
+  outlineRotationSome: 'Λίγη',
+  outlineRotationAny: 'Οποιαδήποτε γωνία',
+  outlineMade: 'Δημιουργήθηκε φύλλο περιγραμμάτων με {count} χώρες.',
+  outlineResult: 'Αναγνώρισες {correct} από {total} χώρες ({percent}%).',
 };
 
 export default menu;

@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'წაშლა',
   statsResetDone: 'სტატისტიკა წაიშალა.',
   statsRecent: 'ბოლო ფურცლები (% სწორი)',
+  statsSkillOutline: 'ქვეყნები კონტურით',
+
+  outlineMode: 'კონტური',
+  outlineHint: 'დაწერეთ ქვეყნის სახელი თითოეული კონტურის ქვეშ.',
+  outlineTitle: 'ქვეყნები კონტურით',
+  outlineSubtitle: 'დაწერეთ ქვეყნის სახელი თითოეული ჩარჩოს ხაზზე.\nშეამოწმეთ გვერდი World Capitals Quiz-ის მენიუდან.',
+  outlineSize: 'ზომა',
+  outlineSizeLarge: 'დიდი',
+  outlineSizeMedium: 'საშუალო',
+  outlineSizeSmall: 'პატარა',
+  outlineScale: 'მასშტაბი',
+  outlineScaleFit: 'ჩარჩოს შევსება',
+  outlineScaleBar: 'ჩარჩოს შევსება, მასშტაბის ზოლით',
+  outlineScaleSame: 'შეფარდებითი ზომა',
+  outlineScaleHint: 'ქვეყნები ერთმანეთის პროპორციულად, ლოგარითმულ მასშტაბში არის დახატული: ათჯერ გრძელი ქვეყანა დაახლოებით 1,4-ჯერ დიდია, ასე რომ პატარა ქვეყნებიც ჩანს.',
+  outlineRotation: 'შემობრუნება',
+  outlineRotationNone: 'არა',
+  outlineRotationSome: 'ოდნავ',
+  outlineRotationAny: 'ნებისმიერი კუთხე',
+  outlineMade: 'შეიქმნა კონტურების ფურცელი {count} ქვეყნით.',
+  outlineResult: 'ამოცნობილი ქვეყნები: {correct} / {total} ({percent}%).',
 };
 
 export default menu;

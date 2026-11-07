@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Padam',
   statsResetDone: 'Statistik telah dipadam.',
   statsRecent: 'Helaian terkini (% betul)',
+  statsSkillOutline: 'Negara mengikut bentuk',
+
+  outlineMode: 'Bentuk',
+  outlineHint: 'Tulis nama negara di bawah setiap bentuk.',
+  outlineTitle: 'Negara mengikut bentuk',
+  outlineSubtitle: 'Tulis nama negara pada garisan dalam setiap kotak.\nSemak halaman daripada menu World Capitals Quiz.',
+  outlineSize: 'Saiz',
+  outlineSizeLarge: 'Besar',
+  outlineSizeMedium: 'Sederhana',
+  outlineSizeSmall: 'Kecil',
+  outlineScale: 'Skala',
+  outlineScaleFit: 'Penuhi kotak',
+  outlineScaleBar: 'Penuhi kotak, dengan bar skala',
+  outlineScaleSame: 'Saiz relatif',
+  outlineScaleHint: 'Negara dilukis berkadaran antara satu sama lain pada skala logaritma: negara yang sepuluh kali lebih panjang dilukis kira-kira 1.4 kali lebih besar, jadi negara kecil masih kelihatan.',
+  outlineRotation: 'Putaran',
+  outlineRotationNone: 'Tiada',
+  outlineRotationSome: 'Sedikit',
+  outlineRotationAny: 'Sebarang sudut',
+  outlineMade: 'Lembaran bentuk dengan {count} negara telah dibuat.',
+  outlineResult: 'Anda mengecam {correct} daripada {total} negara ({percent}%).',
 };
 
 export default menu;

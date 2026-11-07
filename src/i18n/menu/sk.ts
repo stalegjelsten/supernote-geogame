@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Odstrániť',
   statsResetDone: 'Štatistika bola odstránená.',
   statsRecent: 'Posledné listy (% správne)',
+  statsSkillOutline: 'Krajiny podľa obrysu',
+
+  outlineMode: 'Obrys',
+  outlineHint: 'Napíšte názov krajiny pod každý obrys.',
+  outlineTitle: 'Krajiny podľa obrysu',
+  outlineSubtitle: 'Napíšte názov krajiny na čiaru v každom rámčeku.\nOpravte stranu z ponuky World Capitals Quiz.',
+  outlineSize: 'Veľkosť',
+  outlineSizeLarge: 'Veľká',
+  outlineSizeMedium: 'Stredná',
+  outlineSizeSmall: 'Malá',
+  outlineScale: 'Mierka',
+  outlineScaleFit: 'Vyplniť rámček',
+  outlineScaleBar: 'Vyplniť rámček, s mierkou',
+  outlineScaleSame: 'Relatívna veľkosť',
+  outlineScaleHint: 'Krajiny sú nakreslené v pomere k sebe v logaritmickej mierke: krajina desaťkrát dlhšia je nakreslená asi 1,4-krát väčšia, takže aj malé krajiny sú viditeľné.',
+  outlineRotation: 'Otočenie',
+  outlineRotationNone: 'Žiadne',
+  outlineRotationSome: 'Trochu',
+  outlineRotationAny: 'Ľubovoľný uhol',
+  outlineMade: 'List s obrysmi je vytvorený. Počet krajín: {count}.',
+  outlineResult: 'Rozpoznané krajiny: {correct} z {total} ({percent} %).',
 };
 
 export default menu;

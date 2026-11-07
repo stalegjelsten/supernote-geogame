@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Жою',
   statsResetDone: 'Статистика жойылды.',
   statsRecent: 'Соңғы парақтар (% дұрыс)',
+  statsSkillOutline: 'Елдер контуры бойынша',
+
+  outlineMode: 'Контур',
+  outlineHint: 'Әр контурдың астына елдің атын жазыңыз.',
+  outlineTitle: 'Елдер контуры бойынша',
+  outlineSubtitle: 'Әр жақтаудағы сызыққа елдің атын жазыңыз.\nБетті World Capitals Quiz мәзірінен тексеріңіз.',
+  outlineSize: 'Өлшем',
+  outlineSizeLarge: 'Үлкен',
+  outlineSizeMedium: 'Орташа',
+  outlineSizeSmall: 'Кіші',
+  outlineScale: 'Масштаб',
+  outlineScaleFit: 'Жақтауды толтыру',
+  outlineScaleBar: 'Жақтауды толтыру, масштаб сызғышымен',
+  outlineScaleSame: 'Салыстырмалы өлшем',
+  outlineScaleHint: 'Елдер логарифмдік масштабта бір-біріне пропорционал салынады: он есе ұзын ел шамамен 1,4 есе үлкен салынады, сондықтан кішкентай елдер де көрінеді.',
+  outlineRotation: 'Бұру',
+  outlineRotationNone: 'Жоқ',
+  outlineRotationSome: 'Аздап',
+  outlineRotationAny: 'Кез келген бұрыш',
+  outlineMade: 'Контур парағы жасалды: {count} ел.',
+  outlineResult: 'Танылған елдер: {correct} / {total} ({percent}%).',
 };
 
 export default menu;

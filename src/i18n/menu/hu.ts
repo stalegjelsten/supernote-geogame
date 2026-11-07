@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Törlés',
   statsResetDone: 'Statisztika törölve.',
   statsRecent: 'Legutóbbi lapok (% helyes)',
+  statsSkillOutline: 'Országok körvonal alapján',
+
+  outlineMode: 'Körvonal',
+  outlineHint: 'Írd minden körvonal alá az ország nevét.',
+  outlineTitle: 'Országok körvonal alapján',
+  outlineSubtitle: 'Írd az ország nevét minden keretben a vonalra.\nJavítsd az oldalt a World Capitals Quiz menüjéből.',
+  outlineSize: 'Méret',
+  outlineSizeLarge: 'Nagy',
+  outlineSizeMedium: 'Közepes',
+  outlineSizeSmall: 'Kicsi',
+  outlineScale: 'Méretarány',
+  outlineScaleFit: 'Keret kitöltése',
+  outlineScaleBar: 'Keret kitöltése, aránymértékkel',
+  outlineScaleSame: 'Relatív méret',
+  outlineScaleHint: 'Az országok logaritmikus skálán, egymással arányosan vannak megrajzolva: egy tízszer hosszabb ország körülbelül 1,4-szer nagyobb a rajzon, így a kis országok is látszanak.',
+  outlineRotation: 'Forgatás',
+  outlineRotationNone: 'Nincs',
+  outlineRotationSome: 'Kicsit',
+  outlineRotationAny: 'Bármilyen szög',
+  outlineMade: 'Elkészült egy körvonalas lap {count} országgal.',
+  outlineResult: '{correct}/{total} országot ismertél fel ({percent}%).',
 };
 
 export default menu;

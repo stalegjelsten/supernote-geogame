@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Изтрий',
   statsResetDone: 'Статистиката е изтрита.',
   statsRecent: 'Последни листове (% вярно)',
+  statsSkillOutline: 'Държави по контур',
+
+  outlineMode: 'Контур',
+  outlineHint: 'Напишете името на държавата под всеки контур.',
+  outlineTitle: 'Държави по контур',
+  outlineSubtitle: 'Напишете името на държавата на линията във всяко поле.\nПроверете страницата от менюто на World Capitals Quiz.',
+  outlineSize: 'Размер',
+  outlineSizeLarge: 'Голям',
+  outlineSizeMedium: 'Среден',
+  outlineSizeSmall: 'Малък',
+  outlineScale: 'Мащаб',
+  outlineScaleFit: 'Запълване на полето',
+  outlineScaleBar: 'Запълване на полето, с мащабна линия',
+  outlineScaleSame: 'Относителен размер',
+  outlineScaleHint: 'Държавите са нарисувани пропорционално една на друга в логаритмичен мащаб: държава, десет пъти по-дълга, е нарисувана около 1,4 пъти по-голяма, така че малките държави остават видими.',
+  outlineRotation: 'Завъртане',
+  outlineRotationNone: 'Без',
+  outlineRotationSome: 'Малко',
+  outlineRotationAny: 'Произволен ъгъл',
+  outlineMade: 'Създаден е лист с контури и {count} държави.',
+  outlineResult: 'Разпознахте {correct} от {total} държави ({percent} %).',
 };
 
 export default menu;

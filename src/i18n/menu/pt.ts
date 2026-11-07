@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Eliminar',
   statsResetDone: 'Estatísticas eliminadas.',
   statsRecent: 'Últimas folhas (% certas)',
+  statsSkillOutline: 'Países pelo contorno',
+
+  outlineMode: 'Contorno',
+  outlineHint: 'Escreva o nome do país por baixo de cada contorno.',
+  outlineTitle: 'Países pelo contorno',
+  outlineSubtitle: 'Escreva o nome do país na linha de cada caixa.\nCorrija a página a partir do menu do World Capitals Quiz.',
+  outlineSize: 'Tamanho',
+  outlineSizeLarge: 'Grande',
+  outlineSizeMedium: 'Médio',
+  outlineSizeSmall: 'Pequeno',
+  outlineScale: 'Escala',
+  outlineScaleFit: 'Preencher a caixa',
+  outlineScaleBar: 'Preencher a caixa, com barra de escala',
+  outlineScaleSame: 'Tamanho relativo',
+  outlineScaleHint: 'Os países são desenhados em proporção uns aos outros numa escala logarítmica: um país dez vezes mais comprido é desenhado cerca de 1,4 vezes maior, para que os países pequenos continuem visíveis.',
+  outlineRotation: 'Rotação',
+  outlineRotationNone: 'Nenhuma',
+  outlineRotationSome: 'Um pouco',
+  outlineRotationAny: 'Qualquer ângulo',
+  outlineMade: 'Foi criada uma ficha de contornos com {count} países.',
+  outlineResult: 'Reconheceu {correct} de {total} países ({percent} %).',
 };
 
 export default menu;

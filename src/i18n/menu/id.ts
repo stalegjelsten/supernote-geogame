@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Hapus',
   statsResetDone: 'Statistik telah dihapus.',
   statsRecent: 'Lembar terbaru (% benar)',
+  statsSkillOutline: 'Negara dari siluetnya',
+
+  outlineMode: 'Siluet',
+  outlineHint: 'Tulis nama negara di bawah setiap siluet.',
+  outlineTitle: 'Negara dari siluetnya',
+  outlineSubtitle: 'Tulis nama negara pada garis di setiap kotak.\nNilai halaman dari menu World Capitals Quiz.',
+  outlineSize: 'Ukuran',
+  outlineSizeLarge: 'Besar',
+  outlineSizeMedium: 'Sedang',
+  outlineSizeSmall: 'Kecil',
+  outlineScale: 'Skala',
+  outlineScaleFit: 'Penuhi kotak',
+  outlineScaleBar: 'Penuhi kotak, dengan skala batang',
+  outlineScaleSame: 'Ukuran relatif',
+  outlineScaleHint: 'Negara digambar sebanding satu sama lain pada skala logaritmik: negara yang sepuluh kali lebih panjang digambar sekitar 1,4 kali lebih besar, sehingga negara kecil tetap terlihat.',
+  outlineRotation: 'Rotasi',
+  outlineRotationNone: 'Tidak ada',
+  outlineRotationSome: 'Sedikit',
+  outlineRotationAny: 'Sudut apa saja',
+  outlineMade: 'Lembar siluet dengan {count} negara telah dibuat.',
+  outlineResult: 'Anda mengenali {correct} dari {total} negara ({percent}%).',
 };
 
 export default menu;

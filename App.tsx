@@ -8,6 +8,18 @@ import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {PluginManager} from 'sn-plugin-lib';
 import {createSheet, gradeSheet, rowsPerPageNow, sheetTarget} from './src/actions';
 import {createMapSheet, gradeMapSheet, skillOfTarget} from './src/mapActions';
+import {createOutlineSheet, gradeOutlineSheet} from './src/outlineActions';
+import {
+  OUTLINE_COUNTS,
+  OUTLINE_DEFAULT_COUNT,
+  OUTLINE_ROTATIONS,
+  OUTLINE_SCALES,
+  OUTLINE_SIZES,
+  type OutlineRotation,
+  type OutlineScale,
+  type OutlineSize,
+} from './src/core/outlineSheet';
+import {outlineTexts} from './src/i18n/outline';
 import {SKILLS, type SheetRecord, type Skill} from './src/core/stats';
 import type {StatsReport} from './src/core/statsReport';
 import {statsReport} from './src/core/statsReport';
@@ -67,8 +79,8 @@ type Count = number | 'ALL';
 const thousands = (n: number) =>
   String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
-/** Table: write the capital. Map: mark the capital on the map. */
-type Mode = 'table' | 'map';
+/** Table: write the capital. Map: mark the capital on the map. Outline: name the country from its outline. */
+type Mode = 'table' | 'map' | 'outline';
 
 type Status =
   | {kind: 'idle'}
@@ -117,16 +129,22 @@ function App(): React.JSX.Element {
   const mt = mapTexts(t);
   const hs = hotSeatTexts(t);
   const lt = levelTexts(t);
+  const ot = outlineTexts(t);
   const [level, setLevel] = useState<Level>('mixed');
   const [players, setPlayers] = useState<number>(1);
   const [playMode, setPlayMode] = useState<PlayMode>('pass');
-  const game = players > 1 ? {mode: playMode, players} : undefined;
   const [mode, setMode] = useState<Mode>('table');
+  // Outline sheets are for one player.
+  const game = players > 1 && mode !== 'outline' ? {mode: playMode, players} : undefined;
   const [region, setRegion] = useState<Region>('EU');
   const [count, setCount] = useState<Count>(20);
   const [mapCount, setMapCount] = useState<number>(MAP_SHEET_COUNT);
   const [mapStyle, setMapStyle] = useState<MapEntryStyle>('both');
   const [mapTarget, setMapTarget] = useState<MapTarget>('capital');
+  const [outlineCount, setOutlineCount] = useState<number>(OUTLINE_DEFAULT_COUNT);
+  const [outlineSize, setOutlineSize] = useState<OutlineSize>('large');
+  const [outlineScale, setOutlineScale] = useState<OutlineScale>('fit');
+  const [outlineRotation, setOutlineRotation] = useState<OutlineRotation>('none');
   const styleLabel: Record<MapEntryStyle, string> = {
     both: mt.ui.showBoth,
     capital: mt.ui.showCapital,
@@ -156,7 +174,8 @@ function App(): React.JSX.Element {
   const [confirmReset, setConfirmReset] = useState(false);
   const [statsMessage, setStatsMessage] = useState<string | null>(null);
   // The statistics follow the selected game until a skill is chosen in the statistics tab.
-  const gameSkill: Skill = mode === 'table' ? 'capital' : skillOfTarget(mapTarget);
+  const gameSkill: Skill =
+    mode === 'table' ? 'capital' : mode === 'outline' ? 'outline' : skillOfTarget(mapTarget);
   const [chosenSkill, setChosenSkill] = useState<Skill | null>(null);
   useEffect(() => setChosenSkill(null), [gameSkill]);
   const skill = chosenSkill ?? gameSkill;
@@ -224,6 +243,16 @@ function App(): React.JSX.Element {
     }
     const progress = (message: string) => setStatus({kind: 'busy', message});
     await run(async () => {
+      if (mode === 'outline') {
+        const r = await createOutlineSheet(t, region, target, progress, {
+          count: outlineCount,
+          size: outlineSize,
+          scale: outlineScale,
+          rotation: outlineRotation,
+          level,
+        });
+        return {message: ot.ui.made(r.count)};
+      }
       if (mode === 'map') {
         const r = await createMapSheet(
           t,
@@ -288,6 +317,15 @@ function App(): React.JSX.Element {
       setStatus({kind: 'busy', message: ui.startingGrading});
       const started = Date.now();
       const progress = (message: string) => setStatus({kind: 'busy', message});
+      const o = await gradeOutlineSheet(progress);
+      if (o) {
+        const outlineSeconds = ((Date.now() - started) / 1000).toFixed(1);
+        const outlinePercent = o.total ? Math.round((100 * o.correct) / o.total) : 0;
+        return {
+          message: ot.ui.result(o.correct, o.total, outlinePercent),
+          detail: ui.gradedIn(outlineSeconds),
+        };
+      }
       // Map sheets are always graded page by page; other sheets go on to table grading.
       const m = await gradeMapSheet(progress, scope);
       if (m) {
@@ -369,6 +407,12 @@ function App(): React.JSX.Element {
                 onPress={() => setMode('map')}
                 disabled={busy}
               />
+              <Button
+                label={ot.ui.mode}
+                selected={mode === 'outline'}
+                onPress={() => setMode('outline')}
+                disabled={busy}
+              />
             </View>
             <Text style={styles.label}>{ui.region}</Text>
             <View style={styles.grid}>
@@ -382,7 +426,60 @@ function App(): React.JSX.Element {
                 />
               ))}
             </View>
-            {mode === 'map' ? (
+            {mode === 'outline' ? (
+              <>
+                <Text style={styles.label}>{mt.ui.mapCount}</Text>
+                <View style={styles.grid}>
+                  {OUTLINE_COUNTS.map(c => (
+                    <Button
+                      key={c}
+                      label={String(c)}
+                      selected={c === outlineCount}
+                      onPress={() => setOutlineCount(c)}
+                      disabled={busy}
+                    />
+                  ))}
+                </View>
+                <Text style={styles.label}>{ot.ui.size}</Text>
+                <View style={styles.grid}>
+                  {OUTLINE_SIZES.map(sz => (
+                    <Button
+                      key={sz}
+                      label={ot.ui.sizes[sz]}
+                      selected={sz === outlineSize}
+                      onPress={() => setOutlineSize(sz)}
+                      disabled={busy}
+                    />
+                  ))}
+                </View>
+                <Text style={styles.label}>{ot.ui.scale}</Text>
+                <View style={styles.grid}>
+                  {OUTLINE_SCALES.map(sc => (
+                    <Button
+                      key={sc}
+                      label={ot.ui.scales[sc]}
+                      selected={sc === outlineScale}
+                      onPress={() => setOutlineScale(sc)}
+                      disabled={busy}
+                    />
+                  ))}
+                </View>
+                {outlineScale === 'log' && <Text style={styles.hint}>{ot.ui.scaleHint}</Text>}
+                <Text style={styles.label}>{ot.ui.rotation}</Text>
+                <View style={styles.grid}>
+                  {OUTLINE_ROTATIONS.map(rot => (
+                    <Button
+                      key={rot}
+                      label={ot.ui.rotations[rot]}
+                      selected={rot === outlineRotation}
+                      onPress={() => setOutlineRotation(rot)}
+                      disabled={busy}
+                    />
+                  ))}
+                </View>
+                <Text style={styles.hint}>{ot.ui.hint}</Text>
+              </>
+            ) : mode === 'map' ? (
               <>
                 <Text style={styles.label}>{mt.ui.target}</Text>
                 <View style={styles.grid}>
@@ -468,49 +565,53 @@ function App(): React.JSX.Element {
                 {level !== 'mixed' && <Text style={styles.hint}>{lt.hint}</Text>}
               </>
             )}
-            <Text style={styles.label}>{hs.ui.players}</Text>
-            <View style={styles.grid}>
-              {PLAYER_COUNTS.map(n => (
-                <Button
-                  key={n}
-                  label={n === 1 ? hs.ui.solo : String(n)}
-                  selected={n === players}
-                  onPress={() => setPlayers(n)}
-                  disabled={busy}
-                />
-              ))}
-            </View>
-            {players > 1 && (
+            {mode !== 'outline' && (
               <>
-                <Text style={styles.label}>{hs.ui.howToPlay}</Text>
+                <Text style={styles.label}>{hs.ui.players}</Text>
                 <View style={styles.grid}>
-                  <Button
-                    label={hs.ui.pass}
-                    selected={playMode === 'pass'}
-                    onPress={() => setPlayMode('pass')}
-                    disabled={busy}
-                  />
-                  <Button
-                    label={hs.ui.shared}
-                    selected={playMode === 'shared'}
-                    onPress={() => setPlayMode('shared')}
-                    disabled={busy}
-                  />
+                  {PLAYER_COUNTS.map(n => (
+                    <Button
+                      key={n}
+                      label={n === 1 ? hs.ui.solo : String(n)}
+                      selected={n === players}
+                      onPress={() => setPlayers(n)}
+                      disabled={busy}
+                    />
+                  ))}
                 </View>
-                <Text style={styles.hint}>
-                  {playMode === 'pass'
-                    ? hs.ui.passHint
-                    : hs.ui.sharedHint(
-                        sharedCount(
-                          mode === 'map' ? mapCount : actualCount,
-                          players,
-                          mode === 'map' ? mapCount : regionSize(region),
-                        ) / players,
-                        mode === 'map' && mapTarget === 'capital'
-                          ? hs.ui.unitCities
-                          : hs.ui.unitCountries,
-                      )}
-                </Text>
+                {players > 1 && (
+                  <>
+                    <Text style={styles.label}>{hs.ui.howToPlay}</Text>
+                    <View style={styles.grid}>
+                      <Button
+                        label={hs.ui.pass}
+                        selected={playMode === 'pass'}
+                        onPress={() => setPlayMode('pass')}
+                        disabled={busy}
+                      />
+                      <Button
+                        label={hs.ui.shared}
+                        selected={playMode === 'shared'}
+                        onPress={() => setPlayMode('shared')}
+                        disabled={busy}
+                      />
+                    </View>
+                    <Text style={styles.hint}>
+                      {playMode === 'pass'
+                        ? hs.ui.passHint
+                        : hs.ui.sharedHint(
+                            sharedCount(
+                              mode === 'map' ? mapCount : actualCount,
+                              players,
+                              mode === 'map' ? mapCount : regionSize(region),
+                            ) / players,
+                            mode === 'map' && mapTarget === 'capital'
+                              ? hs.ui.unitCities
+                              : hs.ui.unitCountries,
+                          )}
+                    </Text>
+                  </>
+                )}
               </>
             )}
             <Button
@@ -531,7 +632,7 @@ function App(): React.JSX.Element {
                 onPress={() => grade('page')}
                 disabled={busy}
               />
-              {(mode === 'table' || players > 1) && (
+              {(mode === 'table' || (mode === 'map' && players > 1)) && (
                 <Button
                   label={ui.gradeSet}
                   primary

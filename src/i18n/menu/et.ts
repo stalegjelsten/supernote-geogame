@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Kustuta',
   statsResetDone: 'Statistika kustutatud.',
   statsRecent: 'Viimased lehed (% õigesti)',
+  statsSkillOutline: 'Riigid kontuuri järgi',
+
+  outlineMode: 'Kontuur',
+  outlineHint: 'Kirjuta iga kontuuri alla riigi nimi.',
+  outlineTitle: 'Riigid kontuuri järgi',
+  outlineSubtitle: 'Kirjuta riigi nimi iga kasti joonele.\nKontrolli lehte World Capitals Quizi menüüst.',
+  outlineSize: 'Suurus',
+  outlineSizeLarge: 'Suur',
+  outlineSizeMedium: 'Keskmine',
+  outlineSizeSmall: 'Väike',
+  outlineScale: 'Mõõtkava',
+  outlineScaleFit: 'Täida kast',
+  outlineScaleBar: 'Täida kast, mõõtjoonega',
+  outlineScaleSame: 'Suhteline suurus',
+  outlineScaleHint: 'Riigid on joonistatud üksteise suhtes logaritmilises skaalas: kümme korda pikem riik on joonistatud umbes 1,4 korda suuremana, nii et ka väikesed riigid on nähtavad.',
+  outlineRotation: 'Pööramine',
+  outlineRotationNone: 'Puudub',
+  outlineRotationSome: 'Veidi',
+  outlineRotationAny: 'Mis tahes nurk',
+  outlineMade: 'Loodi kontuurileht {count} riigiga.',
+  outlineResult: 'Äratuntud riike: {correct}/{total} ({percent}%).',
 };
 
 export default menu;

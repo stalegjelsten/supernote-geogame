@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: '削除',
   statsResetDone: '統計を削除しました。',
   statsRecent: '最近のシート（正答率 %）',
+  statsSkillOutline: '輪郭で国を当てる',
+
+  outlineMode: '輪郭',
+  outlineHint: '各輪郭の下に国名を書いてください。',
+  outlineTitle: '輪郭で国を当てる',
+  outlineSubtitle: '各枠の線の上に国名を書いてください。\nWorld Capitals Quizのメニューからページを採点してください。',
+  outlineSize: 'サイズ',
+  outlineSizeLarge: '大',
+  outlineSizeMedium: '中',
+  outlineSizeSmall: '小',
+  outlineScale: '縮尺',
+  outlineScaleFit: '枠いっぱいに表示',
+  outlineScaleBar: '枠いっぱいに表示（縮尺バー付き）',
+  outlineScaleSame: '相対的な大きさ',
+  outlineScaleHint: '国どうしの大きさは対数スケールで比例させて描かれます。長さが10倍の国は約1.4倍の大きさで描かれるので、小さな国も見えます。',
+  outlineRotation: '回転',
+  outlineRotationNone: 'なし',
+  outlineRotationSome: '少し',
+  outlineRotationAny: '自由な角度',
+  outlineMade: '{count}か国の輪郭シートを作成しました。',
+  outlineResult: '{total}か国中{correct}か国を当てました（{percent}%）。',
 };
 
 export default menu;

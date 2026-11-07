@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Sil',
   statsResetDone: 'İstatistikler silindi.',
   statsRecent: 'Son sayfalar (% doğru)',
+  statsSkillOutline: 'Siluetinden ülkeler',
+
+  outlineMode: 'Siluet',
+  outlineHint: 'Her siluetin altına ülkenin adını yazın.',
+  outlineTitle: 'Siluetinden ülkeler',
+  outlineSubtitle: 'Her kutudaki çizgiye ülkenin adını yazın.\nSayfayı World Capitals Quiz menüsünden kontrol edin.',
+  outlineSize: 'Boyut',
+  outlineSizeLarge: 'Büyük',
+  outlineSizeMedium: 'Orta',
+  outlineSizeSmall: 'Küçük',
+  outlineScale: 'Ölçek',
+  outlineScaleFit: 'Kutuyu doldur',
+  outlineScaleBar: 'Kutuyu doldur, ölçek çubuğuyla',
+  outlineScaleSame: 'Göreli boyut',
+  outlineScaleHint: 'Ülkeler logaritmik ölçekte birbirleriyle orantılı çizilir: on kat uzun bir ülke yaklaşık 1,4 kat büyük çizilir, böylece küçük ülkeler de görünür.',
+  outlineRotation: 'Döndürme',
+  outlineRotationNone: 'Yok',
+  outlineRotationSome: 'Biraz',
+  outlineRotationAny: 'Herhangi bir açı',
+  outlineMade: 'Siluet kâğıdı oluşturuldu: {count} ülke.',
+  outlineResult: '{total} ülkeden {correct} tanesini bildiniz (%{percent}).',
 };
 
 export default menu;

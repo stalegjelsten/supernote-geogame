@@ -124,6 +124,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Delete',
   statsResetDone: 'Statistics deleted.',
   statsRecent: 'Latest sheets (% right)',
+  statsSkillOutline: 'Countries by outline',
+
+  outlineMode: 'Outline',
+  outlineHint: 'Write the name of the country under each outline.',
+  outlineTitle: 'Countries by outline',
+  outlineSubtitle: 'Write the name of the country on the line in each box.\nGrade the page from the World Capitals Quiz menu.',
+  outlineSize: 'Size',
+  outlineSizeLarge: 'Large',
+  outlineSizeMedium: 'Medium',
+  outlineSizeSmall: 'Small',
+  outlineScale: 'Scale',
+  outlineScaleFit: 'Fill the box',
+  outlineScaleBar: 'Fill the box, with scale bar',
+  outlineScaleSame: 'Relative size',
+  outlineScaleHint: 'The countries are drawn in proportion to each other on a logarithmic scale: a country ten times as long is drawn about 1.4 times as large, so small countries are still visible.',
+  outlineRotation: 'Rotation',
+  outlineRotationNone: 'None',
+  outlineRotationSome: 'A little',
+  outlineRotationAny: 'Any angle',
+  outlineMade: 'Made an outline sheet with {count} countries.',
+  outlineResult: 'You recognized {correct} of {total} countries ({percent} %).',
 };
 
 export default menu;

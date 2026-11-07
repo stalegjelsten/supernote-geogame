@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Suprimeix',
   statsResetDone: 'S’han suprimit les estadístiques.',
   statsRecent: 'Darrers fulls (% encert)',
+  statsSkillOutline: 'Països per la silueta',
+
+  outlineMode: 'Silueta',
+  outlineHint: 'Escriu el nom del país sota cada silueta.',
+  outlineTitle: 'Països per la silueta',
+  outlineSubtitle: 'Escriu el nom del país a la línia de cada requadre.\nCorregeix la pàgina des del menú del World Capitals Quiz.',
+  outlineSize: 'Mida',
+  outlineSizeLarge: 'Gran',
+  outlineSizeMedium: 'Mitjana',
+  outlineSizeSmall: 'Petita',
+  outlineScale: 'Escala',
+  outlineScaleFit: 'Omple el requadre',
+  outlineScaleBar: 'Omple el requadre, amb barra d’escala',
+  outlineScaleSame: 'Mida relativa',
+  outlineScaleHint: 'Els països es dibuixen proporcionals entre si en una escala logarítmica: un país deu vegades més llarg es dibuixa unes 1,4 vegades més gran, perquè els països petits es continuïn veient.',
+  outlineRotation: 'Rotació',
+  outlineRotationNone: 'Cap',
+  outlineRotationSome: 'Una mica',
+  outlineRotationAny: 'Qualsevol angle',
+  outlineMade: 'S’ha creat una fitxa de siluetes amb {count} països.',
+  outlineResult: 'Has reconegut {correct} de {total} països ({percent} %).',
 };
 
 export default menu;

@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Skrap',
   statsResetDone: 'Statistiek geskrap.',
   statsRecent: 'Jongste blaaie (% reg)',
+  statsSkillOutline: 'Lande volgens buitelyn',
+
+  outlineMode: 'Buitelyn',
+  outlineHint: 'Skryf die naam van die land onder elke buitelyn.',
+  outlineTitle: 'Lande volgens buitelyn',
+  outlineSubtitle: 'Skryf die naam van die land op die lyn in elke blokkie.\nMerk die bladsy in die World Capitals Quiz-kieslys.',
+  outlineSize: 'Grootte',
+  outlineSizeLarge: 'Groot',
+  outlineSizeMedium: 'Middelmatig',
+  outlineSizeSmall: 'Klein',
+  outlineScale: 'Skaal',
+  outlineScaleFit: 'Vul die blokkie',
+  outlineScaleBar: 'Vul die blokkie, met skaalbalk',
+  outlineScaleSame: 'Relatiewe grootte',
+  outlineScaleHint: 'Die lande word in verhouding tot mekaar op ’n logaritmiese skaal geteken: ’n land wat tien keer so lank is, word omtrent 1,4 keer so groot geteken, sodat klein lande steeds sigbaar is.',
+  outlineRotation: 'Rotasie',
+  outlineRotationNone: 'Geen',
+  outlineRotationSome: '’n Bietjie',
+  outlineRotationAny: 'Enige hoek',
+  outlineMade: '’n Buitelynblad met {count} lande is gemaak.',
+  outlineResult: 'Jy het {correct} uit {total} lande herken ({percent}%).',
 };
 
 export default menu;

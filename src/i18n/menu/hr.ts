@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Izbriši',
   statsResetDone: 'Statistika je izbrisana.',
   statsRecent: 'Posljednji listovi (% točno)',
+  statsSkillOutline: 'Države po obrisu',
+
+  outlineMode: 'Obris',
+  outlineHint: 'Napišite ime države ispod svakog obrisa.',
+  outlineTitle: 'Države po obrisu',
+  outlineSubtitle: 'Napišite ime države na crtu u svakom okviru.\nOcijenite stranicu iz izbornika World Capitals Quiz.',
+  outlineSize: 'Veličina',
+  outlineSizeLarge: 'Velika',
+  outlineSizeMedium: 'Srednja',
+  outlineSizeSmall: 'Mala',
+  outlineScale: 'Mjerilo',
+  outlineScaleFit: 'Ispuni okvir',
+  outlineScaleBar: 'Ispuni okvir, s grafičkim mjerilom',
+  outlineScaleSame: 'Relativna veličina',
+  outlineScaleHint: 'Države su nacrtane razmjerno jedna drugoj na logaritamskoj ljestvici: država deset puta duža nacrtana je oko 1,4 puta veća, pa se i male države vide.',
+  outlineRotation: 'Rotacija',
+  outlineRotationNone: 'Bez',
+  outlineRotationSome: 'Malo',
+  outlineRotationAny: 'Bilo koji kut',
+  outlineMade: 'Napravljen je list s obrisima. Broj država: {count}.',
+  outlineResult: 'Prepoznate države: {correct} od {total} ({percent} %).',
 };
 
 export default menu;

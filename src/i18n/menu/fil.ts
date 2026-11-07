@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Burahin',
   statsResetDone: 'Nabura na ang estadistika.',
   statsRecent: 'Pinakabagong mga pahina (% tama)',
+  statsSkillOutline: 'Mga bansa ayon sa hugis',
+
+  outlineMode: 'Hugis',
+  outlineHint: 'Isulat ang pangalan ng bansa sa ilalim ng bawat hugis.',
+  outlineTitle: 'Mga bansa ayon sa hugis',
+  outlineSubtitle: 'Isulat ang pangalan ng bansa sa linya sa bawat kahon.\nMarkahan ang pahina mula sa menu ng World Capitals Quiz.',
+  outlineSize: 'Laki',
+  outlineSizeLarge: 'Malaki',
+  outlineSizeMedium: 'Katamtaman',
+  outlineSizeSmall: 'Maliit',
+  outlineScale: 'Sukat',
+  outlineScaleFit: 'Punuin ang kahon',
+  outlineScaleBar: 'Punuin ang kahon, may scale bar',
+  outlineScaleSame: 'Relatibong laki',
+  outlineScaleHint: 'Iginuguhit ang mga bansa nang proporsyonal sa isa’t isa sa logarithmic na sukat: ang bansang sampung beses na mas mahaba ay iginuguhit nang mga 1.4 beses na mas malaki, kaya nakikita pa rin ang maliliit na bansa.',
+  outlineRotation: 'Pag-ikot',
+  outlineRotationNone: 'Wala',
+  outlineRotationSome: 'Kaunti',
+  outlineRotationAny: 'Kahit anong anggulo',
+  outlineMade: 'Gumawa ng sheet ng hugis na may {count} bansa.',
+  outlineResult: 'Nakilala mo ang {correct} sa {total} bansa ({percent}%).',
 };
 
 export default menu;

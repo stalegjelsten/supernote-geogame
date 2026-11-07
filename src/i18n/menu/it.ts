@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Elimina',
   statsResetDone: 'Statistiche eliminate.',
   statsRecent: 'Ultimi fogli (% giusto)',
+  statsSkillOutline: 'Paesi dalla sagoma',
+
+  outlineMode: 'Sagoma',
+  outlineHint: 'Scrivi il nome del paese sotto ogni sagoma.',
+  outlineTitle: 'Paesi dalla sagoma',
+  outlineSubtitle: 'Scrivi il nome del paese sulla riga di ogni riquadro.\nCorreggi la pagina dal menu di World Capitals Quiz.',
+  outlineSize: 'Dimensione',
+  outlineSizeLarge: 'Grande',
+  outlineSizeMedium: 'Media',
+  outlineSizeSmall: 'Piccola',
+  outlineScale: 'Scala',
+  outlineScaleFit: 'Riempi il riquadro',
+  outlineScaleBar: 'Riempi il riquadro, con barra di scala',
+  outlineScaleSame: 'Dimensione relativa',
+  outlineScaleHint: 'I paesi sono disegnati in proporzione tra loro su una scala logaritmica: un paese dieci volte più lungo è disegnato circa 1,4 volte più grande, così anche i paesi piccoli restano visibili.',
+  outlineRotation: 'Rotazione',
+  outlineRotationNone: 'Nessuna',
+  outlineRotationSome: 'Un po’',
+  outlineRotationAny: 'Qualsiasi angolo',
+  outlineMade: 'Creata una scheda sagome con {count} paesi.',
+  outlineResult: 'Hai riconosciuto {correct} paesi su {total} ({percent}%).',
 };
 
 export default menu;

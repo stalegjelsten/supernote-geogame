@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Ezabatu',
   statsResetDone: 'Estatistikak ezabatu dira.',
   statsRecent: 'Azken orriak (% zuzen)',
+  statsSkillOutline: 'Herrialdeak siluetaren arabera',
+
+  outlineMode: 'Silueta',
+  outlineHint: 'Idatzi herrialdearen izena silueta bakoitzaren azpian.',
+  outlineTitle: 'Herrialdeak siluetaren arabera',
+  outlineSubtitle: 'Idatzi herrialdearen izena lauki bakoitzeko lerroan.\nZuzendu orrialdea World Capitals Quiz menutik.',
+  outlineSize: 'Tamaina',
+  outlineSizeLarge: 'Handia',
+  outlineSizeMedium: 'Ertaina',
+  outlineSizeSmall: 'Txikia',
+  outlineScale: 'Eskala',
+  outlineScaleFit: 'Laukia bete',
+  outlineScaleBar: 'Laukia bete, eskala-barrarekin',
+  outlineScaleSame: 'Tamaina erlatiboa',
+  outlineScaleHint: 'Herrialdeak elkarren arteko proportzioan marrazten dira eskala logaritmikoan: hamar aldiz luzeagoa den herrialde bat 1,4 aldiz handiagoa marrazten da gutxi gorabehera, herrialde txikiak ere ikus daitezen.',
+  outlineRotation: 'Biraketa',
+  outlineRotationNone: 'Bat ere ez',
+  outlineRotationSome: 'Apur bat',
+  outlineRotationAny: 'Edozein angelu',
+  outlineMade: 'Silueta-fitxa sortu da: {count} herrialde.',
+  outlineResult: 'Ezagututako herrialdeak: {correct} / {total} (%{percent}).',
 };
 
 export default menu;

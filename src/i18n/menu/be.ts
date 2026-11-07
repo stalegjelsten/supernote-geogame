@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Выдаліць',
   statsResetDone: 'Статыстыка выдалена.',
   statsRecent: 'Апошнія аркушы (% правільна)',
+  statsSkillOutline: 'Краіны па контуры',
+
+  outlineMode: 'Контур',
+  outlineHint: 'Напішыце назву краіны пад кожным контурам.',
+  outlineTitle: 'Краіны па контуры',
+  outlineSubtitle: 'Напішыце назву краіны на лініі ў кожнай рамцы.\nПраверце старонку праз меню World Capitals Quiz.',
+  outlineSize: 'Памер',
+  outlineSizeLarge: 'Вялікі',
+  outlineSizeMedium: 'Сярэдні',
+  outlineSizeSmall: 'Малы',
+  outlineScale: 'Маштаб',
+  outlineScaleFit: 'Запоўніць рамку',
+  outlineScaleBar: 'Запоўніць рамку, з лінейкай маштабу',
+  outlineScaleSame: 'Адносны памер',
+  outlineScaleHint: 'Краіны намаляваны ў прапорцыі адна да адной у лагарыфмічным маштабе: краіна ў дзесяць разоў даўжэйшая намалявана прыкладна ў 1,4 раза большай, таму малыя краіны таксама відаць.',
+  outlineRotation: 'Паварот',
+  outlineRotationNone: 'Няма',
+  outlineRotationSome: 'Крыху',
+  outlineRotationAny: 'Любы кут',
+  outlineMade: 'Створаны аркуш з контурамі. Краін: {count}.',
+  outlineResult: 'Пазнана {correct} з {total} краін ({percent} %).',
 };
 
 export default menu;

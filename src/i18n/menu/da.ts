@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Slet',
   statsResetDone: 'Statistikken er slettet.',
   statsRecent: 'Seneste ark (% rigtigt)',
+  statsSkillOutline: 'Lande efter omrids',
+
+  outlineMode: 'Omrids',
+  outlineHint: 'Skriv landets navn under hvert omrids.',
+  outlineTitle: 'Lande efter omrids',
+  outlineSubtitle: 'Skriv landets navn på linjen i hver boks.\nRet siden fra World Capitals Quiz-menuen.',
+  outlineSize: 'Størrelse',
+  outlineSizeLarge: 'Stor',
+  outlineSizeMedium: 'Mellem',
+  outlineSizeSmall: 'Lille',
+  outlineScale: 'Skala',
+  outlineScaleFit: 'Fyld boksen',
+  outlineScaleBar: 'Fyld boksen, med målestok',
+  outlineScaleSame: 'Relativ størrelse',
+  outlineScaleHint: 'Landene tegnes i forhold til hinanden på en logaritmisk skala: et land, der er ti gange så langt, tegnes ca. 1,4 gange så stort, så små lande stadig kan ses.',
+  outlineRotation: 'Rotation',
+  outlineRotationNone: 'Ingen',
+  outlineRotationSome: 'Lidt',
+  outlineRotationAny: 'Vilkårlig vinkel',
+  outlineMade: 'Lavede et omridsark med {count} lande.',
+  outlineResult: 'Du genkendte {correct} af {total} lande ({percent} %).',
 };
 
 export default menu;

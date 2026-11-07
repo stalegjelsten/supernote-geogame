@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Удалить',
   statsResetDone: 'Статистика удалена.',
   statsRecent: 'Последние листы (% верно)',
+  statsSkillOutline: 'Страны по контуру',
+
+  outlineMode: 'Контур',
+  outlineHint: 'Напишите название страны под каждым контуром.',
+  outlineTitle: 'Страны по контуру',
+  outlineSubtitle: 'Напишите название страны на линии в каждой рамке.\nПроверьте страницу через меню World Capitals Quiz.',
+  outlineSize: 'Размер',
+  outlineSizeLarge: 'Крупный',
+  outlineSizeMedium: 'Средний',
+  outlineSizeSmall: 'Мелкий',
+  outlineScale: 'Масштаб',
+  outlineScaleFit: 'Заполнить рамку',
+  outlineScaleBar: 'Заполнить рамку, с линейкой масштаба',
+  outlineScaleSame: 'Относительный размер',
+  outlineScaleHint: 'Страны нарисованы пропорционально друг другу в логарифмическом масштабе: страна в десять раз длиннее нарисована примерно в 1,4 раза крупнее, поэтому маленькие страны тоже видны.',
+  outlineRotation: 'Поворот',
+  outlineRotationNone: 'Нет',
+  outlineRotationSome: 'Немного',
+  outlineRotationAny: 'Любой угол',
+  outlineMade: 'Создан лист с контурами. Стран: {count}.',
+  outlineResult: 'Узнано стран: {correct} из {total} ({percent} %).',
 };
 
 export default menu;

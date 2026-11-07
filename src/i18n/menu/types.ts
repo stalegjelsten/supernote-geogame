@@ -137,4 +137,27 @@ export interface MenuStrings {
   statsConfirm: string;
   statsResetDone: string;
   statsRecent: string;
+  statsSkillOutline: string;
+
+  // Outline mode (outline.ts). Outline sheets are recognized by the key at the bottom,
+  // not by the title, so the title and instructions on the sheet can be translated here.
+  outlineMode: string;
+  outlineHint: string;
+  outlineTitle: string;
+  outlineSubtitle: string;
+  outlineSize: string;
+  outlineSizeLarge: string;
+  outlineSizeMedium: string;
+  outlineSizeSmall: string;
+  outlineScale: string;
+  outlineScaleFit: string;
+  outlineScaleBar: string;
+  outlineScaleSame: string;
+  outlineScaleHint: string;
+  outlineRotation: string;
+  outlineRotationNone: string;
+  outlineRotationSome: string;
+  outlineRotationAny: string;
+  outlineMade: string; // {count}
+  outlineResult: string; // {correct} {total} {percent}
 }

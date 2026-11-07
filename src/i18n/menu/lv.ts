@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Dzēst',
   statsResetDone: 'Statistika izdzēsta.',
   statsRecent: 'Pēdējās lapas (% pareizi)',
+  statsSkillOutline: 'Valstis pēc kontūras',
+
+  outlineMode: 'Kontūra',
+  outlineHint: 'Zem katras kontūras uzraksti valsts nosaukumu.',
+  outlineTitle: 'Valstis pēc kontūras',
+  outlineSubtitle: 'Katrā rāmītī uz līnijas uzraksti valsts nosaukumu.\nPārbaudi lapu World Capitals Quiz izvēlnē.',
+  outlineSize: 'Izmērs',
+  outlineSizeLarge: 'Liels',
+  outlineSizeMedium: 'Vidējs',
+  outlineSizeSmall: 'Mazs',
+  outlineScale: 'Mērogs',
+  outlineScaleFit: 'Aizpildīt rāmīti',
+  outlineScaleBar: 'Aizpildīt rāmīti, ar mēroga joslu',
+  outlineScaleSame: 'Relatīvais izmērs',
+  outlineScaleHint: 'Valstis ir uzzīmētas proporcionāli cita citai logaritmiskā mērogā: desmit reizes garāka valsts ir uzzīmēta apmēram 1,4 reizes lielāka, tāpēc arī mazās valstis ir redzamas.',
+  outlineRotation: 'Pagriešana',
+  outlineRotationNone: 'Nav',
+  outlineRotationSome: 'Nedaudz',
+  outlineRotationAny: 'Jebkurš leņķis',
+  outlineMade: 'Izveidota kontūru lapa (valstis: {count}).',
+  outlineResult: 'Atpazītas valstis: {correct} no {total} ({percent}%).',
 };
 
 export default menu;

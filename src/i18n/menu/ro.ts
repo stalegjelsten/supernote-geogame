@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Șterge',
   statsResetDone: 'Statisticile au fost șterse.',
   statsRecent: 'Ultimele foi (% corect)',
+  statsSkillOutline: 'Țări după contur',
+
+  outlineMode: 'Contur',
+  outlineHint: 'Scrie numele țării sub fiecare contur.',
+  outlineTitle: 'Țări după contur',
+  outlineSubtitle: 'Scrie numele țării pe linia din fiecare casetă.\nCorectează pagina din meniul World Capitals Quiz.',
+  outlineSize: 'Mărime',
+  outlineSizeLarge: 'Mare',
+  outlineSizeMedium: 'Medie',
+  outlineSizeSmall: 'Mică',
+  outlineScale: 'Scară',
+  outlineScaleFit: 'Umple caseta',
+  outlineScaleBar: 'Umple caseta, cu bară de scară',
+  outlineScaleSame: 'Mărime relativă',
+  outlineScaleHint: 'Țările sunt desenate proporțional unele cu altele pe o scară logaritmică: o țară de zece ori mai lungă este desenată de aproximativ 1,4 ori mai mare, astfel încât și țările mici se văd.',
+  outlineRotation: 'Rotire',
+  outlineRotationNone: 'Fără',
+  outlineRotationSome: 'Puțin',
+  outlineRotationAny: 'Orice unghi',
+  outlineMade: 'S-a creat o fișă cu contururi (țări: {count}).',
+  outlineResult: 'Țări recunoscute: {correct} din {total} ({percent}%).',
 };
 
 export default menu;

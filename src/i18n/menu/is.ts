@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Eyða',
   statsResetDone: 'Tölfræðinni hefur verið eytt.',
   statsRecent: 'Nýjustu blöð (% rétt)',
+  statsSkillOutline: 'Lönd eftir útlínum',
+
+  outlineMode: 'Útlínur',
+  outlineHint: 'Skrifaðu nafn landsins undir hverjar útlínur.',
+  outlineTitle: 'Lönd eftir útlínum',
+  outlineSubtitle: 'Skrifaðu nafn landsins á línuna í hverjum reit.\nFarðu yfir síðuna í World Capitals Quiz-valmyndinni.',
+  outlineSize: 'Stærð',
+  outlineSizeLarge: 'Stór',
+  outlineSizeMedium: 'Miðlungs',
+  outlineSizeSmall: 'Lítil',
+  outlineScale: 'Kvarði',
+  outlineScaleFit: 'Fylla reitinn',
+  outlineScaleBar: 'Fylla reitinn, með kvarðastiku',
+  outlineScaleSame: 'Hlutfallsleg stærð',
+  outlineScaleHint: 'Löndin eru teiknuð í hlutfalli hvert við annað á lógaritmískum kvarða: land sem er tíu sinnum lengra er teiknað um 1,4 sinnum stærra, svo lítil lönd sjást enn.',
+  outlineRotation: 'Snúningur',
+  outlineRotationNone: 'Enginn',
+  outlineRotationSome: 'Smá',
+  outlineRotationAny: 'Hvaða horn sem er',
+  outlineMade: 'Bjó til útlínublað með {count} löndum.',
+  outlineResult: 'Þú þekktir {correct} af {total} löndum ({percent}%).',
 };
 
 export default menu;

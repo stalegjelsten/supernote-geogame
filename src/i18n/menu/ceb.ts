@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Papasa',
   statsResetDone: 'Napapas na ang estadistika.',
   statsRecent: 'Pinakabag-ong mga panid (% husto)',
+  statsSkillOutline: 'Mga nasod pinaagi sa porma',
+
+  outlineMode: 'Porma',
+  outlineHint: 'Isulat ang ngalan sa nasod ubos sa matag porma.',
+  outlineTitle: 'Mga nasod pinaagi sa porma',
+  outlineSubtitle: 'Isulat ang ngalan sa nasod sa linya sa matag kahon.\nSusiha ang panid gikan sa menu sa World Capitals Quiz.',
+  outlineSize: 'Gidak-on',
+  outlineSizeLarge: 'Dako',
+  outlineSizeMedium: 'Tunga-tunga',
+  outlineSizeSmall: 'Gamay',
+  outlineScale: 'Sukod',
+  outlineScaleFit: 'Pun-a ang kahon',
+  outlineScaleBar: 'Pun-a ang kahon, may scale bar',
+  outlineScaleSame: 'Relatibong gidak-on',
+  outlineScaleHint: 'Ang mga nasod gidrowing nga proporsyonal sa usag usa sa logarithmic nga sukod: ang nasod nga napulo ka pilo ang gitas-on gidrowing nga mga 1.4 ka pilo ang kadako, aron makita gihapon ang gagmay nga mga nasod.',
+  outlineRotation: 'Pagtuyok',
+  outlineRotationNone: 'Wala',
+  outlineRotationSome: 'Diyutay',
+  outlineRotationAny: 'Bisan unsang anggulo',
+  outlineMade: 'Nakahimo og worksheet sa porma nga may {count} ka nasod.',
+  outlineResult: 'Nailhan nimo ang {correct} sa {total} ka nasod ({percent}%).',
 };
 
 export default menu;

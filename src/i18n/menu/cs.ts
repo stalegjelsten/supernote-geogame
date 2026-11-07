@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Smazat',
   statsResetDone: 'Statistiky byly smazány.',
   statsRecent: 'Poslední listy (% správně)',
+  statsSkillOutline: 'Země podle obrysu',
+
+  outlineMode: 'Obrys',
+  outlineHint: 'Napište název země pod každý obrys.',
+  outlineTitle: 'Země podle obrysu',
+  outlineSubtitle: 'Napište název země na čáru v každém rámečku.\nOpravte stránku z nabídky World Capitals Quiz.',
+  outlineSize: 'Velikost',
+  outlineSizeLarge: 'Velká',
+  outlineSizeMedium: 'Střední',
+  outlineSizeSmall: 'Malá',
+  outlineScale: 'Měřítko',
+  outlineScaleFit: 'Vyplnit rámeček',
+  outlineScaleBar: 'Vyplnit rámeček, s měřítkem',
+  outlineScaleSame: 'Relativní velikost',
+  outlineScaleHint: 'Země jsou nakresleny v poměru k sobě v logaritmickém měřítku: země desetkrát delší je nakreslena zhruba 1,4krát větší, takže i malé země jsou vidět.',
+  outlineRotation: 'Otočení',
+  outlineRotationNone: 'Žádné',
+  outlineRotationSome: 'Trochu',
+  outlineRotationAny: 'Libovolný úhel',
+  outlineMade: 'List s obrysy byl vytvořen (země: {count}).',
+  outlineResult: 'Poznané země: {correct} z {total} ({percent} %).',
 };
 
 export default menu;

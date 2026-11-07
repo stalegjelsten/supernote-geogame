@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Borrar',
   statsResetDone: 'Estadísticas borradas.',
   statsRecent: 'Últimas hojas (% acierto)',
+  statsSkillOutline: 'Países por su silueta',
+
+  outlineMode: 'Silueta',
+  outlineHint: 'Escribe el nombre del país debajo de cada silueta.',
+  outlineTitle: 'Países por su silueta',
+  outlineSubtitle: 'Escribe el nombre del país en la línea de cada recuadro.\nCorrige la página desde el menú de World Capitals Quiz.',
+  outlineSize: 'Tamaño',
+  outlineSizeLarge: 'Grande',
+  outlineSizeMedium: 'Mediano',
+  outlineSizeSmall: 'Pequeño',
+  outlineScale: 'Escala',
+  outlineScaleFit: 'Llenar el recuadro',
+  outlineScaleBar: 'Llenar el recuadro, con barra de escala',
+  outlineScaleSame: 'Tamaño relativo',
+  outlineScaleHint: 'Los países se dibujan en proporción entre sí en una escala logarítmica: un país diez veces más largo se dibuja unas 1,4 veces más grande, así que los países pequeños siguen viéndose.',
+  outlineRotation: 'Rotación',
+  outlineRotationNone: 'Ninguna',
+  outlineRotationSome: 'Un poco',
+  outlineRotationAny: 'Cualquier ángulo',
+  outlineMade: 'Hoja de siluetas creada con {count} países.',
+  outlineResult: 'Has reconocido {correct} de {total} países ({percent} %).',
 };
 
 export default menu;

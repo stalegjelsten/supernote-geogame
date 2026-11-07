@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: '删除',
   statsResetDone: '统计已删除。',
   statsRecent: '最近的练习纸（正确率 %）',
+  statsSkillOutline: '看轮廓认国家',
+
+  outlineMode: '轮廓',
+  outlineHint: '在每个轮廓下面写出国家名称。',
+  outlineTitle: '看轮廓认国家',
+  outlineSubtitle: '在每个方框内的横线上写出国家名称。\n从 World Capitals Quiz 菜单批改此页。',
+  outlineSize: '大小',
+  outlineSizeLarge: '大',
+  outlineSizeMedium: '中',
+  outlineSizeSmall: '小',
+  outlineScale: '比例',
+  outlineScaleFit: '填满方框',
+  outlineScaleBar: '填满方框，带比例尺',
+  outlineScaleSame: '相对大小',
+  outlineScaleHint: '各国按对数比例相互成比例地绘制：长度是十倍的国家大约画成1.4倍大，因此小国仍然看得见。',
+  outlineRotation: '旋转',
+  outlineRotationNone: '无',
+  outlineRotationSome: '少许',
+  outlineRotationAny: '任意角度',
+  outlineMade: '已生成含{count}个国家的轮廓练习页。',
+  outlineResult: '你认出了{total}个国家中的{correct}个（{percent}%）。',
 };
 
 export default menu;

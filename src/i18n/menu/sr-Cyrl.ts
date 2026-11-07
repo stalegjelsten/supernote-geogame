@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Обриши',
   statsResetDone: 'Статистика је обрисана.',
   statsRecent: 'Последњи листови (% тачно)',
+  statsSkillOutline: 'Државе по обрису',
+
+  outlineMode: 'Обрис',
+  outlineHint: 'Напишите име државе испод сваког обриса.',
+  outlineTitle: 'Државе по обрису',
+  outlineSubtitle: 'Напишите име државе на линију у сваком оквиру.\nОцените страницу из менија World Capitals Quiz.',
+  outlineSize: 'Величина',
+  outlineSizeLarge: 'Велика',
+  outlineSizeMedium: 'Средња',
+  outlineSizeSmall: 'Мала',
+  outlineScale: 'Размера',
+  outlineScaleFit: 'Испуни оквир',
+  outlineScaleBar: 'Испуни оквир, са графичком размером',
+  outlineScaleSame: 'Релативна величина',
+  outlineScaleHint: 'Државе су нацртане сразмерно једна другој на логаритамској скали: држава десет пута дужа нацртана је око 1,4 пута већа, па се и мале државе виде.',
+  outlineRotation: 'Ротација',
+  outlineRotationNone: 'Без',
+  outlineRotationSome: 'Мало',
+  outlineRotationAny: 'Било који угао',
+  outlineMade: 'Направљен је лист са обрисима. Број држава: {count}.',
+  outlineResult: 'Препознате државе: {correct} од {total} ({percent} %).',
 };
 
 export default menu;

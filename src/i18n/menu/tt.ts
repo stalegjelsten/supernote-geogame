@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Бетерү',
   statsResetDone: 'Статистика бетерелде.',
   statsRecent: 'Соңгы битләр (% дөрес)',
+  statsSkillOutline: 'Контуры буенча илләр',
+
+  outlineMode: 'Контур',
+  outlineHint: 'Һәр контур астына ил исемен языгыз.',
+  outlineTitle: 'Контуры буенча илләр',
+  outlineSubtitle: 'Һәр рамкадагы сызыкка ил исемен языгыз.\nБитне World Capitals Quiz менюсыннан тикшерегез.',
+  outlineSize: 'Зурлык',
+  outlineSizeLarge: 'Зур',
+  outlineSizeMedium: 'Уртача',
+  outlineSizeSmall: 'Кечкенә',
+  outlineScale: 'Масштаб',
+  outlineScaleFit: 'Рамканы тутыру',
+  outlineScaleBar: 'Рамканы тутыру, масштаб сызыгы белән',
+  outlineScaleSame: 'Чагыштырма зурлык',
+  outlineScaleHint: 'Илләр логарифмик масштабта бер-берсенә пропорциональ итеп ясалган: ун тапкыр озынрак ил якынча 1,4 тапкыр зуррак ясала, шуңа күрә кечкенә илләр дә күренә.',
+  outlineRotation: 'Әйләндерү',
+  outlineRotationNone: 'Юк',
+  outlineRotationSome: 'Бераз',
+  outlineRotationAny: 'Теләсә нинди почмак',
+  outlineMade: 'Контур бите ясалды: {count} ил.',
+  outlineResult: 'Танылган илләр: {correct} / {total} ({percent}%).',
 };
 
 export default menu;

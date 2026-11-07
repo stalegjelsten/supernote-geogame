@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Sil',
   statsResetDone: 'Statistika silindi.',
   statsRecent: 'Son vərəqlər (% düz)',
+  statsSkillOutline: 'Konturlarına görə ölkələr',
+
+  outlineMode: 'Kontur',
+  outlineHint: 'Hər konturun altına ölkənin adını yazın.',
+  outlineTitle: 'Konturlarına görə ölkələr',
+  outlineSubtitle: 'Hər qutudakı xəttə ölkənin adını yazın.\nSəhifəni World Capitals Quiz menyusundan yoxlayın.',
+  outlineSize: 'Ölçü',
+  outlineSizeLarge: 'Böyük',
+  outlineSizeMedium: 'Orta',
+  outlineSizeSmall: 'Kiçik',
+  outlineScale: 'Miqyas',
+  outlineScaleFit: 'Qutunu doldur',
+  outlineScaleBar: 'Qutunu doldur, miqyas xətti ilə',
+  outlineScaleSame: 'Nisbi ölçü',
+  outlineScaleHint: 'Ölkələr loqarifmik miqyasda bir-birinə nisbətdə çəkilir: on dəfə uzun olan ölkə təxminən 1,4 dəfə böyük çəkilir, beləliklə kiçik ölkələr də görünür.',
+  outlineRotation: 'Fırlatma',
+  outlineRotationNone: 'Yox',
+  outlineRotationSome: 'Bir az',
+  outlineRotationAny: 'İstənilən bucaq',
+  outlineMade: 'Kontur vərəqi yaradıldı: {count} ölkə.',
+  outlineResult: 'Tanınan ölkələr: {correct} / {total} ({percent}%).',
 };
 
 export default menu;

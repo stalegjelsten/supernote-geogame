@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Usuń',
   statsResetDone: 'Statystyki zostały usunięte.',
   statsRecent: 'Ostatnie arkusze (% dobrze)',
+  statsSkillOutline: 'Kraje po konturze',
+
+  outlineMode: 'Kontur',
+  outlineHint: 'Wpisz nazwę kraju pod każdym konturem.',
+  outlineTitle: 'Kraje po konturze',
+  outlineSubtitle: 'Wpisz nazwę kraju na linii w każdej ramce.\nSprawdź stronę z menu World Capitals Quiz.',
+  outlineSize: 'Rozmiar',
+  outlineSizeLarge: 'Duży',
+  outlineSizeMedium: 'Średni',
+  outlineSizeSmall: 'Mały',
+  outlineScale: 'Skala',
+  outlineScaleFit: 'Wypełnij ramkę',
+  outlineScaleBar: 'Wypełnij ramkę, z podziałką',
+  outlineScaleSame: 'Względny rozmiar',
+  outlineScaleHint: 'Kraje są narysowane proporcjonalnie do siebie w skali logarytmicznej: kraj dziesięć razy dłuższy jest narysowany około 1,4 raza większy, więc małe kraje nadal są widoczne.',
+  outlineRotation: 'Obrót',
+  outlineRotationNone: 'Brak',
+  outlineRotationSome: 'Trochę',
+  outlineRotationAny: 'Dowolny kąt',
+  outlineMade: 'Utworzono arkusz z konturami (kraje: {count}).',
+  outlineResult: 'Rozpoznane kraje: {correct} z {total} ({percent}%).',
 };
 
 export default menu;

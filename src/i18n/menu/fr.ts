@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Supprimer',
   statsResetDone: 'Statistiques supprimées.',
   statsRecent: 'Dernières feuilles (% juste)',
+  statsSkillOutline: 'Pays par leur contour',
+
+  outlineMode: 'Contour',
+  outlineHint: 'Écris le nom du pays sous chaque contour.',
+  outlineTitle: 'Pays par leur contour',
+  outlineSubtitle: 'Écris le nom du pays sur la ligne de chaque case.\nCorrige la page depuis le menu World Capitals Quiz.',
+  outlineSize: 'Taille',
+  outlineSizeLarge: 'Grande',
+  outlineSizeMedium: 'Moyenne',
+  outlineSizeSmall: 'Petite',
+  outlineScale: 'Échelle',
+  outlineScaleFit: 'Remplir la case',
+  outlineScaleBar: 'Remplir la case, avec barre d’échelle',
+  outlineScaleSame: 'Taille relative',
+  outlineScaleHint: 'Les pays sont dessinés proportionnellement les uns aux autres sur une échelle logarithmique : un pays dix fois plus long est dessiné environ 1,4 fois plus grand, pour que les petits pays restent visibles.',
+  outlineRotation: 'Rotation',
+  outlineRotationNone: 'Aucune',
+  outlineRotationSome: 'Un peu',
+  outlineRotationAny: 'N’importe quel angle',
+  outlineMade: 'Fiche contours créée avec {count} pays.',
+  outlineResult: 'Tu as reconnu {correct} pays sur {total} ({percent} %).',
 };
 
 export default menu;

@@ -26,6 +26,16 @@ To update, install the new `geogame.snplg` from a later release the same way.
 
 Choose **Game: Map** in the menu to mark places with a cross on a high-contrast map instead of writing. Choose whether to mark **Capitals** or **Countries**, what the list shows (city and country, city only or country only) and how many (5, 10 or 15). Grade with **Grade this page**. Capitals score up to 1000 points each depending on how many kilometres off the cross is; countries are right or wrong. To skip one, draw a line in the box in front of it in the list.
 
+## Outline quiz
+
+Choose **Game: Outline** to get the outlines of 6, 9, 12, 16 or 20 countries in a grid, and write the name of the country on the line in each box. Grade with **Grade this page**; the name is accepted in the sheet's language and in English, with a few typos allowed ("almost").
+
+- **Size:** large, medium or small outlines.
+- **Scale:** *Fill the box* (every country as large as the box allows), *Fill the box, with scale bar* (the same, with a scale bar in km in each box), or *Relative size*: the countries are drawn in proportion to each other on a logarithmic scale, since on a linear scale most countries become specks next to Russia. A country ten times as long as another is drawn about 1.4 times as large (each factor of ten takes 30 % off the size, down to at least 15 %). These boxes also get a scale bar.
+- **Rotation:** none, a little (up to ±35°) or any angle.
+
+The outlines come from Natural Earth 1:10m (public domain). Each country is projected on its own (Lambert azimuthal equal-area centred on the country), overseas parts far from the main part (such as French Guiana) and very small islands are left out, and the shapes are simplified to at most 420 points (`node --no-warnings --import ./scripts/ts-resolve.mjs scripts/gen-outlines.ts`). Which country is in which box is stored in a short code at the bottom of the sheet ("ID o1.nb.…"), so the names don't show. Outline sheets are for one player, and the results are saved in the statistics as **Countries by outline**. Preview a sheet without a device with `scripts/preview-outline-sheet.ts`.
+
 ## Languages
 
 The sheets and the menu are available in 55 languages. By default the plugin follows the device language; another language can be chosen in the **Language** tab. Answers are read with Supernote's handwriting recognition, which uses the recognition language set on the device, so set it to the language you write in.
@@ -82,6 +92,7 @@ Install the build the same way as under [Installation](#installation). Publish v
 - `src/sdk/statsStore.ts` – stores the history as empty folders in `<plugin folder>/stats/` (the SDK cannot write files)
 - `src/actions.ts` – creating and grading table sheets, and saving statistics
 - `src/mapActions.ts` – creating and grading map sheets; `src/sdk/mapAssets.ts` – the bundled maps
+- `src/outlineActions.ts` – creating and grading outline sheets; `src/core/outlineSheet.ts` – layout, scaling, rotation, the hidden key and grading; `src/data/outlines.ts` – the outlines (generated)
 - `App.tsx` – the menu opened from the toolbar, with the tabs New worksheet, Statistics and Language
 
 ## Which countries and capitals are included
@@ -96,4 +107,4 @@ The code is licensed under [MIT](LICENSE). The plugin uses this data (details an
 
 - **Country names**: Unicode CLDR (Unicode License v3)
 - **Capitals and coordinates**: Wikidata (CC0)
-- **Maps**: Natural Earth (public domain). The maps show the de facto boundaries and take no position in border disputes.
+- **Maps and country outlines**: Natural Earth (public domain). The maps show the de facto boundaries and take no position in border disputes.

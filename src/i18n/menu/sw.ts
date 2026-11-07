@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Futa',
   statsResetDone: 'Takwimu zimefutwa.',
   statsRecent: 'Karatasi za hivi karibuni (% sahihi)',
+  statsSkillOutline: 'Nchi kwa umbo',
+
+  outlineMode: 'Umbo',
+  outlineHint: 'Andika jina la nchi chini ya kila umbo.',
+  outlineTitle: 'Nchi kwa umbo',
+  outlineSubtitle: 'Andika jina la nchi kwenye mstari katika kila kisanduku.\nSahihisha ukurasa kutoka kwenye menyu ya World Capitals Quiz.',
+  outlineSize: 'Ukubwa',
+  outlineSizeLarge: 'Kubwa',
+  outlineSizeMedium: 'Wastani',
+  outlineSizeSmall: 'Ndogo',
+  outlineScale: 'Kipimo',
+  outlineScaleFit: 'Jaza kisanduku',
+  outlineScaleBar: 'Jaza kisanduku, pamoja na upau wa kipimo',
+  outlineScaleSame: 'Ukubwa linganishi',
+  outlineScaleHint: 'Nchi zimechorwa kwa uwiano kati yao kwa kipimo cha logariti: nchi yenye urefu mara kumi huchorwa takriban mara 1.4 kubwa zaidi, hivyo nchi ndogo bado zinaonekana.',
+  outlineRotation: 'Kuzungusha',
+  outlineRotationNone: 'Hakuna',
+  outlineRotationSome: 'Kidogo',
+  outlineRotationAny: 'Pembe yoyote',
+  outlineMade: 'Imetengeneza karatasi ya maumbo yenye nchi {count}.',
+  outlineResult: 'Umetambua nchi {correct} kati ya {total} ({percent}%).',
 };
 
 export default menu;

@@ -119,6 +119,27 @@ const menu: MenuStrings = {
   statsConfirm: 'Ջնջել',
   statsResetDone: 'Վիճակագրությունը ջնջվեց։',
   statsRecent: 'Վերջին թերթերը (% ճիշտ)',
+  statsSkillOutline: 'Երկրներն ըստ ուրվագծի',
+
+  outlineMode: 'Ուրվագիծ',
+  outlineHint: 'Գրեք երկրի անունը յուրաքանչյուր ուրվագծի տակ։',
+  outlineTitle: 'Երկրներն ըստ ուրվագծի',
+  outlineSubtitle: 'Գրեք երկրի անունը յուրաքանչյուր շրջանակի գծի վրա։\nՍտուգեք էջը World Capitals Quiz-ի ընտրացանկից։',
+  outlineSize: 'Չափ',
+  outlineSizeLarge: 'Մեծ',
+  outlineSizeMedium: 'Միջին',
+  outlineSizeSmall: 'Փոքր',
+  outlineScale: 'Մասշտաբ',
+  outlineScaleFit: 'Լցնել շրջանակը',
+  outlineScaleBar: 'Լցնել շրջանակը, մասշտաբի գծով',
+  outlineScaleSame: 'Հարաբերական չափ',
+  outlineScaleHint: 'Երկրները նկարված են միմյանց համամասնորեն՝ լոգարիթմական մասշտաբով. տասն անգամ ավելի երկար երկիրը նկարված է մոտ 1,4 անգամ ավելի մեծ, որպեսզի փոքր երկրներն էլ երևան։',
+  outlineRotation: 'Պտույտ',
+  outlineRotationNone: 'Առանց',
+  outlineRotationSome: 'Մի փոքր',
+  outlineRotationAny: 'Ցանկացած անկյուն',
+  outlineMade: 'Ստեղծվեց ուրվագծերի թերթ՝ {count} երկրով։',
+  outlineResult: 'Ճանաչված երկրներ՝ {correct} / {total} ({percent}%)։',
 };
 
 export default menu;
