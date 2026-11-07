@@ -89,6 +89,51 @@ export function allowedErrors(length: number): number {
 }
 
 /**
+ * Latinske bokstaver som ser helt like ut som kyrilliske eller greske
+ * (A/А, B/В, E/Е, K/К, O/О, P/Р, C/С, T/Т, X/Х …), etter normalisering til
+ * små bokstaver. Gjenkjenningen blander ofte skriftene for slike tegn.
+ * Bokstaver som bare ligner (N for И, R for Я), er ekte skrivefeil og
+ * gjøres ikke om.
+ */
+const LATIN_TO_CYRILLIC: Record<string, string> = {
+  a: 'а', b: 'в', c: 'с', e: 'е', h: 'н', k: 'к', m: 'м', o: 'о',
+  p: 'р', t: 'т', x: 'х', y: 'у', '3': 'з',
+};
+const LATIN_TO_GREEK: Record<string, string> = {
+  a: 'α', b: 'β', e: 'ε', h: 'η', i: 'ι', k: 'κ', m: 'μ', n: 'ν', o: 'ο',
+  p: 'ρ', t: 'τ', x: 'χ', y: 'υ', z: 'ζ',
+};
+const CYRILLIC = /[\u0400-\u052f]/;
+const GREEK = /[\u0370-\u03ff]/;
+const LATIN = /[a-z]/;
+
+function mapChars(text: string, table: Record<string, string>): string {
+  let out = '';
+  for (const ch of text) {
+    out += table[ch] ?? ch;
+  }
+  return out;
+}
+
+/**
+ * Svaret slik det er lest, pluss varianter der latinske bokstaver er gjort om
+ * til kyrilliske eller greske, når fasiten er skrevet i den skriften.
+ */
+function readings(answer: string, targets: string[]): string[] {
+  const out = [answer];
+  if (!LATIN.test(answer) && !/3/.test(answer)) {
+    return out;
+  }
+  if (targets.some(t => CYRILLIC.test(t))) {
+    out.push(mapChars(answer, LATIN_TO_CYRILLIC));
+  }
+  if (targets.some(t => GREEK.test(t))) {
+    out.push(mapChars(answer, LATIN_TO_GREEK));
+  }
+  return [...new Set(out)];
+}
+
+/**
  * @param accepted Skrivemåter som godtas, også med noen skrivefeil.
  * @param rejected Svar som aldri skal godtas som «nesten», typisk hovedstedene i
  *   andre land. Skriver du nøyaktig en annen hovedstad, er det feil selv om den
@@ -103,14 +148,16 @@ export function matchAnswer(
 ): MatchResult {
   const answer = normalize(recognized);
   if (!answer) {return {verdict: 'blank', distance: Infinity};}
-  const exact = [...accepted, ...exactOnly].find(a => normalizeCached(a) === answer);
+  const answers = readings(answer, accepted.map(normalizeCached));
+  const exact = [...accepted, ...exactOnly].find(a => answers.includes(normalizeCached(a)));
   if (exact !== undefined) {
     return {verdict: 'correct', matched: exact, distance: 0};
   }
-  const isRejected = Array.isArray(rejected)
-    ? rejected.some(r => normalizeCached(r) === answer)
-    : (rejected as ReadonlySet<string>).has(answer);
-  if (isRejected) {
+  const isRejected = (a: string) =>
+    Array.isArray(rejected)
+      ? rejected.some(r => normalizeCached(r) === a)
+      : (rejected as ReadonlySet<string>).has(a);
+  if (answers.some(isRejected)) {
     return {verdict: 'wrong', distance: Infinity};
   }
 
@@ -118,11 +165,12 @@ export function matchAnswer(
   for (const option of accepted) {
     const target = normalizeCached(option);
     if (!target) {continue;}
-    const d = levenshtein(answer, target);
-    if (d === 0) {return {verdict: 'correct', matched: option, distance: 0};}
-    if (d < best.distance) {
-      const verdict = d <= allowedErrors(target.length) ? 'close' : 'wrong';
-      best = {verdict, matched: option, distance: d};
+    for (const a of answers) {
+      const d = levenshtein(a, target);
+      if (d < best.distance) {
+        const verdict = d <= allowedErrors(target.length) ? 'close' : 'wrong';
+        best = {verdict, matched: option, distance: d};
+      }
     }
   }
   return best;

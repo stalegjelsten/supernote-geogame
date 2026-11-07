@@ -149,14 +149,31 @@ export const LINE_HEIGHT = 1.35;
 /** Fulle bredder: CJK, kana, hangul og fullbredde tegnsetting. */
 const WIDE = /[\u1100-\u11ff\u2e80-\u9fff\uac00-\ud7af\uf900-\ufaff\uff00-\uffef]/;
 
+/** Kyrilliske og greske bokstaver som er ekstra brede (ш, щ, ж, ю, м, ы, ф, ω …). */
+const EXTRA_WIDE = /[шщжюмыфШЩЖЮМЫФωΩΨψΦφ]/;
+/** Store bokstaver i kyrillisk og gresk skrift. */
+const UPPER_CYRL_GREEK = /[\u0391-\u03a9\u0400-\u042f\u0460-\u0481\u048a-\u04c0\u04d0-\u04fe]/;
+/** Kyrillisk, gresk, armensk og georgisk: bredere enn latinske bokstaver i samme skrift. */
+const CYRL_GREEK = /[\u0370-\u03ff\u0400-\u052f\u0531-\u0587\u10a0-\u10ff]/;
+
 /**
- * Omtrentlig bredde på en linje i em: vanlige tegn er ca. 0,55 × skriftstørrelsen,
- * brede tegn (kinesisk, japansk, koreansk) ca. 1.
+ * Omtrentlig bredde på en linje i em: latinske tegn er ca. 0,55 × skriftstørrelsen,
+ * kyrilliske og greske 0,62–0,85, brede tegn (kinesisk, japansk, koreansk) ca. 1.
  */
 export function textWidthEm(line: string): number {
   let w = 0;
   for (const ch of line) {
-    w += WIDE.test(ch) ? 1 : 0.55;
+    if (WIDE.test(ch)) {
+      w += 1;
+    } else if (EXTRA_WIDE.test(ch)) {
+      w += 0.85;
+    } else if (UPPER_CYRL_GREEK.test(ch)) {
+      w += 0.72;
+    } else if (CYRL_GREEK.test(ch)) {
+      w += 0.62;
+    } else {
+      w += 0.55;
+    }
   }
   return w;
 }
