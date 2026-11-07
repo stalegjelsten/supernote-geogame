@@ -21,7 +21,7 @@ const nb: Language = {
     titlePrefix: 'Hovedsteder',
     partSuffix: (part, parts) => ` · side ${part} av ${parts}`,
     partPattern: /side (\d+) av (\d+)\s*$/,
-    subtitle: 'Skriv hovedstaden i midtkolonnen. Rett arket fra Geogame-menyen når du er ferdig.',
+    subtitle: 'Skriv hovedstaden i midtkolonnen. Rett arket fra World Capitals Quiz-menyen når du er ferdig.',
     colCountry: 'Land',
     colAnswer: 'Hovedstad',
     colResult: 'Resultat',
@@ -32,7 +32,7 @@ const nb: Language = {
   },
 
   ui: {
-    title: 'Geogame – hovedsteder',
+    title: 'World Capitals Quiz',
     newSheet: 'Nytt arbeidsark',
     region: 'Verdensdel',
     count: 'Antall land',
@@ -73,13 +73,13 @@ const nb: Language = {
   },
 
   errors: {
-    noSheet: 'Fant ikke et Geogame-ark på denne siden. Lag et nytt ark først.',
+    noSheet: 'Fant ikke et World Capitals Quiz-ark på denne siden. Lag et nytt ark først.',
     noCountries: 'Fant ingen land på arket.',
     openNote: 'Åpne en notatside (.note) først.',
     failed: what => `${what} feilet`,
     newPageTemplates: details => `Klarte ikke å lage ny side. Prøvde maler:\n${details}`,
     newPageNoTemplates: 'Klarte ikke å lage ny side: fant ingen sidemaler på enheten.',
-    permission: 'Geogame leser og skriver arbeidsarket på siden.',
+    permission: 'World Capitals Quiz leser og skriver arbeidsarket på siden.',
   },
 };
 
