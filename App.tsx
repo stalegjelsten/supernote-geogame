@@ -416,12 +416,12 @@ function App(): React.JSX.Element {
       </View>
 
       {/* The status sits right under the tabs, not at the bottom of the menu, so it is
-          always on screen: on Manta the bottom of the menu is below the edge. */}
-      {status.kind === 'busy' && (
-        <View style={styles.busyBar}>
-          <Text style={styles.busyText}>{status.message}</Text>
-        </View>
-      )}
+          always on screen: on Manta the bottom of the menu is below the edge.
+          The black bar is always there (empty when idle), so the menu doesn't jump down
+          when something starts. A non-breaking space keeps the height of one line. */}
+      <View style={styles.busyBar}>
+        <Text style={styles.busyText}>{status.kind === 'busy' ? status.message : ' '}</Text>
+      </View>
       {status.kind === 'done' && (
         <View style={styles.statusBar}>
           <View style={styles.statusHead}>
