@@ -11,6 +11,9 @@ export type CountryEntry = readonly [name: string, capital: string, alternatives
 /** Every country must have a name in each language; TypeScript complains if one is missing. */
 export type CountryNames = Record<CountryCode, CountryEntry>;
 
+/** Short notes on capitals, printed as footnotes when grading (see notes.ts). */
+export type CapitalNotes = Partial<Record<CountryCode, string>>;
+
 export interface Language {
   /** Language code, e.g. 'nb' or 'en'. */
   code: string;
@@ -21,6 +24,8 @@ export interface Language {
 
   /** Translated menu texts for languages not written by hand (see menu/types.ts). */
   menu?: MenuStrings;
+  /** Translated capital notes for languages not written by hand (see notes.ts). */
+  notes?: CapitalNotes;
 
   countries: CountryNames;
   continents: Record<Continent, string>;

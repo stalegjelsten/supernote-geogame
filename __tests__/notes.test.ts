@@ -4,23 +4,26 @@ import {isNotesText, noteMarker, planNotes} from '../src/core/notes';
 import {gradeAnswer, isResultText} from '../src/core/sheet';
 import {countryIn} from '../src/core/countries';
 import type {CountryCode} from '../src/data/countries';
-import {getLanguage} from '../src/i18n';
+import {getLanguage, LANGUAGES} from '../src/i18n';
 import {ALL_CAPITAL_NOTES, capitalNotes} from '../src/i18n/notes';
 
 describe('notes about capitals', () => {
   const nb = ALL_CAPITAL_NOTES.nb;
   const en = ALL_CAPITAL_NOTES.en;
+  const all = LANGUAGES.map(l => [l.code, capitalNotes(l)] as const);
 
-  test('Norwegian and English have notes for the same countries', () => {
-    expect(Object.keys(nb).sort()).toEqual(Object.keys(en).sort());
+  test('every language has notes for the same countries as English', () => {
+    for (const [code, notes] of all) {
+      expect([code, Object.keys(notes).sort()]).toEqual([code, Object.keys(en).sort()]);
+    }
   });
 
   test('all country codes exist, and the notes are short', () => {
-    for (const notes of Object.values(ALL_CAPITAL_NOTES)) {
+    for (const [lang, notes] of all) {
       for (const [code, text] of Object.entries(notes)) {
         expect(COUNTRY_CODES).toContain(code);
-        expect(text!.length).toBeLessThanOrEqual(70);
-        expect(isNotesText(text!)).toBe(false);
+        expect([lang, code, [...text!].length <= 70]).toEqual([lang, code, true]);
+        expect([lang, code, isNotesText(text!)]).toEqual([lang, code, false]);
       }
     }
   });
@@ -30,8 +33,12 @@ describe('notes about capitals', () => {
     expect(en.TZ).toContain('Dar es Salaam');
   });
 
-  test('languages without their own notes get English', () => {
-    expect(capitalNotes(getLanguage('de')!)).toBe(en);
+  test('the other languages have their own translated notes', () => {
+    for (const [code, notes] of all) {
+      if (code !== 'en') {
+        expect([code, notes === en]).toEqual([code, false]);
+      }
+    }
     expect(capitalNotes(getLanguage('nb')!)).toBe(nb);
   });
 });

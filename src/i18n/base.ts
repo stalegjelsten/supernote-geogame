@@ -6,7 +6,7 @@
  * Page numbers are written language-neutrally as " · 2/3", and the score as "Punkte: 12/20".
  */
 import en from './en';
-import type {CountryNames, Language} from './types';
+import type {CapitalNotes, CountryNames, Language} from './types';
 import type {Continent} from '../data/countries';
 import {fmt, plural} from './menu/build';
 import type {MenuStrings} from './menu/types';
@@ -28,6 +28,7 @@ export interface SheetLanguageDef {
   /** "read", used as "(read: “Oslo”)". */
   readWord: string;
   menu?: MenuStrings;
+  notes?: CapitalNotes;
   ui?: Partial<Language['ui']>;
   progress?: Partial<Language['progress']>;
   errors?: Partial<Language['errors']>;
@@ -99,6 +100,7 @@ export function sheetLanguage(d: SheetLanguageDef): Language {
     label: d.label,
     locales: d.locales,
     menu: d.menu,
+    notes: d.notes,
     countries: d.countries,
     continents: d.continents,
     world: d.world,

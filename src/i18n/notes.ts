@@ -2,14 +2,13 @@
  * Short notes on capitals that are often confused with another city, or where the
  * country has several capitals. Shown as a footnote at the bottom of the table sheet when grading.
  *
- * Only Norwegian and English are written; the other languages get English text, like
- * the map mode (see map.ts). Keep each note short (preferably under 60 characters), so
+ * Norwegian and English are written here; the other languages have their notes in
+ * capital-notes/<code>.ts (translated from `en`), with English as fallback. Keep each note short (preferably under 60 characters), so
  * several fit on a full page.
  */
-import type {CountryCode} from '../data/countries';
-import type {Language} from './types';
+import type {CapitalNotes, Language} from './types';
 
-export type CapitalNotes = Partial<Record<CountryCode, string>>;
+export type {CapitalNotes} from './types';
 
 const nb: CapitalNotes = {
   // Europe
@@ -117,7 +116,7 @@ const OWN: Record<string, CapitalNotes> = {nb, en};
 
 /** The notes in the sheet's language, with English as fallback. */
 export function capitalNotes(lang: Language): CapitalNotes {
-  return OWN[lang.code] ?? en;
+  return OWN[lang.code] ?? lang.notes ?? en;
 }
 
 /** For tests: all languages that have their own notes. */
