@@ -89,20 +89,32 @@ export function regionSize(region: Region): number {
   return COUNTRY_CODES.filter(c => region === 'ALL' || CONTINENT_OF[c] === region).length;
 }
 
-/** Trekker `count` tilfeldige land fra regionen. `random` kan byttes ut i tester. */
+/** Rekkefølgen land trekkes i; de første kommer på arket. Se `orderForTraining` i training.ts. */
+export type CountryOrder = (pool: Country[]) => Country[];
+
+/** Tilfeldig rekkefølge (Fisher–Yates). */
+export function shuffle<T>(items: readonly T[], random: () => number = Math.random): T[] {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+/**
+ * Trekker `count` land fra regionen, tilfeldig eller i rekkefølgen `order` gir
+ * (en treningsmodus). `random` kan byttes ut i tester.
+ */
 export function pickCountries(
   lang: Language,
   region: Region,
   count: number,
   random: () => number = Math.random,
+  order: CountryOrder = pool => shuffle(pool, random),
 ): Country[] {
   const pool = countriesIn(lang).filter(c => region === 'ALL' || c.continent === region);
-  const shuffled = [...pool];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled.slice(0, Math.min(count, shuffled.length));
+  return order(pool).slice(0, Math.min(count, pool.length));
 }
 
 function answersIn(lang: Language, code: CountryCode): string[] {

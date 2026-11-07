@@ -62,6 +62,9 @@ import {
   type PageElement,
   type PageRef,
 } from './sdk/notes';
+import {computeStats, sheetKey, verdictScore, type Attempt, type Skill} from './core/stats';
+import {orderForTraining, type Strategy} from './core/training';
+import {loadRecords, saveRecord} from './sdk/statsStore';
 
 /** Strekbredde for tabellinjer; se kommentaren i createSheet. */
 const LINE_WIDTH = 200;
@@ -70,6 +73,31 @@ const LINE_WIDTH = 200;
 const MARK_WIDTH = 300;
 
 export type Progress = (message: string) => void;
+
+/**
+ * Rekkefølgen land skal trekkes i for en treningsmodus, eller undefined for
+ * vanlig tilfeldig trekning. Leser statistikken for ferdigheten.
+ */
+export async function trainingOrder(
+  skill: Skill,
+  strategy: Strategy,
+): Promise<((pool: Country[]) => Country[]) | undefined> {
+  if (strategy === 'random') {
+    return undefined;
+  }
+  const stats = computeStats(await loadRecords(), skill);
+  const now = Date.now();
+  return pool => orderForTraining(pool, stats, strategy, now);
+}
+
+/** Lagrer resultatene fra en rettet side. Feil i lagringen stopper aldri rettingen. */
+export async function recordResults(notePath: string, skill: Skill, attempts: Attempt[]): Promise<void> {
+  if (!attempts.length) {
+    return;
+  }
+  const key = sheetKey(notePath, skill, attempts.map(a => a.code));
+  await saveRecord({skill, time: Date.now(), key, attempts});
+}
 
 /** Antall elementer på siden, så UI-et kan advare før det skrives over en side med innhold. */
 export async function countElementsOnPage(): Promise<number> {
@@ -201,6 +229,7 @@ export interface CreateSummary {
 
 /**
  * Lager et arbeidsark på språket `lang`, fordelt på flere sider hvis det er mer enn 20 land.
+ * `strategy` velger landene (se core/training.ts); 'random' trekker tilfeldig.
  * @param where 'here' = første side på nåværende side, resten på nye sider etter den;
  *   'newPage' = alle sidene på nye sider rett etter nåværende side.
  */
@@ -211,13 +240,15 @@ export async function createSheet(
   where: 'here' | 'newPage',
   progress: Progress,
   game?: Game,
+  strategy: Strategy = 'random',
 ): Promise<CreateSummary> {
   await ensurePermissions();
   const ref = await currentPage();
   const ui = currentLanguage();
   const multi = game && game.players > 1 ? game : undefined;
   const n = multi?.mode === 'shared' ? sharedCount(count, multi.players, regionSize(region)) : count;
-  const countries = pickCountries(lang, region, n);
+  const order = await trainingOrder('capital', strategy);
+  const countries = pickCountries(lang, region, n, Math.random, order);
   // Færre land per side på mindre sider (Nomad, A5X), så radene blir høye nok til å skrive i.
   const chunks = splitIntoPages(countries, maxRowsPerPage(ref.size));
   if (multi?.mode === 'pass') {
@@ -612,6 +643,11 @@ async function gradePage(
   });
   await insertDrafts(ref, drafts);
   await saveNote();
+  // Statistikk bare for én spiller; på flerspillerark tilhører svarene flere.
+  if (!tag) {
+    const attempts = graded.map(g => ({code: g.country.code, score: verdictScore(g.result.verdict)}));
+    await recordResults(ref.notePath, 'capital', attempts);
+  }
   return {points, total, players};
 }
 

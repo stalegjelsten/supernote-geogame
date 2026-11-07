@@ -18,6 +18,10 @@ Velg **Spillere: 2–4** i menyen og hvordan dere spiller:
 
 Hvilket spill en side hører til, står først i undertittelen («Spiller 2 av 3 · …», «Duell for 2 · …») og leses ved retting (`src/core/hotseat.ts`).
 
+## Statistikk
+
+Hver retting lagres: hvilket land, hvilken ferdighet (skrive hovedstad, hovedstad på kartet, land på kartet) og hvor godt det gikk. Retter du samme ark på nytt, erstattes den forrige rettingen. Menyen viser statistikk for spillet og verdensdelen som er valgt, og landene du bør øve mer på.
+
 ## Utvikling
 
 ```bash
@@ -33,7 +37,10 @@ Installer ved å kopiere `geogame.snplg` til `MyStyle/` på enheten og gå til I
 
 - `src/data/countries.ts` – land, hovedsteder og godkjente alternative svar
 - `src/core/` – ren logikk uten SDK (sammenligning, layout, radfordeling), testet i `__tests__/`
+- `src/core/stats.ts` – svarhistorikk og statistikk per land (mestring, Leitner-boks, repetisjonsplan)
+- `src/core/training.ts` – strategier for å velge land til nye ark (`random`, `smart`, `weak`, `due`, `new`)
 - `src/sdk/notes.ts` – innpakning av `sn-plugin-lib`
+- `src/sdk/statsStore.ts` – lagrer historikken som tomme mapper i `<pluginmappe>/stats/` (SDK-en kan ikke skrive filer)
 - `src/actions.ts` – «Nytt ark» og «Rett arket»
 - `App.tsx` – menyen som åpnes fra verktøylinja
 
