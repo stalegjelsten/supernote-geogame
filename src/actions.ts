@@ -29,6 +29,7 @@ import {
   guessLayoutVersion,
   maxRowsPerPage,
   textWidthEm,
+  titleFontSize,
   type SheetLayout,
   type Rect,
   type Size,
@@ -173,7 +174,7 @@ function sheetDrafts(
     kind: 'text',
     text: title,
     rect: L.title,
-    fontSize: Math.round(L.fontSize * 1.4),
+    fontSize: titleFontSize(title, L.title, Math.round(L.fontSize * 1.4)),
     bold: true,
     locked: true,
   });

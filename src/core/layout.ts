@@ -188,6 +188,18 @@ export function fitFontSize(text: string, cell: Rect, maxSize: number): number {
   return Math.max(12, Math.round(Math.min(maxSize, fitW, fitH)));
 }
 
+/** Bold text is wider than textWidthEm estimates for regular text. */
+const BOLD_WIDTH = 1.1;
+
+/**
+ * Font size for a sheet title: at most `maxSize`, but small enough that the
+ * title stays on one line, so a long title does not wrap onto the subtitle below.
+ */
+export function titleFontSize(title: string, rect: Rect, maxSize: number): number {
+  const em = textWidthEm(title.replace(/\n/g, ' ')) * BOLD_WIDTH;
+  return Math.max(12, Math.min(maxSize, Math.floor((rect.right - rect.left) / em)));
+}
+
 /**
  * Text boxes are drawn from the top of the rectangle. To center the text
  * vertically in the cell we make a shorter rectangle around the cell's midline.

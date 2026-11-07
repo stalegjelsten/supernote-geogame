@@ -24,7 +24,7 @@ import {
 } from './countries';
 import type {Draft} from './draft';
 import type {Rect, Size} from './layout';
-import {fitFontSize, centeredTextRect} from './layout';
+import {fitFontSize, centeredTextRect, titleFontSize} from './layout';
 import {computeMapLayout, type MapSheetLayout} from './mapLayout';
 import {assignMarks, groupMarks, type Assignment} from './mapMarks';
 import {countryLabel, hitsCountry} from './countryCells';
@@ -367,15 +367,16 @@ export function mapSheetDrafts(
 ): Draft[] {
   const L = mapLayoutFor(page, region, countries.length);
   const subtitle = mapSubtitle(lang, style, target, tag);
+  const title = mapSheetTitle(lang, region, target);
   // In country mode only the country is in the list.
   const listStyle: MapEntryStyle = target === 'country' ? 'country' : style;
   const drafts: Draft[] = [
     {kind: 'picture', path: picturePath, rect: L.map},
     {
       kind: 'text',
-      text: mapSheetTitle(lang, region, target),
+      text: title,
       rect: L.title,
-      fontSize: Math.round(L.fontSize * 1.4),
+      fontSize: titleFontSize(title, L.title, Math.round(L.fontSize * 1.4)),
       bold: true,
       locked: true,
     },
