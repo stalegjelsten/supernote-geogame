@@ -81,14 +81,14 @@ const nb: MapTexts = {
   countryTitlePrefix: 'Land på kartet',
   countrySubtitle:
     'Sett et kryss inne i hvert land, i samme rekkefølge som lista.\n' +
-    'Vil du hoppe over et land, setter du en strek i ruta foran det. Rett siden fra Geogame-menyen.',
+    'Vil du hoppe over et land, setter du en strek i ruta foran det. Rett siden fra World Capitals Quiz-menyen.',
   countryTotalPrefix: 'Riktige land:',
   countryTotal: (correct, total) => `Riktige land: ${correct} av ${total}`,
   subtitle: style =>
     (style === 'country'
       ? 'Sett et kryss på kartet der hovedstaden i hvert land ligger, i samme rekkefølge som lista.\n'
       : 'Sett et kryss på kartet der hver by ligger, i samme rekkefølge som lista.\n') +
-    'Vil du hoppe over en, setter du en strek i ruta foran den. Rett siden fra Geogame-menyen.',
+    'Vil du hoppe over en, setter du en strek i ruta foran den. Rett siden fra World Capitals Quiz-menyen.',
   entry: (n, capital, country) =>
     capital === country ? `${n}. ${capital}` : `${n}. ${capital} (${country})`,
   points: (points, km) => `${points} p · ${thousands(km, ' ')} km`,
@@ -147,14 +147,14 @@ const en: MapTexts = {
   countryTitlePrefix: 'Countries on the map',
   countrySubtitle:
     'Put a cross inside each country, in the same order as the list.\n' +
-    'To skip a country, draw a line in the box in front of it. Grade the page from the Geogame menu.',
+    'To skip a country, draw a line in the box in front of it. Grade the page from the World Capitals Quiz menu.',
   countryTotalPrefix: 'Correct countries:',
   countryTotal: (correct, total) => `Correct countries: ${correct} of ${total}`,
   subtitle: style =>
     (style === 'country'
       ? 'Put a cross on the map where the capital of each country is, in the same order as the list.\n'
       : 'Put a cross on the map where each city is, in the same order as the list.\n') +
-    'To skip one, draw a line in the box in front of it. Grade the page from the Geogame menu.',
+    'To skip one, draw a line in the box in front of it. Grade the page from the World Capitals Quiz menu.',
   entry: (n, capital, country) =>
     capital === country ? `${n}. ${capital}` : `${n}. ${capital} (${country})`,
   points: (points, km) => `${points} pts · ${thousands(km, ',')} km`,

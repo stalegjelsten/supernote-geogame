@@ -1,5 +1,5 @@
 /**
- * Geogame – meny som åpnes fra verktøylinja i NOTE.
+ * World Capitals Quiz – meny som åpnes fra verktøylinja i NOTE.
  *
  * Laget for e-blekk: svart på hvitt, kompakte men tydelige trykkflater, ingen animasjoner.
  */
