@@ -37,7 +37,7 @@ const nb: CapitalNotes = {
   YE: 'Sanaa styres av houthiene; regjeringen sitter i Aden.',
   // Afrika
   BJ: 'Regjeringen sitter i Cotonou, største by.',
-  BI: 'Bujumbura var hovedstad til 2019.',
+  BI: 'Bujumbura var hovedstad til 2019, nå økonomisk hovedstad.',
   CI: 'Abidjan er største by og regjeringssete.',
   EG: 'Regjeringen flytter til en ny administrativ hovedstad.',
   CM: 'Douala er største by.',
@@ -88,7 +88,7 @@ const en: CapitalNotes = {
   YE: 'Sanaa is held by the Houthis; the government sits in Aden.',
   // Africa
   BJ: 'The government sits in Cotonou, the largest city.',
-  BI: 'Bujumbura was capital until 2019.',
+  BI: 'Bujumbura was capital until 2019; now the economic capital.',
   CI: 'Abidjan is the largest city and seat of government.',
   EG: 'The government is moving to a New Administrative Capital.',
   CM: 'Douala is the largest city.',
