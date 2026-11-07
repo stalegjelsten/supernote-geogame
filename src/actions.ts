@@ -49,6 +49,7 @@ import {
   type Region,
   type SheetInfo,
 } from './core/sheet';
+import {newSheetId, sheetIdDraft, sheetIdIn} from './core/sheetId';
 import {
   COLOR_BLACK,
   COLOR_DARK_GRAY,
@@ -111,11 +112,12 @@ export async function recordResults(
   skill: Skill,
   attempts: Attempt[],
   sheetCodes: readonly CountryCode[] = attempts.map(a => a.code),
+  sheetId?: string | null,
 ): Promise<void> {
   if (!attempts.length) {
     return;
   }
-  const key = sheetKey(notePath, skill, sheetCodes);
+  const key = sheetKey(notePath, skill, sheetCodes, sheetId);
   await saveRecord({skill, time: Date.now(), key, attempts});
 }
 
@@ -293,6 +295,8 @@ export async function createSheet(
     await insertBlankPages(ref, ref.page + 1, newPages);
   }
 
+  // One ID for the whole set (only single-player sheets go into the statistics).
+  const id = newSheetId();
   for (const [k, chunk] of chunks.entries()) {
     progress(chunks.length > 1 ? ui.progress.drawingPage(k + 1, chunks.length) : ui.progress.drawing);
     const page = {...ref, page: firstPage + k};
@@ -305,7 +309,8 @@ export async function createSheet(
           rowPlayers: chunk.map((_, i) => playerAt(before + i, multi.players)),
         }
       : undefined;
-    await insertDrafts(page, sheetDrafts(ref.size, lang, title, chunk, shared));
+    const drafts = sheetDrafts(ref.size, lang, title, chunk, shared);
+    await insertDrafts(page, multi ? drafts : [...drafts, sheetIdDraft(ref.size, id)]);
   }
   if (firstPage !== ref.page) {
     await jumpToPage(firstPage);
@@ -440,8 +445,18 @@ export async function gradeSheet(scope: 'page' | 'set', progress: Progress): Pro
   for (let k = 0; k < info.parts; k++) {
     const pageIndex = first + k;
     const label = ui.progress.pagePrefix(k + 1, info.parts);
-    const pref = pageIndex === ref.page ? ref : await pageRefAt(ref, pageIndex);
-    const els = pageIndex === ref.page ? elements : await getPageElements(pref);
+    if (pageIndex < 0) {
+      continue;
+    }
+    let pref: PageRef;
+    let els: PageElement[];
+    try {
+      pref = pageIndex === ref.page ? ref : await pageRefAt(ref, pageIndex);
+      els = pageIndex === ref.page ? elements : await getPageElements(pref);
+    } catch {
+      // Past the end of the note (pages deleted): skip it, as below.
+      continue;
+    }
     const pinfo = sheetInfo(els);
     if (!pinfo || pinfo.parts !== info.parts || pinfo.part !== k + 1 || !pinfo.candidates.includes(lang)) {
       // The page has been moved or deleted; skip it instead of grading the wrong page.
@@ -697,7 +712,8 @@ async function gradePage(
   // Statistics only for a single player; on multiplayer sheets the answers belong to several.
   if (!tag) {
     const attempts = graded.map(g => ({code: g.country.code, score: verdictScore(g.result.verdict)}));
-    await recordResults(ref.notePath, 'capital', attempts);
+    const id = sheetIdIn(elements.map(e => (e.type === TYPE_TEXT ? e.textBox?.textContentFull : null)));
+    await recordResults(ref.notePath, 'capital', attempts, undefined, id);
   }
   return {points, total, players};
 }

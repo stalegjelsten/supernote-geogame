@@ -15,6 +15,7 @@ import {markColor, markLayout, markStrokes, strokeAsPolygon, type MarkKind} from
 import {matchAnswer, normalizeCached, type MatchResult} from './match';
 import {OUTLINE_GRID as OUTLINE_GRID_UNITS, decodeRings} from './outlineCodec';
 import {regionName, shuffle, type CountryOrder, type Region} from './sheet';
+import {isSheetId} from './sheetId';
 
 /** Number of countries on a sheet, and the grid they are put in (columns × rows). */
 export const OUTLINE_COUNTS = [6, 9, 12, 16, 20] as const;
@@ -164,14 +165,16 @@ const A = 'A'.charCodeAt(0);
 
 const shift = (ch: string, by: number) => String.fromCharCode(A + ((((ch.charCodeAt(0) - A + by) % 26) + 26) % 26));
 
-export function outlineKey(lang: Language, codes: readonly CountryCode[]): string {
+export function outlineKey(lang: Language, codes: readonly CountryCode[], sheetId?: string): string {
   const body = codes.map((code, i) => shift(code[0], 5 + i * 3) + shift(code[1], 11 + i * 7)).join('');
-  return `${KEY_PREFIX}${lang.code}.${body}`;
+  return `${KEY_PREFIX}${lang.code}.${body}` + (sheetId ? `.${sheetId}` : '');
 }
 
 export interface OutlineSheetInfo {
   lang: Language;
   codes: CountryCode[];
+  /** The sheet ID for the statistics (see src/core/sheetId.ts); missing on older sheets. */
+  sheetId?: string;
 }
 
 export function parseOutlineKey(text: string): OutlineSheetInfo | null {
@@ -179,7 +182,7 @@ export function parseOutlineKey(text: string): OutlineSheetInfo | null {
   if (!t.startsWith(KEY_PREFIX)) {
     return null;
   }
-  const m = t.slice(KEY_PREFIX.length).match(/^([A-Za-z-]+)\.([A-Z]+)$/);
+  const m = t.slice(KEY_PREFIX.length).match(/^([A-Za-z-]+)\.([A-Z]+)(?:\.([0-9a-z]+))?$/);
   const lang = m ? getLanguage(m[1]) : undefined;
   if (!m || !lang || m[2].length % 2) {
     return null;
@@ -192,7 +195,10 @@ export function parseOutlineKey(text: string): OutlineSheetInfo | null {
     }
     codes.push(code as CountryCode);
   }
-  return codes.length ? {lang, codes} : null;
+  if (!codes.length) {
+    return null;
+  }
+  return m[3] && isSheetId(m[3]) ? {lang, codes, sheetId: m[3]} : {lang, codes};
 }
 
 export function outlineTitle(lang: Language, region: Region, count: number): string {
@@ -408,6 +414,7 @@ export function outlineSheetDrafts(
   region: Region,
   placements: Placement[],
   options: Pick<OutlineOptions, 'size' | 'scale'>,
+  sheetId?: string,
 ): Draft[] {
   const L = outlineLayout(size, placements.length);
   const t = outlineTexts(lang);
@@ -474,7 +481,7 @@ export function outlineSheetDrafts(
   const keyFont = Math.max(16, Math.round(L.smallFontSize * 0.7));
   drafts.push({
     kind: 'text',
-    text: outlineKey(lang, placements.map(p => p.code)),
+    text: outlineKey(lang, placements.map(p => p.code), sheetId),
     rect: L.key,
     fontSize: keyFont,
     align: 0,

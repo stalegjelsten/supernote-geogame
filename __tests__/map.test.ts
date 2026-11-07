@@ -564,15 +564,18 @@ describe('long entries', () => {
 });
 
 describe('options for map sheets', () => {
-  it.each(['nb', 'en'])(
+  it.each(LANGUAGES.map(l => l.code))(
     'reads all three list forms back for all countries (%s)',
     code => {
       const lang = getLanguage(code)!;
       const all = pickMapCountries(lang, 'ALL', 197, seeded(9));
       for (const style of MAP_ENTRY_STYLES) {
         for (const c of all) {
-          const parsed = parseEntry(entryText(lang, 3, c, style), lang);
-          if (parsed?.country.code !== c.code) {
+          const text = entryText(lang, 3, c, style);
+          const parsed = parseEntry(text, lang);
+          // Also when the entry is broken over two lines (fitEntry).
+          const narrow = fitEntry(text, {left: 0, top: 0, right: 200, bottom: 60}, 40);
+          if (parsed?.country.code !== c.code || parseEntry(narrow, lang)?.country.code !== c.code) {
             throw new Error(
               `${style}: "${entryText(lang, 3, c, style)}" was read as ${
                 parsed?.country.code

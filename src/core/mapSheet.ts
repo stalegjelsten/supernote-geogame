@@ -9,7 +9,7 @@
  * Everything here is pure logic. Reading and writing on the page happens in src/actions.ts.
  */
 import {CAPITAL_LONLAT} from '../data/capitals';
-import {CONTINENT_OF, CONTINENTS} from '../data/countries';
+import {CONTINENT_OF, CONTINENTS, type CountryCode} from '../data/countries';
 import {MAPS, MAP_SHEET_COUNT} from '../data/maps';
 import {LANGUAGES, type Language} from '../i18n';
 import {mapTexts, type MapEntryStyle} from '../i18n/map';
@@ -19,7 +19,6 @@ import {fairDraw, familiarity, levelPool, type Level} from './fairDraw';
 import {
   countriesIn,
   countryIn,
-  findCountryByName,
   type Country,
 } from './countries';
 import type {Draft} from './draft';
@@ -234,7 +233,10 @@ export function entryText(
 ): string {
   switch (style) {
     case 'capital':
-      return `${n}. ${c.capital}`;
+      // A city name that is also another country's capital or name in this language
+      // (Kingston/Kingstown in Chinese, Amman/Oman in Belarusian) gets the country too,
+      // so the sheet can be read back.
+      return ambiguousCapital(lang, c) ? mapTexts(lang).entry(n, c.capital, c.name) : `${n}. ${c.capital}`;
     case 'country':
       return `${n}. ${c.name}`;
     default:
@@ -242,19 +244,49 @@ export function entryText(
   }
 }
 
-/** Finds the country from the capital as written on the sheet (the sheet's language first). */
-function findCountryByCapital(
-  capital: string,
-  lang: Language,
-): Country | undefined {
-  const key = capital.trim();
+function ambiguousCapital(lang: Language, c: Country): boolean {
+  return countriesIn(lang).some(o => o.code !== c.code && (o.capital === c.capital || o.name === c.capital));
+}
+
+/**
+ * The country written as `text` (a country name or a capital): the sheet's language first,
+ * country names before capitals, then the other included languages.
+ */
+function findEntryCountry(text: string, lang: Language): CountryCode | undefined {
+  const key = text.trim();
   for (const l of [lang, ...LANGUAGES.filter(x => x.code !== lang.code)]) {
-    const found = countriesIn(l).find(c => c.capital === key);
+    const all = countriesIn(l);
+    const found = all.find(c => c.name === key) ?? all.find(c => c.capital === key);
     if (found) {
-      return countryIn(lang, found.code);
+      return found.code;
     }
   }
   return undefined;
+}
+
+/**
+ * Reads "3. Oslo (Norway)" (or "4. Singapore", "3. Myanmar (Burma)",
+ * "3. Naypyidaw (Myanmar (Burma))") back to number and country.
+ */
+export function parseEntry(
+  text: string,
+  lang: Language,
+): {n: number; country: Country} | null {
+  const trimmed = text.replace(/\s+/g, ' ').trim();
+  const m = trimmed.match(/^(\d+)\.\s+(.+)$/);
+  if (!m) {
+    return null;
+  }
+  const body = m[2];
+  // The whole text as one name first: country names may contain parentheses themselves.
+  let code = findEntryCountry(body, lang);
+  // "City (Country)": the country is everything inside the first parenthesis that closes at the end.
+  if (!code && body.endsWith(')')) {
+    for (let i = body.indexOf(' ('); i > 0 && !code; i = body.indexOf(' (', i + 1)) {
+      code = findEntryCountry(body.slice(i + 2, -1), lang);
+    }
+  }
+  return code ? {n: Number(m[1]), country: countryIn(lang, code)} : null;
 }
 
 /**
@@ -267,7 +299,7 @@ export function fitEntry(entry: string, cell: Rect, maxSize: number): string {
     return entry;
   }
   // Preferably before the parenthesis with the country; otherwise at the space that gives the largest font.
-  const paren = entry.lastIndexOf(' (');
+  const paren = entry.indexOf(' (', entry.indexOf(' ') + 1);
   const spaces = [...entry.matchAll(/ /g)]
     .map(m => m.index!)
     .filter(k => k > entry.indexOf(' '));
@@ -283,28 +315,6 @@ export function fitEntry(entry: string, cell: Rect, maxSize: number): string {
     }
   }
   return best;
-}
-
-/** Reads "3. Oslo (Norway)" (or "4. Singapore") back to number and country. */
-export function parseEntry(
-  text: string,
-  lang: Language,
-): {n: number; country: Country} | null {
-  const trimmed = text.replace(/\s+/g, ' ').trim();
-  const m =
-    trimmed.match(/^(\d+)\.\s+(.+)\s+\((.+)\)$/) ??
-    trimmed.match(/^(\d+)\.\s+(.+)()$/);
-  if (!m) {
-    return null;
-  }
-  // "3. Oslo (Norway)" → the country in parentheses; "3. Norway" → the country; "3. Oslo" → the city.
-  const found = m[3]
-    ? findCountryByName(m[3], lang)
-    : findCountryByName(m[2], lang) ?? findCountryByCapital(m[2], lang);
-  if (!found) {
-    return null;
-  }
-  return {n: Number(m[1]), country: countryIn(lang, found.code)};
 }
 
 /** Stroke width for everything the plugin draws. Stay at 200 or more (file size). */

@@ -38,6 +38,7 @@ import {
   type MapSheetInfo,
 } from './core/mapSheet';
 import type {Region} from './core/sheet';
+import {newSheetId, sheetIdDraft, sheetIdIn} from './core/sheetId';
 import type {Level} from './core/fairDraw';
 import {MAP_ASSETS} from './sdk/mapAssets';
 import {
@@ -169,7 +170,7 @@ export async function createMapSheet(
       options.style,
       options.target,
       tag,
-    ),
+    ).concat(tag ? [] : [sheetIdDraft(page.size, newSheetId())]),
   );
   if (page.page !== ref.page) {
     await jumpToPage(page.page);
@@ -500,6 +501,7 @@ async function gradeMapPage(
       skillOfTarget(target),
       attempts,
       grade.results.map(r => r.country.code),
+      sheetIdIn(elements.map(e => (e.type === TYPE_TEXT ? e.textBox?.textContentFull : null))),
     );
   }
   return {points: grade.points, max: grade.max, target, players};

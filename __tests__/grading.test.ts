@@ -4,8 +4,10 @@
  */
 const mockPages = new Map<number, unknown[]>();
 const mockInserted: Array<{page: number; elements: any[]}> = [];
+const mockDeleted: number[] = [];
+const mockNote = {path: '/notes/test.note'};
 const mockDirs = new Set<string>();
-const mockState = {page: 0};
+const mockState = {page: 0, pages: 10};
 const ok = (result: unknown) => ({success: true, result});
 
 jest.mock('sn-plugin-lib', () => ({
@@ -15,18 +17,22 @@ jest.mock('sn-plugin-lib', () => ({
     requestPermission: async () => true,
   },
   PluginCommAPI: {
-    getCurrentFilePath: async () => ok('/notes/test.note'),
+    getCurrentFilePath: async () => ok(mockNote.path),
     getCurrentPageNum: async () => ok(mockState.page),
     createElement: async (type: number) => ok({type}),
     insertPageElements: async (elements: any[], page: number) => {
       mockInserted.push({page, elements});
       return ok(true);
     },
-    deletePageElements: async () => ok(true),
+    deletePageElements: async (nums: number[]) => {
+      mockDeleted.push(...nums);
+      return ok(true);
+    },
     recognizeElements: async () => ok(''),
   },
   PluginFileAPI: {
-    getPageSize: async () => ok({width: 1920, height: 2560}),
+    getPageSize: async (_: string, page: number) =>
+      page >= 0 && page < mockState.pages ? ok({width: 1920, height: 2560}) : {success: false, error: {message: 'no such page'}},
     getElements: async (page: number) => ok(mockPages.get(page) ?? []),
   },
   PluginNoteAPI: {saveCurrentNote: async () => ok(true)},
@@ -52,6 +58,7 @@ import {computeLayout, type Rect} from '../src/core/layout';
 import {sheetTitle} from '../src/core/sheet';
 import {countryIn} from '../src/core/countries';
 import {forgetCache} from '../src/sdk/statsStore';
+import {sheetIdDraft} from '../src/core/sheetId';
 import type {CountryCode} from '../src/data/countries';
 
 const ENGLISH = MAYBE_ENGLISH!;
@@ -60,10 +67,10 @@ let num = 0;
 const text = (t: string, rect: Rect) => ({uuid: String(num), type: 500, numInPage: num++, layerNum: 0, textBox: {textContentFull: t, textRect: rect}});
 
 /** A table sheet as createSheet draws it (only the texts that grading reads). */
-function sheetPage(codes: CountryCode[], subtitle = ENGLISH.sheet.subtitle) {
+function sheetPage(codes: CountryCode[], subtitle = ENGLISH.sheet.subtitle, part = 1, parts = 1) {
   const L = computeLayout(SIZE, codes.length);
   return [
-    text(sheetTitle(ENGLISH, 'EU', codes.length), L.title),
+    text(sheetTitle(ENGLISH, 'EU', codes.length, part, parts), L.title),
     text(subtitle, L.subtitle),
     ...codes.map((c, i) => text(countryIn(ENGLISH, c).name, L.rows[i].country)),
   ];
@@ -75,8 +82,11 @@ const statsRecords = () => [...mockDirs].filter(d => d.startsWith('/plugin/stats
 beforeEach(() => {
   mockPages.clear();
   mockInserted.length = 0;
+  mockDeleted.length = 0;
+  mockNote.path = '/notes/test.note';
   mockDirs.clear();
   mockState.page = 0;
+  mockState.pages = 10;
   forgetCache();
 });
 
@@ -117,4 +127,43 @@ test('pass around: grading the whole set saves no statistics', async () => {
   expect(r.players?.map(p => p.player)).toEqual([1, 2]);
   expect(r.missing).toEqual([]);
   expect(statsRecords()).toEqual([]);
+});
+
+test('grading the whole set skips pages that are no longer in the note', async () => {
+  // Page 1 of 3 has been deleted, so "page 2 of 3" is now the first page of the note,
+  // and the note ends after page 3.
+  mockState.pages = 2;
+  mockPages.set(0, sheetPage(['NO', 'SE'], undefined, 2, 3));
+  mockPages.set(1, sheetPage(['DK', 'FI'], undefined, 3, 3));
+  const r = await gradeSheet('set', () => {});
+  expect(r.pages.map(p => p.part)).toEqual([2, 3]);
+  expect(r.total).toBe(4);
+});
+
+/** The hidden sheet ID as createSheet writes it. */
+function idText(id: string) {
+  const d = sheetIdDraft(SIZE, id);
+  if (d.kind !== 'text') {
+    throw new Error('not text');
+  }
+  return text(d.text, d.rect);
+}
+
+test('two sheets with the same countries in the same note both count in the statistics', async () => {
+  mockPages.set(0, [...sheetPage(['NO', 'SE']), idText('lx2k1a00')]);
+  await gradeSheet('page', () => {});
+  mockPages.set(0, [...sheetPage(['NO', 'SE']), idText('lx2k1b00')]);
+  await gradeSheet('page', () => {});
+  expect(statsRecords().length).toBe(2);
+});
+
+test('regrading the same sheet replaces the result, also after the note is renamed', async () => {
+  const id = idText('lx2k1a00');
+  mockPages.set(0, [...sheetPage(['NO', 'SE']), id]);
+  await gradeSheet('page', () => {});
+  mockNote.path = '/notes/renamed.note';
+  await gradeSheet('page', () => {});
+  expect(statsRecords().length).toBe(1);
+  // The ID is never removed as an old result.
+  expect(mockDeleted).not.toContain(id.numInPage);
 });

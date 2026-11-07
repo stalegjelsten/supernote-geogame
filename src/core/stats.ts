@@ -98,13 +98,20 @@ function fnv1a(text: string, seed = 0x811c9dc5): number {
 /* eslint-enable no-bitwise */
 
 /**
- * Key for a sheet: the note and which countries are on the page. The countries are included
- * so the key doesn't change if pages are inserted or moved in the note.
+ * Key for a sheet. With the hidden sheet ID (src/core/sheetId.ts): the ID and the countries on
+ * the page (the pages in a set share the ID), so renaming or moving the note doesn't matter.
+ * Older sheets without the ID: the note and the countries, so the key doesn't change if pages
+ * are inserted or moved in the note.
  */
 export const KEY_LENGTH = 14;
 
-export function sheetKey(notePath: string, skill: Skill, codes: readonly CountryCode[]): string {
-  const text = [notePath, skill, ...[...codes].sort()].join('|');
+export function sheetKey(
+  notePath: string,
+  skill: Skill,
+  codes: readonly CountryCode[],
+  sheetId?: string | null,
+): string {
+  const text = [sheetId ? `#${sheetId}` : notePath, skill, ...[...codes].sort()].join('|');
   const a = fnv1a(text).toString(36).padStart(7, '0');
   const b = fnv1a(text, 0x5ad1a7d5).toString(36).padStart(7, '0');
   return a + b;

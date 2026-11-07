@@ -8,6 +8,7 @@ import {countryIn} from './core/countries';
 import {boxOf} from './core/grouping';
 import {inside} from './core/marks';
 import {isResultText} from './core/sheet';
+import {newSheetId} from './core/sheetId';
 import {verdictScore} from './core/stats';
 import type {Strategy} from './core/training';
 import {
@@ -73,7 +74,7 @@ export async function createOutlineSheet(
     page = {...ref, page: ref.page + 1};
   }
   progress(ui.progress.drawing);
-  await insertDrafts(page, outlineSheetDrafts(page.size, lang, region, placements, options));
+  await insertDrafts(page, outlineSheetDrafts(page.size, lang, region, placements, options, newSheetId()));
   if (page.page !== ref.page) {
     await jumpToPage(page.page);
   }
@@ -164,6 +165,8 @@ export async function gradeOutlineSheet(progress: Progress): Promise<OutlineGrad
     ref.notePath,
     'outline',
     graded.map(g => ({code: g.country.code, score: verdictScore(g.result.verdict)})),
+    codes,
+    info.sheetId,
   );
   const correct = graded.filter(g => g.result.verdict === 'correct' || g.result.verdict === 'close').length;
   return {correct, total: codes.length};

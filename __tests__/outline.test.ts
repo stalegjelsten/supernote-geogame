@@ -68,6 +68,8 @@ test('the key round-trips language and countries, and does not show the codes', 
     expect(parseOutlineKey(outlineKey(lang, ['BR']))?.lang.code).toBe(lang.code);
   }
   expect(parseOutlineKey('ID o1.nb.ZZ')).toBeNull();
+  // With the sheet ID for the statistics; keys without it (older sheets) are still read.
+  expect(parseOutlineKey(outlineKey(nb, [...codes], 'lx2k1a7q'))).toEqual({lang: nb, codes: [...codes], sheetId: 'lx2k1a7q'});
   expect(parseOutlineKey('Poeng: 3 av 4')).toBeNull();
 });
 
