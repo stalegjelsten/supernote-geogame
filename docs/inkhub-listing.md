@@ -13,7 +13,7 @@ World Capitals Quiz
 
 ## Short description (PluginConfig.json `desc`)
 
-Handwritten quiz on world capitals and countries: worksheets and map quizzes, graded automatically on your Supernote.
+Handwritten quiz on world capitals and countries: worksheets, map quizzes and 2–4 player games, graded automatically on your Supernote.
 
 ## Description
 
@@ -27,6 +27,9 @@ Features
 - Europe, Asia, Africa, North America, South America, Oceania or the whole world.
 - Choose 10, 15, 20 or all countries. Long sheets are spread over several pages.
 - Accepts common alternative spellings and the English name of the capital.
+- Multiplayer for 2–4 players on one device, for both worksheets and maps:
+  - Pass around: each player gets their own pages with the same countries, with a hand-over page in between. Grade the whole set to see who won.
+  - Take turns: one shared sheet where players answer in turn, each with their own countries. Points per player are shown at the bottom.
 - Fix your answers and grade again as many times as you like.
 - 55 languages, following the device language or chosen in the menu.
 - Works fully offline. No data leaves the device.
@@ -39,7 +42,7 @@ or delete old quizzes. Each finished sheet also adds some size to the notebook.
 
 How to use
 1. Open a blank page in a notebook.
-2. Tap World Capitals Quiz in the toolbar, choose continent, sheet type and number, and make the sheet.
+2. Tap World Capitals Quiz in the toolbar, choose continent, sheet type, number and players, and make the sheet.
 3. Write your answers.
 4. Open the menu again and tap Grade.
 
@@ -57,4 +60,5 @@ position on disputed territories. Open source under the MIT License.
 4. Graded sheet with marks and score. This is the most important image, so use it as the thumbnail.
 5. Map quiz before grading, with crosses on the map.
 6. Map quiz after grading, with distance in km.
-7. (Optional) a sheet in another language, e.g. Japanese or German.
+7. Multiplayer: a graded set with the winner, or a shared sheet with points per player.
+8. (Optional) a sheet in another language, e.g. Japanese or German.
