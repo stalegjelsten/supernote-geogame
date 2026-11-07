@@ -1,14 +1,14 @@
 /**
- * Kobler språkvalget til enheten.
+ * Connects the language choice to the device.
  *
- * sn-plugin-lib har ingen funksjon som gir språket direkte: `registerLangListener`
- * melder bare fra når systemspråket endres (hendelsen `plugin_event_lang`, som i
- * Java-koden ser ut til å sendes som en ren streng, f.eks. "en"). Startverdien
- * hentes derfor fra React Native (I18nManager / Intl), og lytteren oppdaterer den.
+ * sn-plugin-lib has no function that returns the language directly: `registerLangListener`
+ * only reports when the system language changes (the event `plugin_event_lang`, which the
+ * Java code appears to send as a plain string, e.g. "en"). The initial value is therefore
+ * taken from React Native (I18nManager / Intl), and the listener updates it.
  *
- * Språkvalget i menyen lagres som en tom mappe `lang-<kode>` i pluginmappen,
- * siden SDK-en ikke kan skrive vanlige filer. Går det ikke, huskes valget bare
- * så lenge pluginen kjører.
+ * The language chosen in the menu is stored as an empty folder `lang-<code>` in the plugin
+ * folder, since the SDK cannot write regular files. If that fails, the choice is only
+ * remembered while the plugin is running.
  */
 import {I18nManager} from 'react-native';
 import {FileUtils, PluginManager} from 'sn-plugin-lib';
@@ -28,7 +28,7 @@ function initialLocale(): string | undefined {
       return id;
     }
   } catch {
-    // Ikke tilgjengelig; prøv Intl.
+    // Not available; try Intl.
   }
   try {
     return Intl.DateTimeFormat().resolvedOptions().locale;
@@ -79,14 +79,14 @@ async function saveChoice(): Promise<void> {
         await FileUtils.deleteDir(path);
       }
     } catch {
-      // Lagring er bare en bekvemmelighet.
+      // Saving is only a convenience.
     }
   }
 }
 
 let started = false;
 
-/** Kalles én gang ved oppstart (index.js). */
+/** Called once at startup (index.js). */
 export function startLanguageTracking(): void {
   if (started) {
     return;
@@ -96,7 +96,7 @@ export function startLanguageTracking(): void {
   try {
     PluginManager.registerLangListener({onMsg: msg => setDeviceLocale(localeFromEvent(msg))});
   } catch {
-    // Eldre SDK uten språklytter.
+    // Older SDK without a language listener.
   }
   loadChoice().finally(() => {
     let last = languageChoice();

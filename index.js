@@ -13,10 +13,10 @@ AppRegistry.registerComponent(appName, () => App);
 
 PluginManager.init();
 
-// Følg enhetens språk og hent et lagret språkvalg fra menyen.
+// Follow the device language and load a saved language choice from the menu.
 startLanguageTracking();
 
-// Én knapp i verktøylinja i NOTE som åpner World Capitals Quiz-menyen.
+// A single button in the NOTE toolbar that opens the World Capitals Quiz menu.
 PluginManager.registerButton(1, ['NOTE'], {
   id: 100,
   name: 'World Capitals Quiz',

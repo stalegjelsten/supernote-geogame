@@ -1,26 +1,26 @@
 /**
- * Grunnlag for treningsmoduser: hvilke land et nytt ark bør ha, ut fra
- * statistikken i stats.ts. Ren logikk, uten SDK.
+ * Basis for training modes: which countries a new sheet should have, based on
+ * the statistics in stats.ts. Pure logic, without the SDK.
  *
- * Hver strategi gir hvert land en vekt. Landene trekkes så tilfeldig, men
- * uten tilbakelegging og i forhold til vekten, så arkene blir variert selv
- * om de samme landene prioriteres.
+ * Each strategy gives each country a weight. The countries are then drawn randomly, but
+ * without replacement and in proportion to the weight, so the sheets vary even
+ * if the same countries are prioritized.
  */
 import type {CountryCode} from '../data/countries';
 import {overdue, type CountryStats, KNOWN_BOX} from './stats';
 
 /**
- * - random: som før, alle land like sannsynlige
- * - smart: blanding av land til repetisjon, svake land og noen nye
- * - weak: landene du sliter mest med
- * - due: landene som er på overtid etter repetisjonsplanen
- * - new: land du aldri har øvd på
+ * - random: as before, all countries equally likely
+ * - smart: a mix of countries for review, weak countries and some new ones
+ * - weak: the countries you struggle with most
+ * - due: the countries that are overdue per the review schedule
+ * - new: countries you have never practiced
  */
 export type Strategy = 'random' | 'smart' | 'weak' | 'due' | 'new';
 
 export const STRATEGIES: Strategy[] = ['random', 'smart', 'weak', 'due', 'new'];
 
-/** Vekten et land får; høyere = mer sannsynlig. Alltid > 0, så ingen land utelukkes helt. */
+/** The weight a country gets; higher = more likely. Always > 0, so no country is excluded entirely. */
 export function weight(s: CountryStats | undefined, strategy: Strategy, now: number): number {
   if (strategy === 'random') {
     return 1;
@@ -34,7 +34,7 @@ export function weight(s: CountryStats | undefined, strategy: Strategy, now: num
     case 'new':
       return unseen ? 20 : 1 / (1 + s!.attempts);
     case 'weak':
-      // Usette land fyller bare opp når det er få svake land.
+      // Unseen countries only fill up when there are few weak countries.
       if (unseen) {
         return 0.3;
       }
@@ -52,14 +52,14 @@ export function weight(s: CountryStats | undefined, strategy: Strategy, now: num
       if (isDue) {
         return 4 + Math.min(late, 3) + 6 * weakness;
       }
-      // Ikke på overtid: litt sjanse likevel, mest for de usikre.
+      // Not overdue: a bit of chance anyway, mostly for the uncertain ones.
       return known ? 0.2 : 0.5 + 2 * weakness;
   }
 }
 
 /**
- * Tilfeldig rekkefølge der hvert element havner tidlig i forhold til vekten
- * (Efraimidis–Spirakis: nøkkel = u^(1/w), sortert synkende).
+ * Random order where each element ends up early in proportion to its weight
+ * (Efraimidis–Spirakis: key = u^(1/w), sorted descending).
  */
 export function weightedOrder<T>(items: readonly T[], weightOf: (item: T) => number, random: () => number): T[] {
   return items
@@ -73,8 +73,8 @@ export function weightedOrder<T>(items: readonly T[], weightOf: (item: T) => num
 }
 
 /**
- * Ordner landene for et nytt ark etter strategien. Ta de første `count`
- * (eller send lista videre til et utvalg med egne krav, som avstand på kartet).
+ * Orders the countries for a new sheet by the strategy. Take the first `count`
+ * (or pass the list on to a selection with its own requirements, such as distance on the map).
  */
 export function orderForTraining<T extends {code: CountryCode}>(
   pool: readonly T[],

@@ -1,15 +1,15 @@
 /**
- * Flerspiller på én enhet (hot seat). Ren logikk uten SDK.
+ * Multiplayer on one device (hot seat). Pure logic, no SDK.
  *
- * To måter å spille på:
- *  - 'pass' (send rundt): enheten skjules for de andre. Hver spiller får egne
- *    sider med de samme landene, i rekkefølge, med en «gi enheten videre»-side
- *    mellom spillerne. Sammenlignbart, siden alle får samme oppgaver.
- *  - 'shared' (bytt på): alle ser enheten. Ett felles ark der spillerne svarer
- *    annenhver gang. Hver spiller har egne land, så det hjelper ikke å kikke.
+ * Two ways to play:
+ *  - 'pass' (pass it around): the device is hidden from the others. Each player gets their own
+ *    pages with the same countries, in order, with a "hand over the device" page
+ *    between the players. Comparable, since everyone gets the same tasks.
+ *  - 'shared' (take turns): everyone sees the device. One shared sheet where the players answer
+ *    in turn. Each player has their own countries, so peeking doesn't help.
  *
- * Hvilket spill en side hører til, står først i undertittelen
- * («Spiller 2 av 3 · …» eller «Duell for 2 · …»).
+ * Which game a page belongs to is stated first in the subtitle
+ * ("Player 2 of 3 · …" or "Duel for 2 · …").
  */
 import {ALL_HOTSEAT_TEXTS} from '../i18n/hotseat';
 
@@ -23,7 +23,7 @@ export interface Game {
   players: number;
 }
 
-/** Merkelappen på en side. `player` er 0 på et felles ark. */
+/** The label on a page. `player` is 0 on a shared sheet. */
 export interface GameTag extends Game {
   player: number;
 }
@@ -50,23 +50,23 @@ export function parseGameTag(text: string): GameTag | null {
   return null;
 }
 
-/** Felles ark: hvor mange oppgaver totalt, så alle får like mange (minst én hver). */
+/** Shared sheet: how many tasks in total, so everyone gets the same number (at least one each). */
 export function sharedCount(count: number, players: number, available = count): number {
   const n = Math.min(count, available);
   return Math.max(players, Math.floor(n / players) * players);
 }
 
-/** Felles ark: hvem som svarer på oppgave nr. `index` (fra 0). Spiller 1 begynner. */
+/** Shared sheet: who answers task no. `index` (from 0). Player 1 starts. */
 export function playerAt(index: number, players: number): number {
   return (index % players) + 1;
 }
 
-/** Tallet som står i svarruta på et felles tabellark. */
+/** The number written in the answer cell on a shared table sheet. */
 export function rowLabel(player: number): string {
   return String(player);
 }
 
-/** Leser tallet i svarruta tilbake; null hvis teksten ikke er et spillertall. */
+/** Reads the number in the answer cell back; null if the text is not a player number. */
 export function parseRowLabel(text: string, players: number): number | null {
   const m = text.trim().match(/^(\d)$/);
   const k = m ? Number(m[1]) : NaN;
@@ -74,21 +74,21 @@ export function parseRowLabel(text: string, players: number): number | null {
 }
 
 /**
- * Send rundt: sidene ligger slik i notatet, med `parts` sider per spiller:
- *   [S1 side 1..parts] [gi videre] [S2 side 1..parts] [gi videre] … [Sn …]
- * Returnerer sideindeksen der spiller `player` sin side `part` ligger,
- * gitt at spillet begynner på `first`.
+ * Pass it around: the pages lie like this in the note, with `parts` pages per player:
+ *   [P1 page 1..parts] [hand over] [P2 page 1..parts] [hand over] … [Pn …]
+ * Returns the page index where player `player`'s page `part` is,
+ * given that the game starts at `first`.
  */
 export function passPageIndex(first: number, player: number, part: number, parts: number): number {
   return first + (player - 1) * (parts + 1) + (part - 1);
 }
 
-/** Første side i spillet, regnet ut fra en side du står på. */
+/** First page of the game, computed from a page you are on. */
 export function passFirstPage(current: number, player: number, part: number, parts: number): number {
   return current - (player - 1) * (parts + 1) - (part - 1);
 }
 
-/** Antall sider et spill tar: arksider for alle pluss sidene mellom spillerne. */
+/** Number of pages a game takes: sheet pages for everyone plus the pages between players. */
 export function passPageCount(players: number, parts: number): number {
   return players * parts + (players - 1);
 }
@@ -99,7 +99,7 @@ export interface PlayerScore {
   max: number;
 }
 
-/** Legger sammen poeng per spiller (f.eks. fra flere sider). */
+/** Adds up points per player (e.g. from several pages). */
 export function sumScores(scores: PlayerScore[]): PlayerScore[] {
   const by = new Map<number, PlayerScore>();
   for (const s of scores) {
@@ -112,8 +112,8 @@ export function sumScores(scores: PlayerScore[]): PlayerScore[] {
 }
 
 /**
- * Hvem som vant. Sammenligner andelen poeng, så det blir rettferdig også om en
- * spiller har fått færre oppgaver (f.eks. en side som mangler).
+ * Who won. Compares the share of points, so it is fair even if a
+ * player got fewer tasks (e.g. a page that is missing).
  */
 export function winners(scores: PlayerScore[]): number[] {
   if (!scores.length) {

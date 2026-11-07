@@ -1,6 +1,6 @@
 /**
- * Lar Node kjøre kildefilene i src/ direkte (Node 23.6+ fjerner typene selv):
- * importer uten filendelse, som `./layout`, prøves som `./layout.ts`.
+ * Lets Node run the source files in src/ directly (Node 23.6+ strips the types itself):
+ * imports without a file extension, such as `./layout`, are tried as `./layout.ts`.
  *
  *   node --no-warnings --import ./scripts/ts-resolve.mjs scripts/preview-map-sheet.ts
  */
@@ -16,7 +16,7 @@ registerHooks({
           try {
             return nextResolve(specifier + ext, context);
           } catch {
-            // prøv neste
+            // try the next one
           }
         }
       }

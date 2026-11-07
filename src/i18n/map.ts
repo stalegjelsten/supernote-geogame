@@ -1,57 +1,57 @@
 /**
- * Tekst for kartmodusen («merk hovedstaden på kartet»).
+ * Text for the map mode ("mark the capital on the map").
  *
- * Ligger i en egen fil så kartmodusen kan bygges ut uten å endre fellestypen
- * for alle språk. Norsk og engelsk er skrevet for hånd. De andre språkene får
- * engelsk tekst, men lista over byer og land skrives på arkets språk, og
- * overskriften starter med språkets egen overskrift, så språket kjennes igjen
- * ved retting.
+ * Kept in its own file so the map mode can grow without changing the shared type
+ * for all languages. Norwegian and English are written by hand. The other languages
+ * get English text, but the list of cities and countries is written in the sheet's
+ * language, and the title starts with the language's own title, so the language is
+ * recognized when grading.
  */
 import type {Language} from './types';
 
-/** Hva lista på kartarket oppgir: by og land, bare byen, eller bare landet (da må du kunne hovedstaden). */
+/** What the list on the map sheet shows: city and country, just the city, or just the country (then you must know the capital). */
 export type MapEntryStyle = 'both' | 'capital' | 'country';
 
 export interface MapTexts {
-  /** Overskriften starter med dette; brukes til å kjenne igjen et kartark og språket. */
+  /** The title starts with this; used to recognize a map sheet and its language. */
   titlePrefix: string;
-  /** Overskriften på et kartark der land (ikke hovedsteder) skal merkes. */
+  /** The title of a map sheet where countries (not capitals) are marked. */
   countryTitlePrefix: string;
-  /** Bruksanvisning for landmodusen, to linjer skilt med \n. */
+  /** Instructions for the country mode, two lines separated by \n. */
   countrySubtitle: string;
-  /** Starten på resultatet i landmodusen, f.eks. «Riktige land:». */
+  /** Start of the result in the country mode, e.g. "Correct countries:". */
   countryTotalPrefix: string;
   countryTotal: (correct: number, total: number) => string;
-  /** Bruksanvisning under overskriften, to linjer skilt med \n. */
+  /** Instructions below the title, two lines separated by \n. */
   subtitle: (style: MapEntryStyle) => string;
-  /** «3. Oslo (Norge)», eller «4. Singapore» når byen og landet heter det samme. */
+  /** "3. Oslo (Norway)", or "4. Singapore" when the city and the country share a name. */
   entry: (n: number, capital: string, country: string) => string;
-  /** Poeng og avstand ved en oppføring etter retting. */
+  /** Points and distance next to an entry after grading. */
   points: (points: number, km: number) => string;
   skipped: string;
   missing: string;
-  /** Starten på totalsummen; brukes til å fjerne den ved ny retting. */
+  /** Start of the total; used to remove it when regrading. */
   totalPrefix: string;
   total: (points: number, max: number) => string;
-  /** Merknad om merker som ikke passet med lista (vist med «?» på kartet). */
+  /** Note about marks that did not match the list (shown with "?" on the map). */
   unusedMarks: (count: number) => string;
-  /** Merknad om byer uten merke. */
+  /** Note about cities without a mark. */
   unmarked: (count: number, countries: boolean) => string;
 
   ui: {
     mode: string;
     modeTable: string;
     modeMap: string;
-    /** Forklaring i menyen når kartmodus er valgt. */
+    /** Explanation in the menu when map mode is selected. */
     mapHint: string;
-    /** Valget for hva lista oppgir. */
+    /** The choice of what the list shows. */
     show: string;
     showBoth: string;
     showCapital: string;
     showCountry: string;
-    /** Antall byer på kartarket. */
+    /** Number of cities on the map sheet. */
     mapCount: string;
-    /** Hva som skal merkes på kartet: hovedsteder eller land. */
+    /** What to mark on the map: capitals or countries. */
     target: string;
     targetCapital: string;
     targetCountry: string;
@@ -65,13 +65,13 @@ export interface MapTexts {
     findingMarks: string;
   };
   errors: {
-    /** Fant ikke kartbildet i pluginmappen på enheten. */
+    /** The map image was not found in the plugin folder on the device. */
     mapFile: (detail: string) => string;
     noEntries: string;
   };
 }
 
-/** Tusenskille med smalt mellomrom, f.eks. «10 000». */
+/** Thousands separator with a narrow space, e.g. "10 000". */
 function thousands(n: number, sep: string): string {
   return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, sep);
 }
@@ -214,7 +214,7 @@ const OWN: Record<string, MapTexts> = {nb, en};
 
 const cache = new Map<string, MapTexts>();
 
-/** Karttekstene for et språk: egne for nb og en, ellers engelsk med språkets egen overskrift. */
+/** The map texts for a language: own texts for nb and en, otherwise English with the language's own title. */
 export function mapTexts(lang: Language): MapTexts {
   const own = OWN[lang.code];
   if (own) {
@@ -232,7 +232,7 @@ export function mapTexts(lang: Language): MapTexts {
   return t;
 }
 
-/** Alle prefikser for totalsummen, så den kan fjernes ved ny retting uansett språk. */
+/** All prefixes for the total, so it can be removed when regrading in any language. */
 export const MAP_TOTAL_PREFIXES = [
   nb.totalPrefix,
   en.totalPrefix,

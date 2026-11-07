@@ -1,35 +1,35 @@
 /**
- * Tekst for flerspiller (hot seat). Norsk og engelsk er skrevet for hånd; de
- * andre språkene får engelsk tekst, som kartmodusen (se map.ts).
+ * Text for multiplayer (hot seat). Norwegian and English are written by hand; the
+ * other languages get English text, like the map mode (see map.ts).
  *
- * Merkelappen («Spiller 2 av 3», «Duell for 2») står først i undertittelen på
- * arket og leses tilbake ved retting, så formen må holdes stabil.
+ * The label ("Player 2 of 3", "Duel for 2") comes first in the sheet's subtitle
+ * and is read back when grading, so its form must stay stable.
  */
 import type {Language} from './types';
 
 export interface HotSeatTexts {
   player: (k: number) => string;
-  /** Merkelapp på hver spillers egne sider når enheten sendes rundt. */
+  /** Label on each player's own pages when the device is passed around. */
   passTag: (k: number, n: number) => string;
-  /** Leser [spiller, antall] fra starten av en tekst. */
+  /** Reads [player, count] from the start of a text. */
   passTagPattern: RegExp;
-  /** Merkelapp på et felles ark der spillerne bytter på. */
+  /** Label on a shared sheet where the players take turns. */
   sharedTag: (n: number) => string;
-  /** Leser [antall] fra starten av en tekst. */
+  /** Reads [count] from the start of a text. */
   sharedTagPattern: RegExp;
 
-  /** Undertittel på tabellarket. */
+  /** Subtitle on the table sheet. */
   tablePass: (k: number, n: number) => string;
   tableShared: (n: number) => string;
-  /** Første linje i bruksanvisningen på kartarket (andre linje er som før). */
+  /** First line of the instructions on the map sheet (the second line is unchanged). */
   mapPass: (k: number, n: number, firstLine: string) => string;
   mapShared: (n: number) => string;
 
-  /** Siden mellom to spillere. */
+  /** The page between two players. */
   handover: (k: number) => string;
   handoverHint: string;
 
-  /** Poenglinja nederst på et felles ark, etter `scorePrefix`. */
+  /** The score line at the bottom of a shared sheet, after `scorePrefix`. */
   scoreLine: (scores: Array<{player: number; points: number; max: number}>) => string;
 
   ui: {
@@ -133,5 +133,5 @@ export function hotSeatTexts(lang: Language): HotSeatTexts {
   return OWN[lang.code] ?? en;
 }
 
-/** Alle variantene av teksten, så merkelappen kjennes igjen uansett språk. */
+/** All variants of the text, so the label is recognized in any language. */
 export const ALL_HOTSEAT_TEXTS: HotSeatTexts[] = [nb, en];

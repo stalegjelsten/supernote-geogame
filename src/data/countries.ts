@@ -1,8 +1,8 @@
 /**
- * Språkuavhengige landdata: hvert land har en stabil nøkkel (ISO 3166-1 alpha-2,
- * Kosovo bruker den vanlige brukerkoden XK) og en verdensdel.
+ * Language-independent country data: each country has a stable key (ISO 3166-1 alpha-2,
+ * Kosovo uses the common user-assigned code XK) and a continent.
  *
- * Navn på land og hovedsteder ligger per språk i `src/i18n/countries/<kode>.ts`.
+ * Names of countries and capitals are kept per language in `src/i18n/countries/<kode>.ts`.
  */
 
 export type Continent = 'EU' | 'AS' | 'AF' | 'NA' | 'SA' | 'OC';
@@ -10,7 +10,7 @@ export type Continent = 'EU' | 'AS' | 'AF' | 'NA' | 'SA' | 'OC';
 export const CONTINENTS: Continent[] = ['EU', 'AS', 'AF', 'NA', 'SA', 'OC'];
 
 export const CONTINENT_OF = {
-  // Europa
+  // Europe
   AL: 'EU',
   AD: 'EU',
   BY: 'EU',
@@ -108,7 +108,7 @@ export const CONTINENT_OF = {
   VN: 'AS',
   TL: 'AS',
 
-  // Afrika
+  // Africa
   DZ: 'AF',
   AO: 'AF',
   BJ: 'AF',
@@ -164,7 +164,7 @@ export const CONTINENT_OF = {
   ZM: 'AF',
   ZW: 'AF',
 
-  // Nord- og Mellom-Amerika
+  // North and Central America
   AG: 'NA',
   BS: 'NA',
   BB: 'NA',
@@ -189,7 +189,7 @@ export const CONTINENT_OF = {
   TT: 'NA',
   US: 'NA',
 
-  // Sør-Amerika
+  // South America
   AR: 'SA',
   BO: 'SA',
   BR: 'SA',
@@ -203,7 +203,7 @@ export const CONTINENT_OF = {
   UY: 'SA',
   VE: 'SA',
 
-  // Oseania
+  // Oceania
   AU: 'OC',
   FJ: 'OC',
   KI: 'OC',

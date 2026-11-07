@@ -1,8 +1,8 @@
 /**
- * Byggekloss for språk der bare arket er oversatt. Menyen, fremdriften og
- * feilmeldingene hentes fra engelsk inntil de blir oversatt.
+ * Building block for languages where only the sheet is translated. The menu, progress
+ * and error messages come from English until they are translated.
  *
- * Sidenummer skrives språknøytralt som « · 2/3», og poeng som «Punkte: 12/20».
+ * Page numbers are written language-neutrally as " · 2/3", and the score as "Punkte: 12/20".
  */
 import en from './en';
 import type {CountryNames, Language} from './types';
@@ -20,9 +20,9 @@ export interface SheetLanguageDef {
   colCountry: string;
   colAnswer: string;
   colResult: string;
-  /** «Poeng» uten kolon. */
+  /** "Score" without the colon. */
   scoreWord: string;
-  /** «leste», brukt som «(leste: “Oslo”)». */
+  /** "read", used as "(read: “Oslo”)". */
   readWord: string;
   ui?: Partial<Language['ui']>;
   progress?: Partial<Language['progress']>;

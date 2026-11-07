@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 /**
- * Lager src/data/familiarity.ts: hvor kjent hvert land og hver hovedstad er,
- * målt som sidevisninger på Wikipedia. Brukes til rettferdig trekning når
- * spillerne bytter på (se src/core/fairDraw.ts).
+ * Generates src/data/familiarity.ts: how well known each country and capital is,
+ * measured as Wikipedia page views. Used for fair drawing when the players
+ * take turns (see src/core/fairDraw.ts).
  *
  *   node scripts/gen-familiarity.js
  *
- * Kilder (begge CC0):
- * - Wikidata: artikkeltitlene (sitelinks) for landet og hovedstaden. Hovedstaden
- *   har Q-ID i scripts/data/capitals-wikidata.json; landet slås opp på ISO-kode (P297).
- * - Sidevisninger de siste 60 dagene fra MediaWiki-API-et (prop=pageviews,
- *   samme tall som Wikimedia Pageviews), summert over WIKIS. Det gir 50
- *   artikler per kall, så hele datasettet hentes med drøyt hundre kall, ett om gangen.
+ * Sources (both CC0):
+ * - Wikidata: the article titles (sitelinks) for the country and the capital. The capital
+ *   has its Q-ID in scripts/data/capitals-wikidata.json; the country is looked up by ISO code (P297).
+ * - Page views over the last 60 days from the MediaWiki API (prop=pageviews,
+ *   the same numbers as Wikimedia Pageviews), summed over WIKIS. That gives 50
+ *   articles per call, so the whole dataset is fetched with just over a hundred calls, one at a time.
  *
- * Rådataene lagres i scripts/data/familiarity-pageviews.json, så tallene kan
- * etterprøves. Kjør skriptet på nytt for ferske tall.
+ * The raw data is stored in scripts/data/familiarity-pageviews.json, so the numbers can
+ * be verified. Re-run the script for fresh numbers.
  */
 const fs = require('fs');
 const path = require('path');
@@ -22,20 +22,20 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const OUT_TS = path.join(ROOT, 'src/data/familiarity.ts');
 const OUT_JSON = path.join(__dirname, 'data/familiarity-pageviews.json');
-/** Mellomlager per wiki, så et avbrutt løp kan fortsette. Slettes når alt er ferdig. */
+/** Cache per wiki, so an interrupted run can resume. Deleted when everything is done. */
 const CACHE = path.join(__dirname, 'data/.familiarity-cache.json');
 const CAPITALS = require('./data/capitals-wikidata.json');
 
-/** Store Wikipediaer på ulike språk, så tallene ikke bare speiler engelsk. */
-// Norsk bokmål heter «no» på Wikipedia (no.wikipedia.org).
+/** Large Wikipedias in different languages, so the numbers do not just mirror English. */
+// Norwegian Bokmål is called "no" on Wikipedia (no.wikipedia.org).
 const WIKIS = ['en', 'de', 'fr', 'es', 'ja', 'ru', 'it', 'pt', 'zh', 'pl', 'nl', 'sv', 'no'];
 
 /** Land uten ISO-kode i Wikidata. */
 const COUNTRY_QID_OVERRIDES = {XK: 'Q1246'};
 
 /**
- * Hovedsteder der Q-ID-en i capitals-wikidata.json er et element uten artikler.
- * Managua: Q131546626 er et nyere element for byen; artiklene ligger på Q3274.
+ * Capitals where the Q-ID in capitals-wikidata.json is an item without articles.
+ * Managua: Q131546626 is a newer item for the city; the articles are on Q3274.
  */
 const CAPITAL_QID_OVERRIDES = {NI: 'Q3274'};
 const capitalQ = code => CAPITAL_QID_OVERRIDES[code] ?? CAPITALS[code].q;
@@ -44,10 +44,10 @@ const UA = 'geogame-build-script/1.0 (Supernote plugin; offline data build)';
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-/** Pause mellom kallene, så vi holder oss godt under Wikimedias grenser. */
+/** Pause between calls, so we stay well under Wikimedia's limits. */
 const DELAY_MS = 1500;
 
-/** Felles pause for alle kall når API-et ber oss vente (429 + retry-after). */
+/** Shared pause for all calls when the API asks us to wait (429 + retry-after). */
 let pausedUntil = 0;
 
 async function getJson(url, tries = 8) {
@@ -61,11 +61,11 @@ async function getJson(url, tries = 8) {
     try {
       res = await fetch(url, {headers: {'User-Agent': UA, Accept: 'application/json'}});
     } catch (e) {
-      // Nettverksfeil (f.eks. ECONNRESET): prøv igjen etter en pause.
+      // Network error (e.g. ECONNRESET): retry after a pause.
       if (i >= tries) {
         throw e;
       }
-      process.stderr.write(`  nettverksfeil (${e.cause?.code ?? e.message}), prøver igjen\n`);
+      process.stderr.write(`  network error (${e.cause?.code ?? e.message}), retrying\n`);
       await sleep(2 ** i * 1000);
       continue;
     }
@@ -89,8 +89,8 @@ async function getJson(url, tries = 8) {
 }
 
 /**
- * Landets Wikidata-element ut fra ISO-koden (P297). Har flere elementer samme
- * kode (f.eks. historiske stater), velges det med flest Wikipedia-artikler.
+ * The country's Wikidata item from the ISO code (P297). If several items share the same
+ * code (e.g. historical states), the one with the most Wikipedia articles is chosen.
  */
 async function countryQids(codes) {
   const values = codes.filter(c => !COUNTRY_QID_OVERRIDES[c]).map(c => `"${c}"`).join(' ');
@@ -107,10 +107,10 @@ async function countryQids(codes) {
   for (const c of codes) {
     out[c] = COUNTRY_QID_OVERRIDES[c] ?? best[c]?.q;
     if (!out[c]) {
-      throw new Error(`Fant ikke Wikidata-element for ${c}`);
+      throw new Error(`Wikidata item not found for ${c}`);
     }
   }
-  console.error(`Fant Wikidata-elementer for ${codes.length} land`);
+  console.error(`Found Wikidata items for ${codes.length} countries`);
   return out;
 }
 
@@ -129,8 +129,8 @@ async function sitelinks(qids) {
 }
 
 /**
- * Sidevisninger for mange titler på én wiki, 50 om gangen.
- * Returnerer {tittel: visninger} og datoene som ble dekket.
+ * Page views for many titles on one wiki, 50 at a time.
+ * Returns {title: views} and the dates that were covered.
  */
 async function viewsFor(wiki, titles, dates) {
   const out = {};
@@ -180,7 +180,7 @@ async function main() {
   } catch {}
   const dates = new Set(cache.dates ?? []);
   const byWiki = cache.byWiki ?? {};
-  // Gjenbruk forrige ferdige løp for wikier som er med der (sett REFRESH=1 for ferske tall).
+  // Reuse the previous completed run for wikis included there (set REFRESH=1 for fresh numbers).
   if (!process.env.REFRESH) {
     try {
       const prev = JSON.parse(fs.readFileSync(OUT_JSON, 'utf8'));
@@ -201,7 +201,7 @@ async function main() {
     } catch {}
   }
   for (const wiki of WIKIS) {
-    // Titler som mangler (f.eks. en rettet Q-ID), hentes selv om wikien er lagret.
+    // Missing titles (e.g. a corrected Q-ID) are fetched even if the wiki is stored.
     const titles = new Set();
     for (const code of codes) {
       for (const q of [cq[code], capitalQ(code)]) {
@@ -212,7 +212,7 @@ async function main() {
     }
     const missing = byWiki[wiki] ? [...titles].filter(t => !(t in byWiki[wiki])) : [...titles];
     if (byWiki[wiki] && !missing.length) {
-      console.error(`  ${wiki}: fra lagrede tall`);
+      console.error(`  ${wiki}: from stored numbers`);
       continue;
     }
     byWiki[wiki] = {...byWiki[wiki], ...(await viewsFor(wiki, missing, dates))};
@@ -239,22 +239,22 @@ async function main() {
   fs.writeFileSync(
     OUT_TS,
     `/**
- * Hvor kjent hvert land og hver hovedstad er: sidevisninger på Wikipedia
+ * How well known each country and capital is: Wikipedia page views
  * (${WIKIS.join(', ')}) ${period[0]}–${period[1]}.
- * Kilde: Wikimedia (sidevisninger) og Wikidata (artikkeltitler), begge CC0.
+ * Source: Wikimedia (page views) and Wikidata (article titles), both CC0.
  *
- * Generert av scripts/gen-familiarity.js – ikke rediger for hånd.
+ * Generated by scripts/gen-familiarity.js – do not edit by hand.
  */
 import type {CountryCode} from './countries';
 
-/** [visninger av landet, visninger av hovedstaden] */
+/** [views of the country, views of the capital] */
 export const FAMILIARITY: Record<CountryCode, readonly [country: number, capital: number]> = {
 ${lines.join('\n')}
 };
 `,
   );
   fs.rmSync(CACHE, {force: true});
-  console.error(`Skrev ${path.relative(ROOT, OUT_TS)} og ${path.relative(ROOT, OUT_JSON)}`);
+  console.error(`Wrote ${path.relative(ROOT, OUT_TS)} and ${path.relative(ROOT, OUT_JSON)}`);
 }
 
 main().catch(e => {

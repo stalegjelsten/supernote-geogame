@@ -1,6 +1,6 @@
 /**
- * Tekst for nivåvalget i menyen. Norsk og engelsk er skrevet for hånd; de andre
- * språkene får engelsk, som kartmodusen og flerspiller.
+ * Text for the level choice in the menu. Norwegian and English are written by hand; the
+ * other languages get English, like the map mode and multiplayer.
  */
 import type {Level} from '../core/fairDraw';
 import type {Language} from './types';

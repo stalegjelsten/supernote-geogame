@@ -1,6 +1,6 @@
 /**
- * Tynt lag rundt sn-plugin-lib. Alle kall pakkes ut fra APIResponse,
- * og feil kastes som vanlige Error med en lesbar melding.
+ * Thin layer around sn-plugin-lib. All calls are unwrapped from APIResponse,
+ * and errors are thrown as plain Error with a readable message.
  */
 import {FileUtils, PluginCommAPI, PluginFileAPI, PluginManager, PluginNoteAPI} from 'sn-plugin-lib';
 import type {Draft} from '../core/draft';
@@ -38,23 +38,23 @@ export async function currentPage(): Promise<PageRef> {
   return {notePath, page, size};
 }
 
-/** Standardmalen for helt hvit bakgrunn på Supernote. */
+/** The default template for a completely white background on Supernote. */
 const WHITE_TEMPLATE = 'White';
 
 /**
- * Kandidater for sidemal til en ny side, i prioritert rekkefølge:
- * 1. «White» (helt hvit bakgrunn) – skrevet slik enheten oppgir den, ellers som «White»,
- * 2. malen til siden du står på,
- * 3. andre systemmaler, med blanke maler først.
+ * Page template candidates for a new page, in priority order:
+ * 1. "White" (completely white background) – spelled the way the device reports it, otherwise as "White",
+ * 2. the template of the current page,
+ * 3. other system templates, with blank templates first.
  */
 async function templateCandidates(ref: PageRef): Promise<string[]> {
   let system: Array<{name?: string; vUri?: string}> = [];
   try {
     const raw = (await PluginCommAPI.getNoteSystemTemplates()) as unknown;
-    // Returnerer enten en liste direkte eller en APIResponse med liste.
+    // Returns either a list directly or an APIResponse with a list.
     system = (Array.isArray(raw) ? raw : (raw as Resp<unknown[]>)?.result ?? []) as typeof system;
   } catch {
-    // Ingen systemmaler tilgjengelig.
+    // No system templates available.
   }
 
   const out: string[] = [];
@@ -70,7 +70,7 @@ async function templateCandidates(ref: PageRef): Promise<string[]> {
       out.push(cur.name);
     }
   } catch {
-    // Hopp over.
+    // Skip.
   }
 
   const isBlank = (n: string) => /blank|empty|tom|white/i.test(n);
@@ -89,8 +89,8 @@ async function templateCandidates(ref: PageRef): Promise<string[]> {
 }
 
 /**
- * Navnet på malen til siden. Tom streng hvis siden ikke har mal, `null` hvis
- * enheten ikke svarte (da vet vi ikke, og behandler siden som om den har mal).
+ * The name of the page's template. Empty string if the page has no template, `null` if
+ * the device did not respond (then we don't know, and treat the page as if it has a template).
  */
 export async function pageTemplateName(ref: PageRef): Promise<string | null> {
   try {
@@ -104,12 +104,12 @@ export async function pageTemplateName(ref: PageRef): Promise<string | null> {
   }
 }
 
-/** Malen som virket sist, så vi slipper å prøve oss frem for hver side. */
+/** The template that worked last, so we don't have to try our way through for every page. */
 let workingTemplate: string | null = null;
 
 /**
- * Setter inn `count` nye, tomme sider fra og med sideindeks `at` i notatet.
- * Går ikke til sidene; bruk jumpToPage etterpå.
+ * Inserts `count` new, empty pages starting at page index `at` in the note.
+ * Does not go to the pages; use jumpToPage afterwards.
  */
 export async function insertBlankPages(ref: PageRef, at: number, count: number): Promise<void> {
   if (count <= 0) {
@@ -121,16 +121,16 @@ export async function insertBlankPages(ref: PageRef, at: number, count: number):
     try {
       await PluginCommAPI.reloadFile();
     } catch {
-      // Ikke alle versjoner trenger dette.
+      // Not all versions need this.
     }
   };
 
   const before = await totalPages(ref.notePath);
   const target = before + count;
-  // Alle sidene settes inn på samme indeks (`at`), så de skyves bakover etter hvert.
-  // Den indeksen er alltid gyldig. Etter hver innsetting lastes notatet på nytt, og vi
-  // teller sidene i stedet for å stole på at innsettingen faktisk ga en ny side.
-  // Tidligere ble side 3 av 3 borte når innsettinger på økende indekser ble ignorert.
+  // All the pages are inserted at the same index (`at`), so they are pushed back as we go.
+  // That index is always valid. After each insertion the note is reloaded, and we
+  // count the pages instead of trusting that the insertion actually produced a new page.
+  // Previously, page 3 of 3 went missing when insertions at increasing indices were ignored.
   for (let attempt = 0; attempt < count * 2; attempt++) {
     const have = await totalPages(ref.notePath);
     if (have >= target) {
@@ -175,7 +175,7 @@ export async function totalPages(notePath: string): Promise<number> {
   return unwrap<number>(await PluginFileAPI.getNoteTotalPageNum(notePath), 'getNoteTotalPageNum');
 }
 
-/** Samme notat, en annen side. */
+/** Same note, a different page. */
 export async function pageRefAt(ref: PageRef, page: number): Promise<PageRef> {
   const size = unwrap<Size>(await PluginFileAPI.getPageSize(ref.notePath, page), 'getPageSize');
   return {notePath: ref.notePath, page, size};
@@ -185,7 +185,7 @@ const PERMISSIONS = ['plugin.permission.FILE:READ', 'plugin.permission.FILE:WRIT
 
 let permissionsChecked = false;
 
-/** Ber om lese-/skrivetilgang til notater hvis vi ikke har den. Sjekkes bare én gang per økt. */
+/** Requests read/write access to notes if we don't have it. Checked only once per session. */
 export async function ensurePermissions(): Promise<void> {
   if (permissionsChecked) {
     return;
@@ -198,12 +198,12 @@ export async function ensurePermissions(): Promise<void> {
       }
       await PluginManager.requestPermission(p, currentLanguage().errors.permission);
     } catch {
-      // Ikke alle fastvareversjoner krever dette; prøv videre.
+      // Not all firmware versions require this; carry on.
     }
   }
 }
 
-/** Elementtyper fra sn-plugin-lib (Element.TYPE_*). */
+/** Element types from sn-plugin-lib (Element.TYPE_*). */
 export const TYPE_STROKE = 0;
 export const TYPE_PICTURE = 200;
 export const TYPE_TEXT = 500;
@@ -227,8 +227,8 @@ export async function getPageElements(ref: PageRef): Promise<PageElement[]> {
 }
 
 /**
- * Henter punktene for mange strøk samtidig. Kallene sendes parallelt i stedet for
- * å vente på svar fra hvert strøk før neste spørres, noe som sparer mye tid.
+ * Fetches the points for many strokes at once. The calls are sent in parallel instead of
+ * waiting for the reply for each stroke before asking the next, which saves a lot of time.
  */
 export async function strokePointsAll(els: PageElement[]): Promise<Array<Array<{x: number; y: number}>>> {
   return Promise.all(els.map(el => strokePoints(el).catch(() => [])));
@@ -250,7 +250,7 @@ export const COLOR_BLACK = 0;
 export const COLOR_DARK_GRAY = 0x9d;
 const PEN_FINELINER = 10;
 
-/** Noe som skal tegnes på siden; se src/core/draft.ts. */
+/** Something to be drawn on the page; see src/core/draft.ts. */
 export type {Draft};
 
 function textBoxOf(d: Extract<Draft, {kind: 'text'}>) {
@@ -274,7 +274,7 @@ function geometryOf(d: Extract<Draft, {kind: 'line'} | {kind: 'path'}>) {
     showLassoAfterInsert: false,
     penColor: d.color,
     penType: PEN_FINELINER,
-    // penWidth har minimum 100 i SDK-en.
+    // penWidth has a minimum of 100 in the SDK.
     penWidth: Math.max(100, d.width),
     ...shape,
     ellipseCenterPoint: null,
@@ -285,9 +285,9 @@ function geometryOf(d: Extract<Draft, {kind: 'line'} | {kind: 'path'}>) {
 }
 
 /**
- * Setter inn alle elementene i ett kall (insertPageElements).
- * Det er mye raskere enn ett insertText/insertGeometry-kall per element.
- * Hvis batch-innsetting feiler, faller vi tilbake til ett og ett element.
+ * Inserts all the elements in one call (insertPageElements).
+ * This is much faster than one insertText/insertGeometry call per element.
+ * If batch insertion fails, we fall back to one element at a time.
  */
 export async function insertDrafts(ref: PageRef, drafts: Draft[]): Promise<void> {
   if (!drafts.length) {
@@ -311,8 +311,8 @@ export async function insertDrafts(ref: PageRef, drafts: Draft[]): Promise<void>
     }
     unwrap(await PluginCommAPI.insertPageElements(elements, ref.page, 0), 'insertPageElements');
   } catch (e) {
-    console.warn('Batch-innsetting feilet, prøver ett og ett element', e);
-    // insertText/insertGeometry virker bare på siden som vises.
+    console.warn('Batch insertion failed, trying one element at a time', e);
+    // insertText/insertGeometry only work on the page that is shown.
     await jumpToPage(ref.page);
     await insertOneByOne(drafts);
   }
@@ -323,8 +323,8 @@ async function insertOneByOne(drafts: Draft[]): Promise<void> {
     if (d.kind === 'text') {
       unwrap(await PluginNoteAPI.insertText(textBoxOf(d)), `insertText «${d.text}»`);
     } else if (d.kind === 'picture') {
-      // Reserve: plasseringen bestemmes av enheten. Rettingen leser den faktiske
-      // plasseringen fra bildeelementet, så koordinatene blir likevel riktige.
+      // Fallback: the placement is decided by the device. The grading reads the actual
+      // placement from the image element, so the coordinates are still correct.
       unwrap(await PluginNoteAPI.insertImage(d.path), 'insertImage');
     } else {
       const g = geometryOf(d);
@@ -332,7 +332,7 @@ async function insertOneByOne(drafts: Draft[]): Promise<void> {
       if (!res?.success && d.kind === 'path') {
         unwrap(res, 'insertGeometry');
       } else if (!res?.success && d.kind === 'line') {
-        // Reserve hvis straightLine ikke støttes: en «polygon» frem og tilbake.
+        // Fallback if straightLine is not supported: a "polygon" back and forth.
         unwrap(
           await PluginCommAPI.insertGeometry({...g, type: 'GEO_polygon', points: [d.a, d.b, d.a]}),
           'insertGeometry',
@@ -360,11 +360,11 @@ export async function saveNote(): Promise<void> {
   try {
     await PluginNoteAPI.saveCurrentNote();
   } catch {
-    // Lagring er en bonus; notatet lagres uansett av systemet.
+    // Saving is a bonus; the system saves the note anyway.
   }
 }
 
-/** Finnes fila på enheten? */
+/** Does the file exist on the device? */
 async function fileExists(path: string): Promise<boolean> {
   try {
     return !!(await FileUtils.exists(path));
@@ -374,10 +374,10 @@ async function fileExists(path: string): Promise<boolean> {
 }
 
 /**
- * Full sti til et bilde som RN-byggingen har lagt i pluginpakken.
- * `buildPlugin.sh` legger bildene i `drawable-mdpi/assets_<mappe>_<navn>.png`,
- * og pakken pakkes ut i pluginmappen (`PluginManager.getPluginDirPath()`).
- * Finnes den ikke der, letes det i pluginmappen og undermappene.
+ * Full path to an image that the RN build has put in the plugin package.
+ * `buildPlugin.sh` puts the images in `drawable-mdpi/assets_<mappe>_<navn>.png`,
+ * and the package is unpacked into the plugin folder (`PluginManager.getPluginDirPath()`).
+ * If it is not found there, the plugin folder and its subfolders are searched.
  */
 export async function bundledImagePath(fileName: string): Promise<string> {
   const dir = (await PluginManager.getPluginDirPath())?.replace(/\/+$/, '');

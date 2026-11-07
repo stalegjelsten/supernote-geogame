@@ -7,15 +7,15 @@ import type {CountryCode} from '../src/data/countries';
 import {getLanguage} from '../src/i18n';
 import {ALL_CAPITAL_NOTES, capitalNotes} from '../src/i18n/notes';
 
-describe('merknader om hovedsteder', () => {
+describe('notes about capitals', () => {
   const nb = ALL_CAPITAL_NOTES.nb;
   const en = ALL_CAPITAL_NOTES.en;
 
-  test('norsk og engelsk har merknader for de samme landene', () => {
+  test('Norwegian and English have notes for the same countries', () => {
     expect(Object.keys(nb).sort()).toEqual(Object.keys(en).sort());
   });
 
-  test('alle landkodene finnes, og merknadene er korte', () => {
+  test('all country codes exist, and the notes are short', () => {
     for (const notes of Object.values(ALL_CAPITAL_NOTES)) {
       for (const [code, text] of Object.entries(notes)) {
         expect(COUNTRY_CODES).toContain(code);
@@ -25,32 +25,32 @@ describe('merknader om hovedsteder', () => {
     }
   });
 
-  test('Tanzania nevner Dar es Salaam', () => {
+  test('Tanzania mentions Dar es Salaam', () => {
     expect(nb.TZ).toContain('Dar es Salaam');
     expect(en.TZ).toContain('Dar es Salaam');
   });
 
-  test('språk uten egne merknader får engelsk', () => {
+  test('languages without their own notes get English', () => {
     expect(capitalNotes(getLanguage('de')!)).toBe(en);
     expect(capitalNotes(getLanguage('nb')!)).toBe(nb);
   });
 });
 
-describe('fotnoter', () => {
-  test('hevede tall', () => {
+describe('footnotes', () => {
+  test('superscript numbers', () => {
     expect(noteMarker(1)).toBe('¹');
     expect(noteMarker(12)).toBe('¹²');
     expect(isNotesText('¹ Dar es Salaam …')).toBe(true);
     expect(isNotesText('Dodoma')).toBe(false);
   });
 
-  test('fotnoteteksten forveksles ikke med poengsummen', () => {
+  test('the footnote text is not confused with the score', () => {
     expect(isResultText('¹ Lagos was capital until 1991')).toBe(false);
   });
 
   const area = {left: 0, top: 0, right: 1000, bottom: 200};
 
-  test('nummererer i rekkefølgen på arket', () => {
+  test('numbers in the order on the sheet', () => {
     const plan = planNotes(
       [
         {row: 5, text: 'B', important: false},
@@ -66,7 +66,7 @@ describe('fotnoter', () => {
     expect(plan.rect.bottom).toBeLessThanOrEqual(area.bottom);
   });
 
-  test('dropper merknader for riktige svar først når plassen er for liten', () => {
+  test('drops notes for correct answers first when space is too small', () => {
     const items = Array.from({length: 8}, (_, i) => ({row: i, text: `Note ${i}`, important: i === 7}));
     const plan = planNotes(items, {left: 0, top: 0, right: 1000, bottom: 60}, 30, 20)!;
     expect(plan.markers.has(7)).toBe(true);
@@ -74,11 +74,11 @@ describe('fotnoter', () => {
     expect(plan.fontSize).toBeGreaterThanOrEqual(20);
   });
 
-  test('ingen plass gir ingen fotnoter', () => {
+  test('no space gives no footnotes', () => {
     expect(planNotes([{row: 0, text: 'A', important: true}], {left: 0, top: 0, right: 0, bottom: 0}, 30, 20)).toBeNull();
   });
 
-  test('en full side med afrikanske land på Manta får plass til flere merknader', () => {
+  test('a full page of African countries on Manta has room for more notes', () => {
     const size = {width: 1920, height: 2560};
     const n = maxRowsPerPage(size);
     const L = computeLayout(size, n);
@@ -90,7 +90,7 @@ describe('fotnoter', () => {
   });
 });
 
-describe('de facto-hovedsteder godtas, avskaffede hovedsteder ikke', () => {
+describe('de facto capitals are accepted, abolished capitals are not', () => {
   const en = getLanguage('en')!;
   const nbLang = getLanguage('nb')!;
   const de = getLanguage('de')!;
@@ -102,7 +102,7 @@ describe('de facto-hovedsteder godtas, avskaffede hovedsteder ikke', () => {
     ['KZ', 'Almaty'],
     ['MM', 'Yangon'],
     ['BR', 'Rio de Janeiro'],
-  ])('%s: %s er feil', (code, answer) => {
+  ])('%s: %s is wrong', (code, answer) => {
     for (const lang of [en, nbLang, de]) {
       expect(gradeAnswer(countryIn(lang, code as CountryCode), answer).verdict).toBe('wrong');
     }
@@ -121,13 +121,13 @@ describe('de facto-hovedsteder godtas, avskaffede hovedsteder ikke', () => {
     ['PS', 'Ramallah'],
     ['NL', 'The Hague'],
     ['TZ', 'Dodoma'],
-  ])('%s: %s er riktig', (code, answer) => {
+  ])('%s: %s is correct', (code, answer) => {
     for (const lang of [en, nbLang, de]) {
       expect(gradeAnswer(countryIn(lang, code as CountryCode), answer).verdict).toBe('correct');
     }
   });
 
-  test('på tysk godtas Kapstadt og Den Haag', () => {
+  test('in German, Kapstadt and Den Haag are accepted', () => {
     expect(gradeAnswer(countryIn(de, 'ZA'), 'Kapstadt').verdict).toBe('correct');
     expect(gradeAnswer(countryIn(de, 'NL'), 'Den Haag').verdict).toBe('correct');
   });

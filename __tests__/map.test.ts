@@ -45,7 +45,7 @@ const en = getLanguage('en')!;
 const MANTA = {width: 1920, height: 2560};
 const A5X = {width: 1404, height: 1872};
 
-/** Deterministisk tilfeldighet for tester. */
+/** Deterministic randomness for tests. */
 function seeded(seed: number) {
   let s = seed;
   return () => {
@@ -54,8 +54,8 @@ function seeded(seed: number) {
   };
 }
 
-describe('projeksjon', () => {
-  it('går frem og tilbake for alle kart', () => {
+describe('projection', () => {
+  it('round-trips for all maps', () => {
     for (const region of MAP_REGIONS) {
       const m = MAPS[region];
       for (const code of COUNTRY_CODES) {
@@ -72,7 +72,7 @@ describe('projeksjon', () => {
     }
   });
 
-  it('LAEA og Equal Earth er inverse av hverandre i hele området', () => {
+  it('LAEA and Equal Earth are inverses of each other across the whole area', () => {
     const projections = [
       {kind: 'laea' as const, lon0: 15, lat0: 52},
       {kind: 'laea' as const, lon0: 160, lat0: -14},
@@ -90,7 +90,7 @@ describe('projeksjon', () => {
     }
   });
 
-  it('regner side ↔ lengde/bredde med kartets plassering på siden', () => {
+  it('converts page ↔ longitude/latitude with the map\'s placement on the page', () => {
     const m = MAPS.EU;
     const rect = {
       left: 100,
@@ -104,13 +104,13 @@ describe('projeksjon', () => {
     expect(back.lat).toBeCloseTo(59.91, 6);
   });
 
-  it('haversine gir kjente avstander', () => {
+  it('haversine gives known distances', () => {
     const oslo = {lon: 10.739, lat: 59.913};
     const stockholm = {lon: 18.069, lat: 59.329};
     expect(haversineKm(oslo, stockholm)).toBeGreaterThan(410);
     expect(haversineKm(oslo, stockholm)).toBeLessThan(420);
     expect(haversineKm(oslo, oslo)).toBe(0);
-    // En kvart omkrets langs ekvator.
+    // A quarter of the circumference along the equator.
     expect(haversineKm({lon: 0, lat: 0}, {lon: 90, lat: 0})).toBeCloseTo(
       10007.5,
       0,
@@ -118,8 +118,8 @@ describe('projeksjon', () => {
   });
 });
 
-describe('hovedsteder på kartene', () => {
-  it('har koordinater for alle 197 land', () => {
+describe('capitals on the maps', () => {
+  it('has coordinates for all 197 countries', () => {
     expect(COUNTRY_CODES).toHaveLength(197);
     for (const code of COUNTRY_CODES) {
       const [lon, lat] = CAPITAL_LONLAT[code];
@@ -128,7 +128,7 @@ describe('hovedsteder på kartene', () => {
     }
   });
 
-  it.each(MAP_REGIONS)('hver hovedstad i %s ligger innenfor kartet', region => {
+  it.each(MAP_REGIONS)('every capital in %s lies within the map', region => {
     const m = MAPS[region];
     const margin = 8;
     for (const code of COUNTRY_CODES) {
@@ -144,15 +144,15 @@ describe('hovedsteder på kartene', () => {
         p.y <= m.height - margin;
       if (!ok) {
         throw new Error(
-          `${code} (${lon}, ${lat}) havner på ${p.x.toFixed(0)}, ${p.y.toFixed(
+          `${code} (${lon}, ${lat}) ends up at ${p.x.toFixed(0)}, ${p.y.toFixed(
             0,
-          )} i ${m.file}.png`,
+          )} in ${m.file}.png`,
         );
       }
     }
   });
 
-  it('noen kjente steder stemmer med fasit', () => {
+  it('some well-known places match the answer key', () => {
     expect(CAPITAL_LONLAT.NO[1]).toBeCloseTo(59.91, 1);
     expect(CAPITAL_LONLAT.NO[0]).toBeCloseTo(10.74, 1);
     expect(CAPITAL_LONLAT.AU[1]).toBeCloseTo(-35.29, 1);
@@ -160,13 +160,13 @@ describe('hovedsteder på kartene', () => {
   });
 });
 
-describe('poengkurve', () => {
-  it('gir full pott for treff og nær treff', () => {
+describe('score curve', () => {
+  it('gives full score for a hit and a near hit', () => {
     expect(mapPoints(0, 300)).toBe(MAX_POINTS);
     expect(mapPoints(30, 300)).toBe(MAX_POINTS);
   });
 
-  it('avtar jevnt og holder seg mellom 0 og 1000', () => {
+  it('decreases smoothly and stays between 0 and 1000', () => {
     let last = MAX_POINTS;
     for (let d = 0; d <= 20000; d += 25) {
       const p = mapPoints(d, 300);
@@ -177,7 +177,7 @@ describe('poengkurve', () => {
     expect(mapPoints(20000, 300)).toBe(0);
   });
 
-  it('er strengere på små kart enn på store', () => {
+  it('is stricter on small maps than on large ones', () => {
     expect(mapPoints(300, MAPS.EU.scaleKm)).toBeLessThan(
       mapPoints(300, MAPS.ALL.scaleKm),
     );
@@ -185,19 +185,19 @@ describe('poengkurve', () => {
     expect(MAPS.ALL.scaleKm).toBe(1000);
   });
 
-  it('har kjente verdier', () => {
+  it('has known values', () => {
     expect(mapPoints(300, 300)).toBe(407);
     expect(mapPoints(300, 1000)).toBe(819);
   });
 
-  it('tåler ugyldige verdier', () => {
+  it('tolerates invalid values', () => {
     expect(mapPoints(NaN, 300)).toBe(0);
     expect(mapPoints(-1, 300)).toBe(0);
     expect(mapPoints(10, 0)).toBe(0);
   });
 });
 
-/** Et rett strøk fra a til b med noen mellompunkter. */
+/** A straight stroke from a to b with some intermediate points. */
 function line(a: Point, b: Point, n = 6): Point[] {
   return Array.from({length: n + 1}, (_, i) => ({
     x: a.x + ((b.x - a.x) * i) / n,
@@ -219,8 +219,8 @@ function circle(c: Point, r = 15): Point[] {
   }));
 }
 
-describe('merker på kartet', () => {
-  it('kjenner igjen rette strøk og skjæringspunkter', () => {
+describe('marks on the map', () => {
+  it('recognizes straight strokes and intersection points', () => {
     expect(isStraight(line({x: 0, y: 0}, {x: 10, y: 10}))).toBe(true);
     expect(isStraight(circle({x: 0, y: 0}))).toBe(false);
     expect(
@@ -241,7 +241,7 @@ describe('merker på kartet', () => {
     ).toBeNull();
   });
 
-  it('slår sammen to kryssende streker til ett merke med krysningspunktet som midte', () => {
+  it('merges two crossing strokes into one mark with the crossing point as centre', () => {
     const marks = groupMarks([
       ...cross({x: 100, y: 100}),
       ...cross({x: 300, y: 200}),
@@ -253,7 +253,7 @@ describe('merker på kartet', () => {
     expect(marks[1].center.x).toBeCloseTo(300);
   });
 
-  it('holder to kryss rett ved siden av hverandre adskilt (Roma og Vatikanet)', () => {
+  it('keeps two crosses right next to each other separate (Rome and the Vatican)', () => {
     const marks = groupMarks([
       ...cross({x: 100, y: 100}),
       ...cross({x: 103, y: 101}),
@@ -261,7 +261,7 @@ describe('merker på kartet', () => {
     expect(marks).toHaveLength(2);
   });
 
-  it('regner prikker, ringer og ring med prikk som ett merke hver', () => {
+  it('counts dots, rings and ring with dot as one mark each', () => {
     const dot = [
       {x: 50, y: 50},
       {x: 51, y: 51},
@@ -283,7 +283,7 @@ describe('merker på kartet', () => {
     expect(marks[2].center).toEqual({x: 401.5, y: 401.5});
   });
 
-  it('slår ikke sammen to parallelle streker', () => {
+  it('does not merge two parallel strokes', () => {
     const marks = groupMarks([
       line({x: 0, y: 0}, {x: 20, y: 0}),
       line({x: 0, y: 3}, {x: 20, y: 3}),
@@ -291,7 +291,7 @@ describe('merker på kartet', () => {
     expect(marks).toHaveLength(2);
   });
 
-  it('kobler merker til byene i rekkefølge og hopper over overstrøkne byer', () => {
+  it('matches marks to the cities in order and skips crossed-out cities', () => {
     const {byEntry, unused} = assignMarks(3, [false, true, false, false]);
     expect(byEntry).toEqual([
       {kind: 'mark', mark: 0},
@@ -302,7 +302,7 @@ describe('merker på kartet', () => {
     expect(unused).toEqual([]);
   });
 
-  it('melder fra om for få og for mange merker', () => {
+  it('reports too few and too many marks', () => {
     expect(
       assignMarks(1, [false, false, false]).byEntry.map(a => a.kind),
     ).toEqual(['mark', 'missing', 'missing']);
@@ -310,8 +310,8 @@ describe('merker på kartet', () => {
   });
 });
 
-describe('kartark', () => {
-  it('kjenner igjen overskriften på kartark, og tabellarket forveksles ikke', () => {
+describe('map sheets', () => {
+  it('recognizes the heading on map sheets, and the table sheet is not confused with it', () => {
     for (const lang of [nb, en, getLanguage('de')!]) {
       for (const region of MAP_REGIONS) {
         const info = parseMapTitle(mapSheetTitle(lang, region));
@@ -325,7 +325,7 @@ describe('kartark', () => {
     expect(parseSheetTitle('Hovedsteder – Europa (20)')).not.toBeNull();
   });
 
-  it('alle språk har en egen overskrift for kartark', () => {
+  it('all languages have their own heading for map sheets', () => {
     for (const lang of LANGUAGES) {
       const prefix = mapTexts(lang).titlePrefix;
       expect(prefix.length).toBeGreaterThan(0);
@@ -333,7 +333,7 @@ describe('kartark', () => {
     }
   });
 
-  it('leser oppføringene i lista tilbake', () => {
+  it('reads the list entries back', () => {
     const [c] = pickMapCountries(nb, 'EU', 1, seeded(1));
     const parsed = parseEntry(entryText(nb, 7, c), nb);
     expect(parsed?.n).toBe(7);
@@ -341,7 +341,7 @@ describe('kartark', () => {
     expect(parseEntry('Hovedsteder på kartet – Europa', nb)).toBeNull();
   });
 
-  it('trekker byer som ikke ligger oppå hverandre', () => {
+  it('draws cities that do not overlap', () => {
     for (let seed = 1; seed < 30; seed++) {
       const picked = pickMapCountries(nb, 'EU', MAP_SHEET_COUNT, seeded(seed));
       expect(picked).toHaveLength(MAP_SHEET_COUNT);
@@ -362,7 +362,7 @@ describe('kartark', () => {
   it.each([
     ['Manta', MANTA],
     ['A5X', A5X],
-  ])('layouten passer på siden (%s)', (_, page) => {
+  ])('the layout fits the page (%s)', (_, page) => {
     for (const region of MAP_REGIONS) {
       const L = mapLayoutFor(page, region);
       const m = MAPS[region];
@@ -375,7 +375,7 @@ describe('kartark', () => {
         expect(e.right).toBeLessThanOrEqual(page.width);
         expect(e.bottom).toBeLessThanOrEqual(page.height);
       }
-      // Lista ligger ikke oppå kartet.
+      // The list does not overlap the map.
       for (const e of L.entries) {
         const overlaps =
           e.band.left < L.map.right &&
@@ -387,7 +387,7 @@ describe('kartark', () => {
     }
   });
 
-  it('bildene er laget i full størrelse for Manta', () => {
+  it('the images are made at full size for Manta', () => {
     for (const region of MAP_REGIONS) {
       const m = MAPS[region];
       const L = computeMapLayout(MANTA, m.width / m.height, MAP_SHEET_COUNT);
@@ -397,7 +397,7 @@ describe('kartark', () => {
     }
   });
 
-  it('lager kartbilde, ruter og nummerert liste', () => {
+  it('creates map image, grid cells and numbered list', () => {
     const countries = pickMapCountries(nb, 'AF', MAP_SHEET_COUNT, seeded(3));
     const drafts = mapSheetDrafts(
       MANTA,
@@ -421,7 +421,7 @@ describe('kartark', () => {
   });
 });
 
-describe('retting av kartark', () => {
+describe('grading map sheets', () => {
   const region = 'EU' as const;
   const countries = pickMapCountries(nb, region, 4, seeded(5));
   const entries = countries.map((country, i) => ({n: i + 1, country}));
@@ -429,7 +429,7 @@ describe('retting av kartark', () => {
   const truth = (i: number) =>
     lonLatToPage(MAPS.EU, L.map, ...CAPITAL_LONLAT[countries[i].code]);
 
-  it('gir full pott for kryss rett på byene', () => {
+  it('gives full score for crosses right on the cities', () => {
     const strokes = [0, 1, 2, 3].flatMap(i => cross(truth(i)));
     const g = gradeMap(MANTA, nb, region, L.map, entries, strokes, []);
     expect(g.points).toBe(4000);
@@ -438,7 +438,7 @@ describe('retting av kartark', () => {
     expect(g.results.every(r => r.distanceKm! < 5)).toBe(true);
   });
 
-  it('gir færre poeng jo lenger unna, og hopper over overstrøkne byer', () => {
+  it('gives fewer points the further away, and skips crossed-out cities', () => {
     const off = (p: Point, dx: number) => ({x: p.x + dx, y: p.y});
     const strokes = [
       ...cross(off(truth(0), 40)),
@@ -467,7 +467,7 @@ describe('retting av kartark', () => {
     expect(texts.some(t => t.startsWith('Poeng på kartet:'))).toBe(true);
   });
 
-  it('skriver en merknad når det mangler merker', () => {
+  it('writes a note when marks are missing', () => {
     const g = gradeMap(MANTA, nb, region, L.map, entries, cross(truth(0)), []);
     expect(g.results.map(r => r.assignment.kind)).toEqual([
       'mark',
@@ -478,7 +478,7 @@ describe('retting av kartark', () => {
     expect(g.note).toContain('3 byer fikk ikke noe merke');
   });
 
-  it('tegner riktig plassering og en strek fra gjetningen', () => {
+  it('draws the correct location and a line from the guess', () => {
     const g = gradeMap(
       MANTA,
       nb,
@@ -489,11 +489,11 @@ describe('retting av kartark', () => {
       [false, true, true, true],
     );
     expect(g.drafts.filter(d => d.kind === 'line')).toHaveLength(1);
-    // En ring per by, også de som er hoppet over.
+    // One ring per city, including those that were skipped.
     expect(g.drafts.filter(d => d.kind === 'path')).toHaveLength(4);
   });
 
-  it('ringen er en åpen, håndtegnet strek rundt punktet', () => {
+  it('the ring is an open, hand-drawn stroke around the point', () => {
     const r = ringStroke({x: 100, y: 100}, 20, 3);
     for (const p of r) {
       expect(Math.hypot(p.x - 100, p.y - 100)).toBeGreaterThan(16);
@@ -502,8 +502,8 @@ describe('retting av kartark', () => {
   });
 });
 
-describe('oppføringer der by og land heter det samme', () => {
-  it('skriver navnet én gang og leser det tilbake', () => {
+describe('entries where city and country have the same name', () => {
+  it('writes the name once and reads it back', () => {
     for (const code of ['SG', 'VA', 'SM', 'MC', 'LU', 'DJ'] as const) {
       const c = pickMapCountries(nb, 'ALL', 197, seeded(2)).find(
         x => x.code === code,
@@ -517,12 +517,12 @@ describe('oppføringer der by og land heter det samme', () => {
   });
 });
 
-describe('trygge marger', () => {
+describe('safe margins', () => {
   it.each([
     ['Manta', MANTA],
     ['A5X', A5X],
   ])(
-    'holder kartarket unna verktøylinja på sidene og i toppen (%s)',
+    'keeps the map sheet away from the toolbar on the sides and at the top (%s)',
     (_, page) => {
       for (const region of MAP_REGIONS) {
         const L = mapLayoutFor(page, region);
@@ -550,8 +550,8 @@ describe('trygge marger', () => {
   );
 });
 
-describe('lange oppføringer', () => {
-  it('flytter landet ned på linje to når skriften ellers blir for liten, og leses tilbake', () => {
+describe('long entries', () => {
+  it('moves the country down to line two when the text would otherwise be too small, and is read back', () => {
     const c = pickMapCountries(nb, 'NA', 197, seeded(4)).find(
       x => x.code === 'TT',
     )!;
@@ -563,9 +563,9 @@ describe('lange oppføringer', () => {
   });
 });
 
-describe('valg for kartark', () => {
+describe('options for map sheets', () => {
   it.each(['nb', 'en'])(
-    'leser alle tre listeformer tilbake for alle land (%s)',
+    'reads all three list forms back for all countries (%s)',
     code => {
       const lang = getLanguage(code)!;
       const all = pickMapCountries(lang, 'ALL', 197, seeded(9));
@@ -574,7 +574,7 @@ describe('valg for kartark', () => {
           const parsed = parseEntry(entryText(lang, 3, c, style), lang);
           if (parsed?.country.code !== c.code) {
             throw new Error(
-              `${style}: «${entryText(lang, 3, c, style)}» ble lest som ${
+              `${style}: "${entryText(lang, 3, c, style)}" was read as ${
                 parsed?.country.code
               }`,
             );
@@ -584,7 +584,7 @@ describe('valg for kartark', () => {
     },
   );
 
-  it('bare byen eller bare landet står alene i lista', () => {
+  it('only the city or only the country stands alone in the list', () => {
     const c = pickMapCountries(nb, 'ALL', 197, seeded(9)).find(
       x => x.code === 'NO',
     )!;
@@ -593,7 +593,7 @@ describe('valg for kartark', () => {
     expect(entryText(nb, 1, c, 'both')).toBe('1. Oslo (Norge)');
   });
 
-  it('underteksten forteller hva som skal merkes', () => {
+  it('the caption tells what is to be marked', () => {
     const t = mapTexts(nb);
     expect(t.subtitle('country')).toContain('hovedstaden i hvert land');
     expect(t.subtitle('both')).toContain('hver by');
@@ -609,14 +609,14 @@ describe('valg for kartark', () => {
     expect(texts).toContain(t.subtitle('country'));
   });
 
-  it.each(MAP_COUNTS)('layouten fungerer med %i byer', n => {
+  it.each(MAP_COUNTS)('the layout works with %i cities', n => {
     for (const page of [MANTA, A5X]) {
       for (const region of MAP_REGIONS) {
         const L = mapLayoutFor(page, region, n);
         expect(L.map.left).toBeGreaterThanOrEqual(150);
         expect(L.title.top).toBeGreaterThanOrEqual(150);
         expect(L.entries).toHaveLength(n);
-        // Med minimumsmarger i piksler blir kartet litt smalere på små sider (A5X/Nomad, 15 byer: ~50 %).
+        // With minimum margins in pixels, the map gets slightly narrower on small pages (A5X/Nomad, 15 cities: ~50 %).
         expect(L.map.right - L.map.left).toBeGreaterThan(page.width * 0.45);
         for (const e of L.entries) {
           expect(e.band.bottom).toBeLessThanOrEqual(page.height);
@@ -632,7 +632,7 @@ describe('valg for kartark', () => {
     }
   });
 
-  it('retter et ark med 15 byer', () => {
+  it('grades a sheet with 15 cities', () => {
     const countries = pickMapCountries(nb, 'AF', 15, seeded(11));
     const L = mapLayoutFor(MANTA, 'AF', 15);
     const strokes = countries.flatMap(c =>
@@ -652,7 +652,7 @@ describe('valg for kartark', () => {
   });
 });
 
-describe('smart kobling av merker', () => {
+describe('smart matching of marks', () => {
   const region = 'EU' as const;
   const countries = pickMapCountries(nb, region, 6, seeded(21));
   const entries = countries.map((country, i) => ({n: i + 1, country}));
@@ -660,7 +660,7 @@ describe('smart kobling av merker', () => {
   const truth = (i: number) =>
     lonLatToPage(MAPS.EU, L.map, ...CAPITAL_LONLAT[countries[i].code]);
 
-  it('forkaster en ekstra strek midt i, så resten ikke forskyves', () => {
+  it('discards an extra stroke in the middle, so the rest is not shifted', () => {
     const stray = [
       {x: L.map.left + 30, y: L.map.top + 30},
       {x: L.map.left + 32, y: L.map.top + 31},
@@ -681,7 +681,7 @@ describe('smart kobling av merker', () => {
     expect(g.drafts.some(d => d.kind === 'text' && d.text === '?')).toBe(true);
   });
 
-  it('kobler det siste merket til den siste byen når et merke mangler midt i', () => {
+  it('matches the last mark to the last city when a mark is missing in the middle', () => {
     const strokes = [0, 1, 3, 4, 5].flatMap(i => cross(truth(i)));
     const g = gradeMap(MANTA, nb, region, L.map, entries, strokes, []);
     expect(g.results.map(r => r.assignment.kind)).toEqual([
@@ -695,7 +695,7 @@ describe('smart kobling av merker', () => {
     expect(g.points).toBe(5000);
   });
 
-  it('kobler et kraftig bom til sin by i stedet for å forkaste det', () => {
+  it('matches a big miss to its city instead of discarding it', () => {
     const far = {x: truth(2).x + 400, y: truth(2).y};
     const strokes = [
       ...cross(truth(0)),
@@ -717,8 +717,8 @@ describe('smart kobling av merker', () => {
     expect(g.unused).toEqual([]);
   });
 
-  it('justeringen velger lavest samlet kostnad og beholder rekkefølgen', () => {
-    // Merke 1 passer by 0 og merke 2 passer by 1; merke 0 passer ingen.
+  it('the alignment picks the lowest total cost and keeps the order', () => {
+    // Mark 1 fits city 0 and mark 2 fits city 1; mark 0 fits none.
     const cost = (mk: number, e: number) => (mk === e + 1 ? 0 : 1000);
     const r = assignMarks(3, [false, false], cost);
     expect(r.byEntry).toEqual([
@@ -729,9 +729,9 @@ describe('smart kobling av merker', () => {
   });
 });
 
-describe('landmodus', () => {
+describe('country mode', () => {
   it.each(MAP_REGIONS)(
-    'hver hovedstad ligger i sitt eget land i rutenettet (%s)',
+    'every capital lies in its own country in the grid (%s)',
     region => {
       const m = MAPS[region];
       const misses: string[] = [];
@@ -745,7 +745,7 @@ describe('landmodus', () => {
     },
   );
 
-  it.each(MAP_REGIONS)('fasitpunktet ligger inne i landet (%s)', region => {
+  it.each(MAP_REGIONS)('the answer-key point lies inside the country (%s)', region => {
     for (const code of capitalsIn(region)) {
       const p = countryLabel(region, code)!;
       expect(p).not.toBeNull();
@@ -753,7 +753,7 @@ describe('landmodus', () => {
     }
   });
 
-  it('kjenner igjen overskriften og skiller den fra hovedstadsark', () => {
+  it('recognizes the heading and tells it apart from capital sheets', () => {
     for (const lang of [nb, en, getLanguage('de')!]) {
       const info = parseMapTitle(mapSheetTitle(lang, 'AF', 'country'));
       expect(info?.target).toBe('country');
@@ -775,7 +775,7 @@ describe('landmodus', () => {
   const inside = (i: number) =>
     toPage(countryLabel(region, countries[i].code)!);
 
-  it('gir riktig for kryss inne i landene, med haker i lista', () => {
+  it('marks correct for crosses inside the countries, with ticks in the list', () => {
     const strokes = [0, 1, 2, 3, 4].flatMap(i => cross(inside(i)));
     const g = gradeMap(
       MANTA,
@@ -792,12 +792,12 @@ describe('landmodus', () => {
     expect(g.results.every(r => r.correct)).toBe(true);
     const texts = g.drafts.flatMap(d => (d.kind === 'text' ? [d.text] : []));
     expect(texts).toContain('Riktige land: 5 av 5');
-    // Ingen fasitringer eller streker når alt er riktig: bare haker i lista (ett strøk hver).
+    // No answer-key rings or lines when everything is correct: only ticks in the list (one stroke each).
     expect(g.drafts.filter(d => d.kind === 'line')).toHaveLength(0);
     expect(g.drafts.filter(d => d.kind === 'path')).toHaveLength(5);
   });
 
-  it('gir galt for kryss i et annet land, og viser hvor landet ligger', () => {
+  it('marks wrong for a cross in another country, and shows where the country is', () => {
     const strokes = [
       ...cross(inside(1)),
       ...cross(inside(1)),
@@ -820,7 +820,7 @@ describe('landmodus', () => {
     expect(g.drafts.filter(d => d.kind === 'line')).toHaveLength(1);
   });
 
-  it('lista viser bare landet', () => {
+  it('the list shows only the country', () => {
     const drafts = mapSheetDrafts(
       MANTA,
       nb,
@@ -836,8 +836,8 @@ describe('landmodus', () => {
   });
 });
 
-describe('lange navn uten parentes', () => {
-  it('bryter ved et mellomrom og leses tilbake', () => {
+describe('long names without parentheses', () => {
+  it('breaks at a space and is read back', () => {
     const c = pickMapCountries(nb, 'AF', 197, seeded(4)).find(
       x => x.code === 'CF',
     )!;

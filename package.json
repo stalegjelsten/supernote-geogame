@@ -40,5 +40,5 @@
   "engines": {
     "node": ">=18"
   },
-  "description": "Arbeidsark for å øve på land og hovedsteder på Supernote."
+  "description": "Worksheets for practicing countries and capitals on Supernote."
 }

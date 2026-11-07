@@ -19,8 +19,8 @@ import {COUNTRY_CODES} from '../src/data/countries';
 
 const nb = getLanguage('nb')!;
 
-describe('merkelapp for flerspiller', () => {
-  it('leses tilbake fra undertittelen på alle språk', () => {
+describe('multiplayer label', () => {
+  it('is read back from the subtitle in all languages', () => {
     for (const lang of LANGUAGES) {
       const hs = hotSeatTexts(lang);
       expect(parseGameTag(hs.tablePass(2, 3))).toEqual({mode: 'pass', player: 2, players: 3});
@@ -38,10 +38,10 @@ describe('merkelapp for flerspiller', () => {
     }
   });
 
-  it('forveksles ikke med vanlig tekst på arket', () => {
+  it('is not confused with ordinary text on the sheet', () => {
     for (const lang of LANGUAGES) {
       expect(parseGameTag(lang.sheet.subtitle)).toBeNull();
-      // Undertittelen må ikke se ut som en overskrift.
+      // The subtitle must not look like a heading.
       expect(parseSheetTitle(hotSeatTexts(lang).tablePass(1, 2))).toBeNull();
       expect(parseMapTitle(hotSeatTexts(lang).mapShared(2))).toBeNull();
     }
@@ -49,7 +49,7 @@ describe('merkelapp for flerspiller', () => {
     expect(parseGameTag('Duell for 1')).toBeNull();
   });
 
-  it('beholder andre linje i kartets bruksanvisning', () => {
+  it('keeps the second line of the map instructions', () => {
     const plain = mapSubtitle(nb, 'both', 'capital');
     const tagged = mapSubtitle(nb, 'both', 'capital', {mode: 'pass', player: 2, players: 2});
     expect(tagged.split('\n')[1]).toBe(plain.split('\n')[1]);
@@ -57,9 +57,9 @@ describe('merkelapp for flerspiller', () => {
   });
 });
 
-describe('send rundt', () => {
-  it('legger spillerne etter hverandre med en side imellom', () => {
-    // 2 spillere, 2 sider hver: S1 S1 | gi videre | S2 S2
+describe('pass around', () => {
+  it('places the players one after another with a page in between', () => {
+    // 2 spillere, 2 sider hver: S1 S1 | hand over | S2 S2
     expect(passPageCount(2, 2)).toBe(5);
     expect(passPageIndex(10, 1, 1, 2)).toBe(10);
     expect(passPageIndex(10, 1, 2, 2)).toBe(11);
@@ -67,7 +67,7 @@ describe('send rundt', () => {
     expect(passPageIndex(10, 2, 2, 2)).toBe(14);
   });
 
-  it('finner første side fra hvilken som helst spillerside', () => {
+  it('finds the first page from any player page', () => {
     for (const parts of [1, 2, 3]) {
       for (let p = 1; p <= 4; p++) {
         for (let k = 1; k <= parts; k++) {
@@ -78,28 +78,28 @@ describe('send rundt', () => {
   });
 });
 
-describe('bytt på', () => {
-  it('gir alle like mange oppgaver', () => {
+describe('take turns', () => {
+  it('gives everyone the same number of tasks', () => {
     expect(sharedCount(20, 3)).toBe(18);
     expect(sharedCount(5, 2)).toBe(4);
     expect(sharedCount(20, 2, 13)).toBe(12);
     expect(sharedCount(1, 2)).toBe(2);
   });
 
-  it('lar spillerne svare annenhver gang', () => {
+  it('lets the players answer in alternation', () => {
     expect([0, 1, 2, 3, 4].map(i => playerAt(i, 2))).toEqual([1, 2, 1, 2, 1]);
     expect([0, 1, 2, 3].map(i => playerAt(i, 3))).toEqual([1, 2, 3, 1]);
   });
 
-  it('leser tallet i svarruta', () => {
+  it('reads the number in the answer box', () => {
     expect(parseRowLabel(rowLabel(2), 2)).toBe(2);
     expect(parseRowLabel('3', 2)).toBeNull();
     expect(parseRowLabel('Oslo', 2)).toBeNull();
   });
 });
 
-describe('poeng', () => {
-  it('summerer per spiller', () => {
+describe('score', () => {
+  it('sums per player', () => {
     expect(
       sumScores([
         {player: 2, points: 3, max: 5},
@@ -112,14 +112,14 @@ describe('poeng', () => {
     ]);
   });
 
-  it('kårer vinner etter andel, og gir uavgjort ved likt', () => {
+  it('picks the winner by share, and gives a draw when tied', () => {
     expect(winners([{player: 1, points: 4, max: 5}, {player: 2, points: 4, max: 10}])).toEqual([1]);
     expect(winners([{player: 1, points: 3, max: 5}, {player: 2, points: 3, max: 5}])).toEqual([1, 2]);
   });
 });
 
-describe('rettferdig trekning', () => {
-  /** Enkel deterministisk tilfeldighet for testene. */
+describe('fair draw', () => {
+  /** Simple deterministic randomness for the tests. */
   const seeded = (seed: number) => () => {
     seed = (seed * 16807) % 2147483647;
     return (seed - 1) / 2147483646;
@@ -130,14 +130,14 @@ describe('rettferdig trekning', () => {
     return Math.max(...totals) - Math.min(...totals);
   };
 
-  it('gir like mange til alle, uten duplikater', () => {
+  it('gives everyone the same number, without duplicates', () => {
     const pool = Array.from({length: 50}, (_, i) => i);
     const out = fairDraw(pool, 7, 3, x => x, {random: seeded(1)});
     expect(out).toHaveLength(21);
     expect(new Set(out).size).toBe(21);
   });
 
-  it('jevner ut kjentheten mye bedre enn tilfeldig trekning', () => {
+  it('evens out familiarity much better than a random draw', () => {
     const pool = Array.from({length: 60}, (_, i) => i * i);
     let fair = 0;
     let naive = 0;
@@ -150,28 +150,28 @@ describe('rettferdig trekning', () => {
     expect(fair).toBeLessThan(naive / 3);
   });
 
-  it('respekterer kompatibilitet når det går, og slakker når det må', () => {
+  it('respects compatibility when possible, and relaxes it when necessary', () => {
     const pool = Array.from({length: 20}, (_, i) => i);
-    // Ingen to naboer.
+    // No two neighbours.
     const notAdjacent = (x: number, chosen: number[]) => chosen.every(c => Math.abs(c - x) > 1);
     const out = fairDraw(pool, 4, 2, x => x, {random: seeded(3), compatible: notAdjacent});
     expect(out).toHaveLength(8);
     const sorted = [...out].sort((a, b) => a - b);
     expect(sorted.every((x, i) => i === 0 || x - sorted[i - 1] > 1)).toBe(true);
-    // For strengt krav: alle skal likevel få oppgaver.
+    // Too strict a requirement: everyone should still get tasks.
     expect(fairDraw(pool, 10, 2, x => x, {random: seeded(3), compatible: () => false})).toHaveLength(20);
   });
 
-  it('har kjenthet for alle land og hovedsteder', () => {
+  it('has familiarity for all countries and capitals', () => {
     for (const code of COUNTRY_CODES) {
       expect(familiarity(code, 'country')).toBeGreaterThan(0);
       expect(familiarity(code, 'capital')).toBeGreaterThan(0);
     }
-    // Sanity: Paris er mer kjent enn Funafuti.
+    // Sanity: Paris is better known than Funafuti.
     expect(familiarity('FR', 'capital')).toBeGreaterThan(familiarity('TV', 'capital'));
   });
 
-  it('trekker land og kartbyer i spillerekkefølge', () => {
+  it('draws countries and map cities in player order', () => {
     const t = pickFairCountries(nb, 'EU', 10, 2, seeded(5));
     expect(t).toHaveLength(10);
     expect(new Set(t.map(c => c.code)).size).toBe(10);
@@ -180,25 +180,25 @@ describe('rettferdig trekning', () => {
   });
 });
 
-describe('nivå', () => {
+describe('level', () => {
   const pool = Array.from({length: 30}, (_, i) => i);
   const id = (x: number) => x;
 
-  it('velger tredjedeler etter kjenthet', () => {
+  it('picks thirds by familiarity', () => {
     expect(levelPool(pool, 'easy', 5, id)).toEqual([29, 28, 27, 26, 25, 24, 23, 22, 21, 20]);
     expect(levelPool(pool, 'hard', 5, id)).toEqual([9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
     expect(levelPool(pool, 'medium', 5, id)).toEqual([19, 18, 17, 16, 15, 14, 13, 12, 11, 10]);
     expect(levelPool(pool, 'mixed', 5, id)).toBe(pool);
   });
 
-  it('utvider vinduet når det trengs flere', () => {
+  it('widens the window when more are needed', () => {
     expect(levelPool(pool, 'hard', 20, id)).toHaveLength(20);
     expect(levelPool(pool, 'hard', 20, id)).toContain(0);
     expect(levelPool(pool, 'easy', 8, id, 1.5)).toHaveLength(12);
     expect(levelPool(pool, 'easy', 40, id)).toBe(pool);
   });
 
-  it('gir lettere land på lett enn på vanskelig', () => {
+  it('gives easier countries on easy than on hard', () => {
     const avg = (cs: Array<{code: Parameters<typeof familiarity>[0]}>) =>
       cs.reduce((a, c) => a + familiarity(c.code, 'capital'), 0) / cs.length;
     for (const region of ['EU', 'AF', 'ALL'] as const) {

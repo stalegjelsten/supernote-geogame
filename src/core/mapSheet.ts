@@ -1,12 +1,12 @@
 /**
- * Kartmodus: «merk hovedstaden på kartet».
+ * Map mode: "mark the capital on the map".
  *
- * Arket har et kart over regionen og en nummerert liste med byer. Brukeren
- * setter ett merke per by i listens rekkefølge, eller streker over ruta foran
- * en by for å hoppe over den. Ved retting regnes midten av hvert merke om til
- * lengde/bredde, og avstanden til riktig hovedstad gir 0–1000 poeng.
+ * The sheet has a map of the region and a numbered list of cities. The user
+ * puts one mark per city in the list's order, or strikes through the box before
+ * a city to skip it. On correction, the center of each mark is converted to
+ * longitude/latitude, and the distance to the correct capital gives 0–1000 points.
  *
- * Alt her er ren logikk. Lesing og skriving på siden skjer i src/actions.ts.
+ * Everything here is pure logic. Reading and writing on the page happens in src/actions.ts.
  */
 import {CAPITAL_LONLAT} from '../data/capitals';
 import {CONTINENT_OF, CONTINENTS} from '../data/countries';
@@ -48,23 +48,23 @@ import {regionName, shuffle, type CountryOrder, type Region} from './sheet';
 export {MAP_SHEET_COUNT};
 export type {MapEntryStyle};
 
-/** Antall byer man kan velge for ett kartark. */
+/** Number of cities you can choose for one map sheet. */
 export const MAP_COUNTS = [5, 10, 15] as const;
 export const MAP_ENTRY_STYLES: MapEntryStyle[] = ['both', 'capital', 'country'];
 
-/** Alle regionene som har kart, i menyens rekkefølge. */
+/** All regions that have maps, in the menu's order. */
 export const MAP_REGIONS: Region[] = [...CONTINENTS, 'ALL'];
 
 export function mapMeta(region: Region): MapMeta {
   return MAPS[region];
 }
 
-/** Filnavnet RN-byggingen gir kartbildet i `drawable-mdpi/` (fra `assets/maps/<fil>.png`). */
+/** The file name the RN build gives the map image in `drawable-mdpi/` (from `assets/maps/<file>.png`). */
 export function mapAssetName(region: Region): string {
   return `assets_maps_${MAPS[region].file}.png`;
 }
 
-/** Kartlayout for en side, med kartet i nøyaktig bildets form. */
+/** Map layout for a page, with the map in exactly the image's shape. */
 export function mapLayoutFor(
   page: Size,
   region: Region,
@@ -74,7 +74,7 @@ export function mapLayoutFor(
   return computeMapLayout(page, m.width / m.height, count);
 }
 
-/** Hva som skal merkes: hovedstaden (poeng etter avstand) eller landet (riktig/galt). */
+/** What is to be marked: the capital (points by distance) or the country (right/wrong). */
 export type MapTarget = 'capital' | 'country';
 
 function titlePrefixFor(lang: Language, target: MapTarget): string {
@@ -97,8 +97,8 @@ export interface MapSheetInfo {
 }
 
 /**
- * Kjenner igjen overskriften på et kartark og leser språk og region.
- * Lengste prefiks vinner, så «Hovedsteder på kartet» ikke forveksles med tabellarket «Hovedsteder».
+ * Recognizes the heading of a map sheet and reads language and region.
+ * The longest prefix wins, so "Capitals on the map" isn't confused with the table sheet "Capitals".
  */
 export function parseMapTitle(title: string): MapSheetInfo | null {
   const candidates = LANGUAGES.flatMap(lang =>
@@ -124,10 +124,10 @@ export function parseMapTitle(title: string): MapSheetInfo | null {
 }
 
 /**
- * Trekker `count` byer fra regionen. Byer som ville ligget nærmere hverandre
- * enn `minSeparation` (andel av kartets bredde) unngås, så merkene ikke havner
- * oppå hverandre (f.eks. Roma og Vatikanstaten). Landene prøves i rekkefølgen
- * `order` gir (tilfeldig, eller en treningsmodus).
+ * Draws `count` cities from the region. Cities that would lie closer to each other
+ * than `minSeparation` (fraction of the map's width) are avoided, so the marks don't end up
+ * on top of each other (e.g. Rome and Vatican City). Countries are tried in the order
+ * `order` gives (random, or a training mode).
  */
 export function pickMapCountries(
   lang: Language,
@@ -140,8 +140,8 @@ export function pickMapCountries(
   target: MapTarget = 'capital',
 ): Country[] {
   const meta = MAPS[region];
-  // Nivået velger hvilke land som er med (litt ekstra plass, siden byer som
-  // ligger for tett hoppes over), `order` rekkefølgen de prøves i.
+  // The level chooses which countries are included (a bit of extra room, since cities that
+  // lie too close are skipped), `order` the order they are tried in.
   const pool = order(
     levelPool(
       countriesIn(lang).filter(c => region === 'ALL' || c.continent === region),
@@ -168,7 +168,7 @@ export function pickMapCountries(
       spots.push(p);
     }
   }
-  // Fyll opp hvis kravet til avstand ble for strengt (små regioner).
+  // Fill up if the distance requirement was too strict (small regions).
   for (const c of pool) {
     if (chosen.length >= count) {
       break;
@@ -181,8 +181,8 @@ export function pickMapCountries(
 }
 
 /**
- * Bytt på: som pickMapCountries, men fordelt rettferdig på spillerne og i
- * spillerekkefølge. Kjenthet måles på landet når landet skal merkes, ellers på hovedstaden.
+ * Take turns: like pickMapCountries, but distributed fairly across the players and in
+ * player order. Familiarity is measured on the country when the country is to be marked, otherwise on the capital.
  */
 export function pickFairMapCountries(
   lang: Language,
@@ -242,7 +242,7 @@ export function entryText(
   }
 }
 
-/** Finner landet ut fra hovedstaden slik den står på arket (arkets språk først). */
+/** Finds the country from the capital as written on the sheet (the sheet's language first). */
 function findCountryByCapital(
   capital: string,
   lang: Language,
@@ -258,15 +258,15 @@ function findCountryByCapital(
 }
 
 /**
- * Blir skriften for liten på én linje, flyttes landet i parentes ned på linje to.
- * `parseEntry` leser begge formene.
+ * If the font becomes too small on one line, the country in parentheses is moved down to line two.
+ * `parseEntry` reads both forms.
  */
 export function fitEntry(entry: string, cell: Rect, maxSize: number): string {
   const one = fitFontSize(entry, cell, maxSize);
   if (one >= maxSize * 0.8) {
     return entry;
   }
-  // Helst før parentesen med landet; ellers ved mellomrommet som gir størst skrift.
+  // Preferably before the parenthesis with the country; otherwise at the space that gives the largest font.
   const paren = entry.lastIndexOf(' (');
   const spaces = [...entry.matchAll(/ /g)]
     .map(m => m.index!)
@@ -285,7 +285,7 @@ export function fitEntry(entry: string, cell: Rect, maxSize: number): string {
   return best;
 }
 
-/** Leser «3. Oslo (Norge)» (eller «4. Singapore») tilbake til nummer og land. */
+/** Reads "3. Oslo (Norway)" (or "4. Singapore") back to number and country. */
 export function parseEntry(
   text: string,
   lang: Language,
@@ -297,7 +297,7 @@ export function parseEntry(
   if (!m) {
     return null;
   }
-  // «3. Oslo (Norge)» → landet i parentes; «3. Norge» → landet; «3. Oslo» → byen.
+  // "3. Oslo (Norway)" → the country in parentheses; "3. Norway" → the country; "3. Oslo" → the city.
   const found = m[3]
     ? findCountryByName(m[3], lang)
     : findCountryByName(m[2], lang) ?? findCountryByCapital(m[2], lang);
@@ -307,9 +307,9 @@ export function parseEntry(
   return {n: Number(m[1]), country: countryIn(lang, found.code)};
 }
 
-/** Strekbredde for alt pluginen tegner. Hold deg på 200 eller mer (filstørrelse). */
+/** Stroke width for everything the plugin draws. Stay at 200 or more (file size). */
 export const MAP_LINE_WIDTH = 200;
-/** Rettemerkene (ring og strek) er litt tykkere, som rettemerkene i tabellmodusen. */
+/** The correction marks (ring and line) are a bit thicker, like the correction marks in table mode. */
 export const MAP_MARK_WIDTH = 300;
 export const COLOR_BLACK = 0;
 export const COLOR_DARK_GRAY = 0x9d;
@@ -331,8 +331,8 @@ function textDraft(
 }
 
 /**
- * Bruksanvisningen under overskriften. Flerspiller: første linje får
- * merkelappen («Spiller 2 av 3 · …» eller «Duell for 2 · …»), andre linje er som før.
+ * The instructions under the heading. Multiplayer: the first line gets
+ * the label ("Player 2 of 3 · …" or "Duel for 2 · …"), the second line is as before.
  */
 export function mapSubtitle(
   lang: Language,
@@ -354,7 +354,7 @@ export function mapSubtitle(
   return [line, ...rest].join('\n');
 }
 
-/** Alt som tegnes når et kartark lages: overskrift, bruksanvisning, kartbilde, ruter og liste. */
+/** Everything drawn when a map sheet is created: heading, instructions, map image, boxes and list. */
 export function mapSheetDrafts(
   page: Size,
   lang: Language,
@@ -367,7 +367,7 @@ export function mapSheetDrafts(
 ): Draft[] {
   const L = mapLayoutFor(page, region, countries.length);
   const subtitle = mapSubtitle(lang, style, target, tag);
-  // I landmodusen står bare landet i lista.
+  // In country mode only the country is in the list.
   const listStyle: MapEntryStyle = target === 'country' ? 'country' : style;
   const drafts: Draft[] = [
     {kind: 'picture', path: picturePath, rect: L.map},
@@ -414,13 +414,13 @@ export function mapSheetDrafts(
   return drafts;
 }
 
-/** Deterministisk «tilfeldig» tall i [-1, 1]. */
+/** Deterministic "random" number in [-1, 1]. */
 function wobble(seed: number, i: number): number {
   const v = Math.sin(seed * 12.9898 + i * 78.233) * 43758.5453;
   return (v - Math.floor(v)) * 2 - 1;
 }
 
-/** En håndtegnet ring rundt `c`: litt ujevn, og slutten går litt forbi starten. */
+/** A hand-drawn ring around `c`: slightly uneven, and the end goes a bit past the start. */
 export function ringStroke(c: Point, radius: number, seed = 0): Point[] {
   const steps = 16;
   const start = wobble(seed, 1) * Math.PI;
@@ -442,13 +442,13 @@ export interface EntryResult {
   n: number;
   country: Country;
   assignment: Assignment;
-  /** Gjetningen på siden og på kloden, hvis byen ble merket. */
+  /** The guess on the page and on the globe, if the city was marked. */
   guess?: Point;
   distanceKm?: number;
   points: number;
-  /** Landmodusen: lå merket i riktig land? */
+  /** Country mode: was the mark in the right country? */
   correct?: boolean;
-  /** Riktig plassering på siden. */
+  /** Correct placement on the page. */
   truth: Point;
 }
 
@@ -457,19 +457,19 @@ export interface MapGrade {
   points: number;
   max: number;
   marks: number;
-  /** Merker som ikke ble koblet til noen by (antatt ekstra streker). */
+  /** Marks that were not matched to any city (assumed extra strokes). */
   unused: number[];
   target: MapTarget;
-  /** Merknad om feil antall merker, eller null. */
+  /** Note about wrong number of marks, or null. */
   note: string | null;
   drafts: Draft[];
 }
 
 /**
- * Retter et kartark.
- * @param mapRect der kartbildet faktisk ligger på siden
- * @param mapStrokes strøkene på kartet, i tegnerekkefølge, i sidekoordinater
- * @param skipped for hver oppføring (indeks n-1): er ruta strøket over?
+ * Corrects a map sheet.
+ * @param mapRect where the map image actually lies on the page
+ * @param mapStrokes the strokes on the map, in drawing order, in page coordinates
+ * @param skipped for each entry (index n-1): is the box struck through?
  */
 export function gradeMap(
   page: Size,
@@ -493,7 +493,7 @@ export function gradeMap(
     x: mapRect.left + (p.x / meta.width) * rw,
     y: mapRect.top + (p.y / meta.height) * rh,
   });
-  /** Fasitpunktet på siden: hovedstaden, eller et punkt godt inne i landet. */
+  /** The answer point on the page: the capital, or a point well inside the country. */
   const truthOf = (e: MapEntry): Point => {
     if (countryMode) {
       const lbl = countryLabel(region, e.country.code);
@@ -504,7 +504,7 @@ export function gradeMap(
     const [lon, lat] = CAPITAL_LONLAT[e.country.code];
     return lonLatToPage(meta, mapRect, lon, lat);
   };
-  /** Slingringsmonn i landmodusen: 12 bildepiksler (ca. 1 mm på Manta). */
+  /** Tolerance in country mode: 12 image pixels (about 1 mm on Manta). */
   const tolerance = 12;
   const hit = (mark: Point, e: MapEntry) =>
     hitsCountry(region, e.country.code, toImage(mark), tolerance);
@@ -513,7 +513,7 @@ export function gradeMap(
   const L = mapLayoutFor(page, region, count);
   const sorted = [...entries].sort((a, b) => a.n - b.n);
   const marks = groupMarks(mapStrokes);
-  // Tapte poeng hvis merke `mark` kobles til oppføring `entry` (indeks i `sorted`).
+  // Lost points if mark `mark` is matched to entry `entry` (index in `sorted`).
   const marksLonLat = marks.map(mk =>
     pageToLonLat(meta, mapRect, mk.center.x, mk.center.y),
   );
@@ -529,7 +529,7 @@ export function gradeMap(
         haversineKm(marksLonLat[mark], truthsLonLat[entry]),
         meta.scaleKm,
       );
-    // I landmodusen koster et bom alltid mer enn et treff, men nærhet teller fortsatt for koblingen.
+    // In country mode a miss always costs more than a hit, but proximity still counts for the matching.
     return countryMode ? 100 + 0.9 * far : far;
   };
   const {byEntry, unused} = assignMarks(
@@ -568,7 +568,7 @@ export function gradeMap(
         r.points = mapPoints(r.distanceKm, meta.scaleKm);
       }
       points += r.points;
-      // Strek fra gjetningen til kanten av ringen rundt riktig sted.
+      // Line from the guess to the edge of the ring around the correct place.
       const dx = truth.x - guess.x;
       const dy = truth.y - guess.y;
       const d = Math.hypot(dx, dy);
@@ -588,7 +588,7 @@ export function gradeMap(
     }
     results.push(r);
 
-    // Poeng eller riktig/galt ved oppføringen i lista.
+    // Points or right/wrong at the entry in the list.
     const cell = L.entries[e.n - 1]?.points;
     if (cell) {
       if (countryMode && a.kind === 'mark') {
@@ -613,11 +613,11 @@ export function gradeMap(
       }
     }
 
-    // Et riktig land trenger ingen fasit på kartet.
+    // A correct country needs no answer mark on the map.
     if (r.correct) {
       return;
     }
-    // Riktig plassering: en håndtegnet ring og nummeret fra lista.
+    // Correct placement: a hand-drawn ring and the number from the list.
     drafts.push({
       kind: 'path',
       points: strokeAsPolygon(ringStroke(truth, ringR, e.n)),
@@ -657,7 +657,7 @@ export function gradeMap(
     fontSize: Math.round(L.fontSize * 1.15),
     bold: true,
   });
-  // Ubrukte merker får et «?» ved siden av seg, så man ser hvilken strek som ble forkastet.
+  // Unused marks get a "?" next to them, so you can see which stroke was discarded.
   for (const k of unused) {
     const c = marks[k].center;
     const w = Math.ceil(labelFont * 0.8) + 8;
@@ -701,7 +701,7 @@ export function gradeMap(
   };
 }
 
-/** Alle land i en region har en hovedstad med koordinater (brukes i tester). */
+/** All countries in a region have a capital with coordinates (used in tests). */
 export function capitalsIn(region: Region) {
   return (
     Object.keys(CAPITAL_LONLAT) as Array<keyof typeof CAPITAL_LONLAT>

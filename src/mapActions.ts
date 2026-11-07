@@ -1,6 +1,6 @@
 /**
- * Kartmodus på siden: lage et kartark og rette det.
- * Logikken ligger i src/core/mapSheet.ts; her er bare lesing og skriving.
+ * Map mode on the page: creating a map sheet and grading it.
+ * The logic is in src/core/mapSheet.ts; here it is only reading and writing.
  */
 import type {Language} from './i18n';
 import {currentLanguage} from './i18n';
@@ -63,14 +63,14 @@ import {recordResults, trainingOrder} from './actions';
 import {mapPointsScore, type Attempt, type Skill} from './core/stats';
 import type {Strategy} from './core/training';
 
-/** Ferdigheten et kartark øver på. */
+/** The skill a map sheet practices. */
 export const skillOfTarget = (target: MapTarget): Skill =>
   target === 'country' ? 'mapCountry' : 'mapCapital';
 
 export type Progress = (message: string) => void;
 
 async function mapPicturePath(region: Region): Promise<string> {
-  // MAP_ASSETS sørger for at bildene er med i bundelen (se mapAssets.ts).
+  // MAP_ASSETS makes sure the images are included in the bundle (see mapAssets.ts).
   const file = mapMeta(region).file as keyof typeof MAP_ASSETS;
   try {
     if (!MAP_ASSETS[file]) {
@@ -85,19 +85,19 @@ async function mapPicturePath(region: Region): Promise<string> {
 }
 
 export interface MapSheetOptions {
-  /** Antall byer (se MAP_COUNTS). */
+  /** Number of cities (see MAP_COUNTS). */
   count: number;
-  /** Hva lista oppgir: by og land, bare byen eller bare landet. */
+  /** What the list gives: city and country, only the city, or only the country. */
   style: MapEntryStyle;
-  /** Hva som skal merkes: hovedsteder (poeng etter avstand) eller land (riktig/galt). */
+  /** What should be marked: capitals (points by distance) or countries (right/wrong). */
   target: MapTarget;
-  /** Nivå etter kjenthet; blandet hvis ikke oppgitt. */
+  /** Level by familiarity; mixed if not specified. */
   level?: Level;
-  /** Hvordan landene velges (se core/training.ts). Standard: tilfeldig. */
+  /** How the countries are chosen (see core/training.ts). Default: random. */
   strategy?: Strategy;
 }
 
-/** Lager et kartark på denne siden eller en ny side etter den. */
+/** Creates a map sheet on this page or on a new page after it. */
 export async function createMapSheet(
   lang: Language,
   region: Region,
@@ -119,7 +119,7 @@ export async function createMapSheet(
     multi?.mode === 'shared'
       ? sharedCount(options.count, multi.players)
       : options.count;
-  // Bytt på: rettferdig trekning (treningsmodusen gjelder én spiller og brukes ikke der).
+  // Taking turns: fair draw (the training mode is for a single player and is not used there).
   const countries =
     multi?.mode === 'shared'
       ? pickFairMapCountries(
@@ -178,7 +178,7 @@ export async function createMapSheet(
   return {count: countries.length, pages: 1};
 }
 
-/** Send rundt: ett kartark per spiller med de samme byene, og en «gi videre»-side imellom. */
+/** Pass around: one map sheet per player with the same cities, and a "hand over" page in between. */
 async function createPassMapGame(
   ref: PageRef,
   lang: Language,
@@ -230,12 +230,12 @@ function mapInfo(elements: PageElement[]): MapSheetInfo | null {
   return null;
 }
 
-/** Er dette et kartark? Brukes av menyen for å velge riktig retting. */
+/** Is this a map sheet? Used by the menu to choose the right grading. */
 export function isMapSheet(elements: PageElement[]): boolean {
   return mapInfo(elements) !== null;
 }
 
-/** Kartbildets faktiske plassering. Faller tilbake på layouten hvis bildet ikke finnes som element. */
+/** The actual placement of the map image. Falls back to the layout if the image does not exist as an element. */
 function findMapRect(
   elements: PageElement[],
   region: Region,
@@ -272,19 +272,19 @@ function boxCenter(points: Point[]): Point | null {
 }
 
 export interface MapGradeSummary {
-  /** Poeng (hovedsteder) eller antall riktige (land). */
+  /** Points (capitals) or number of correct (countries). */
   points: number;
   max: number;
   target: MapTarget;
-  /** Flerspiller: poeng per spiller. */
+  /** Multiplayer: points per player. */
   players?: PlayerScore[];
-  /** Send rundt: spillere der kartarket ikke ble funnet. */
+  /** Pass around: players whose map sheet was not found. */
   missing?: number[];
 }
 
 /**
- * Retter kartarket på siden du står på. Returnerer null hvis siden ikke er et kartark.
- * @param scope 'set' retter alle spillernes kartark når enheten er sendt rundt.
+ * Grades the map sheet on the current page. Returns null if the page is not a map sheet.
+ * @param scope 'set' grades all the players' map sheets when the device has been passed around.
  */
 export async function gradeMapSheet(
   progress: Progress,
@@ -364,7 +364,7 @@ async function gradeMapPage(
   const {lang, region, target} = info;
   const t = mapTexts(lang);
 
-  // Lista: «3. Oslo (Norge)».
+  // The list: "3. Oslo (Norway)".
   const entries: MapEntry[] = [];
   for (const e of elements) {
     const text = e.type === TYPE_TEXT ? e.textBox?.textContentFull : null;
@@ -414,9 +414,9 @@ async function gradeMapPage(
     target,
   );
 
-  // Fjern resultater fra en tidligere retting: geometri og tekst på kartet,
-  // poengtekster og haker/kryss i lista, totalsummen og merknaden.
-  // Rutene foran navnene ligger utenfor poengcellene og blir stående.
+  // Remove results from an earlier grading: geometry and text on the map,
+  // score texts and checks/crosses in the list, the total and the note.
+  // The boxes in front of the names are outside the score cells and are left in place.
   const pad = 6;
   const mapArea = {
     left: mapRect.left - pad,
@@ -450,7 +450,7 @@ async function gradeMapPage(
     .map(e => e.numInPage);
   await deleteElements(ref, old);
 
-  // Felles ark: spillerne tok byene annenhver gang (nr. 1 = spiller 1, nr. 2 = spiller 2 …).
+  // Shared sheet: the players took the cities in turn (no. 1 = player 1, no. 2 = player 2 …).
   let players: PlayerScore[] | undefined;
   let drafts = grade.drafts;
   if (tag?.mode === 'shared') {
@@ -475,8 +475,8 @@ async function gradeMapPage(
   progress(ui.progress.writingResults);
   await insertDrafts(ref, drafts);
   await saveNote();
-  // Statistikk: byer som ble hoppet over, teller som «kunne ikke»;
-  // byer uten merke tas ikke med (merket kan ha falt utenfor kartet).
+  // Statistics: cities that were skipped count as "could not";
+  // cities without a mark are not included (the mark may have fallen outside the map).
   const attempts: Attempt[] = grade.results.flatMap(r =>
     r.assignment.kind === 'missing'
       ? []
@@ -492,7 +492,7 @@ async function gradeMapPage(
           },
         ],
   );
-  // Statistikk bare for én spiller; på flerspillerark tilhører svarene flere.
+  // Statistics only for a single player; on multiplayer sheets the answers belong to several.
   if (!tag) {
     await recordResults(ref.notePath, skillOfTarget(target), attempts);
   }

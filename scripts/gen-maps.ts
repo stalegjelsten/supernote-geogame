@@ -1,26 +1,26 @@
 #!/usr/bin/env node
-/* eslint-disable no-bitwise -- PNG-koding og CRC32 */
+/* eslint-disable no-bitwise -- PNG encoding and CRC32 */
 /**
- * Lager kartbildene til kartmodusen og dataene som hører til:
+ * Generates the map images for map mode and the data that goes with them:
  *
  *   node --no-warnings scripts/gen-maps.ts
  *
- * (Node 23.6 eller nyere kjører TypeScript direkte.)
+ * (Node 23.6 or newer runs TypeScript directly.)
  *
- * Skriver
- * - assets/maps/<region>.png – gråtonekart med høy kontrast for e-blekk, uten hovedsteder,
- * - src/data/maps.ts         – projeksjon, utsnitt og bildestørrelse per kart,
- * - src/data/capitals.ts     – lengde/bredde for hovedstaden i hvert land.
+ * Writes
+ * - assets/maps/<region>.png – high-contrast grayscale maps for e-ink, without capitals,
+ * - src/data/maps.ts         – projection, extent and image size per map,
+ * - src/data/capitals.ts     – longitude/latitude of each country's capital.
  *
- * Kilder (begge fritt tilgjengelige):
- * - Landgrenser: Natural Earth 1:50m Admin 0 – Countries (public domain),
- *   https://www.naturalearthdata.com. Lastes ned til scripts/data/cache/ første gang.
- * - Hovedsteder: koordinatene (P625) til hovedstedene (P36) i Wikidata (CC0), for de
- *   samme Q-ID-ene som språkfilene bruker (scripts/data/capitals-wikidata.json).
- *   Hentes én gang til scripts/data/capitals-coords-wikidata.json.
+ * Sources (both freely available):
+ * - Country borders: Natural Earth 1:50m Admin 0 – Countries (public domain),
+ *   https://www.naturalearthdata.com. Downloaded to scripts/data/cache/ on first run.
+ * - Capitals: the coordinates (P625) of the capitals (P36) in Wikidata (CC0), for the
+ *   same Q-IDs the language files use (scripts/data/capitals-wikidata.json).
+ *   Fetched once into scripts/data/capitals-coords-wikidata.json.
  *
- * Projeksjonene ligger i src/core/projection.ts og brukes både her og i pluginen,
- * så pikslene i bildet og koordinatene ved retting stemmer nøyaktig.
+ * The projections live in src/core/projection.ts and are used both here and in the plugin,
+ * so the pixels in the image and the coordinates when grading match exactly.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -54,9 +54,9 @@ const COORDS_FILE = path.join(
   'scripts/data/capitals-coords-wikidata.json',
 );
 
-/** Antall hovedsteder per kartark; bildene lages i full størrelse for denne layouten. */
+/** Number of capitals per map sheet; the images are made at full size for this layout. */
 export const MAP_SHEET_COUNT = 10;
-/** Bildene lages i full oppløsning for Manta; mindre enheter skalerer ned. */
+/** Images are made at full resolution for the Manta; smaller devices scale down. */
 const PAGE = {width: 1920, height: 2560};
 
 type Region = Continent | 'ALL';
@@ -65,9 +65,9 @@ interface RegionDef {
   region: Region;
   file: string;
   projection: Projection;
-  /** Punkter (lengde, bredde) som skal være med på kartet, i tillegg til hovedstedene. */
+  /** Points (longitude, latitude) to include on the map, in addition to the capitals. */
   extent: Array<[number, number]>;
-  /** For verdenskartet: breddegrensene i stedet for punkter. */
+  /** For the world map: the latitude limits instead of points. */
   latRange?: [number, number];
 }
 
@@ -117,8 +117,8 @@ const REGIONS: RegionDef[] = [
     region: 'NA',
     file: 'na',
     projection: {kind: 'laea', lon0: -85, lat0: 28},
-    // Nord-Canada er kuttet bort: nordligste hovedstad er Ottawa (45° N), og
-    // Karibia blir større når kartet ikke må romme Arktis.
+    // Northern Canada is cut off: the northernmost capital is Ottawa (45° N), and
+    // the Caribbean gets larger when the map does not have to fit the Arctic.
     extent: [
       [-124.5, 48.5],
       [-117, 32.5],
@@ -166,7 +166,7 @@ const REGIONS: RegionDef[] = [
   },
 ];
 
-// Farger (8-bit gråtone). Hav lys grå, land hvitt, grenser mørk grå, ramme svart.
+// Colors (8-bit grayscale). Sea light gray, land white, borders dark gray, frame black.
 const OCEAN = 205;
 const LAND = 255;
 const BORDER = 60;
@@ -175,17 +175,17 @@ const FRAME = 0;
 async function ensureNaturalEarth(): Promise<any> {
   if (!fs.existsSync(NE_FILE)) {
     fs.mkdirSync(CACHE, {recursive: true});
-    console.log(`Laster ned ${NE_URL}`);
+    console.log(`Downloading ${NE_URL}`);
     const res = await fetch(NE_URL);
     if (!res.ok) {
-      throw new Error(`Nedlasting feilet: ${res.status}`);
+      throw new Error(`Download failed: ${res.status}`);
     }
     fs.writeFileSync(NE_FILE, Buffer.from(await res.arrayBuffer()));
   }
   return JSON.parse(fs.readFileSync(NE_FILE, 'utf8'));
 }
 
-/** Henter koordinatene til hovedstedene fra Wikidata (én gang) og lager src/data/capitals.ts. */
+/** Fetches the capitals' coordinates from Wikidata (once) and creates src/data/capitals.ts. */
 async function capitals(): Promise<Record<string, [number, number]>> {
   const qids: Record<string, {q: string}> = JSON.parse(
     fs.readFileSync(QIDS_FILE, 'utf8'),
@@ -222,7 +222,7 @@ async function capitals(): Promise<Record<string, [number, number]>> {
     const q = qids[code]?.q;
     const c = q ? coords[q] : null;
     if (!c) {
-      throw new Error(`Mangler koordinater for hovedstaden i ${code} (${q})`);
+      throw new Error(`Missing coordinates for the capital of ${code} (${q})`);
     }
     out[code] = [Math.round(c[0] * 1e4) / 1e4, Math.round(c[1] * 1e4) / 1e4];
   }
@@ -231,10 +231,10 @@ async function capitals(): Promise<Record<string, [number, number]>> {
   );
   fs.writeFileSync(
     path.join(ROOT, 'src/data/capitals.ts'),
-    `// Generert av scripts/gen-maps.ts – ikke rediger for hånd.
+    `// Generated by scripts/gen-maps.ts – do not edit by hand.
 /**
- * Hovedstadens plassering for hvert land: [lengdegrad, breddegrad] i grader (WGS 84).
- * Kilde: Wikidata (CC0), egenskap P625 for hovedstaden (P36) i scripts/data/capitals-wikidata.json.
+ * Each country's capital location: [longitude, latitude] in degrees (WGS 84).
+ * Source: Wikidata (CC0), property P625 of the capital (P36) in scripts/data/capitals-wikidata.json.
  */
 import type {CountryCode} from './countries';
 
@@ -248,7 +248,7 @@ ${lines.join('\n')}
 
 const RAD = Math.PI / 180;
 
-/** Vinkelavstand i grader mellom to punkter. */
+/** Angular distance in degrees between two points. */
 function angularDeg(
   lon1: number,
   lat1: number,
@@ -300,7 +300,7 @@ function boundsFor(
 }
 
 // ---------------------------------------------------------------------------
-// Enkel rasterisering: fylte polygoner (partall/odde) og tykke linjer.
+// Simple rasterization: filled polygons (even-odd) and thick lines.
 
 class Raster {
   w: number;
@@ -312,7 +312,7 @@ class Raster {
     this.data = new Uint8Array(w * h).fill(fill);
   }
 
-  /** Fyller alle ringene samlet med partall/odde-regelen, så hull blir hull. */
+  /** Fills all rings together with the even-odd rule, so holes stay holes. */
   fillRings(rings: Array<Array<[number, number]>>, color: number) {
     let minY = Infinity;
     let maxY = -Infinity;
@@ -444,20 +444,20 @@ function chunk(type: string, data: Uint8Array): Buffer {
 }
 
 /**
- * PNG med indeksert palett (4 bit). Kartet har bare noen få grånyanser, så det
- * blir mye mindre enn 8-bits gråtone, og Android leser det som vanlig.
+ * PNG with an indexed palette (4 bit). The map has only a few gray shades, so it
+ * ends up much smaller than 8-bit grayscale, and Android reads it as usual.
  */
 function encodePng(r: Raster): Buffer {
   const levels = [...new Set(r.data)].sort((a, b) => a - b);
   if (levels.length > 16) {
-    throw new Error('For mange gråtoner for 4-bits palett');
+    throw new Error('Too many gray shades for a 4-bit palette');
   }
   const index = new Map(levels.map((v, i) => [v, i]));
   const rowBytes = Math.ceil(r.w / 2);
   const raw = Buffer.alloc((rowBytes + 1) * r.h);
   for (let y = 0; y < r.h; y++) {
     const o = y * (rowBytes + 1);
-    raw[o] = 0; // filter: ingen
+    raw[o] = 0; // filter: none
     for (let x = 0; x < r.w; x++) {
       const v = index.get(r.data[y * r.w + x])!;
       raw[o + 1 + (x >> 1)] |= x & 1 ? v : v << 4;
@@ -466,8 +466,8 @@ function encodePng(r: Raster): Buffer {
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(r.w, 0);
   ihdr.writeUInt32BE(r.h, 4);
-  ihdr[8] = 4; // bitdybde
-  ihdr[9] = 3; // indeksert farge
+  ihdr[8] = 4; // bit depth
+  ihdr[9] = 3; // indexed color
   const plte = Buffer.from(levels.flatMap(v => [v, v, v]));
   return Buffer.concat([
     Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
@@ -480,10 +480,10 @@ function encodePng(r: Raster): Buffer {
 
 // ---------------------------------------------------------------------------
 
-/** Enklaver der en prikk bare ville rotet til kartet. */
+/** Enclaves where a dot would only clutter the map. */
 const NO_DOT = new Set(['VA', 'SM', 'MC', 'LI', 'AD']);
 
-/** Lager en funksjon som projiserer en ring (lengde, bredde) til piksler i kartbildet. */
+/** Creates a function that projects a ring (longitude, latitude) to pixels in the map image. */
 function projector(def: RegionDef, meta: MapMeta) {
   const W = meta.width;
   const H = meta.height;
@@ -495,7 +495,7 @@ function projector(def: RegionDef, meta: MapMeta) {
   const p = def.projection;
   const center = p.kind === 'laea' ? [p.lon0, p.lat0] : null;
 
-  /** Prosjekterer en ring. På verdenskartet holdes ringen samlet selv om den krysser kanten. */
+  /** Projects a ring. On the world map the ring is kept in one piece even if it crosses the edge. */
   const projectRing = (ring: number[][]): Array<[number, number]> | null => {
     if (center) {
       if (
@@ -510,7 +510,7 @@ function projector(def: RegionDef, meta: MapMeta) {
         return toPx(q.x, q.y);
       });
     }
-    // Lengde relativt til midtmeridianen, uten hopp mellom nabopunkter.
+    // Longitude relative to the central meridian, without jumps between neighboring points.
     const rel: number[] = [];
     for (const [lon] of ring) {
       let d = lon - p.lon0;
@@ -574,7 +574,7 @@ function render(def: RegionDef, meta: MapMeta, ne: any): Raster {
       }
       raster.fillRings(rings, LAND);
       outlines.push(...rings);
-      // Små øystater forsvinner ellers: tegn en liten øy-prikk.
+      // Small island states would otherwise vanish: draw a small island dot.
       if (maxX - minX < 3.5 && maxY - minY < 3.5 && !NO_DOT.has(iso)) {
         dots.push([(minX + maxX) / 2, (minY + maxY) / 2]);
       }
@@ -585,7 +585,7 @@ function render(def: RegionDef, meta: MapMeta, ne: any): Raster {
       const [ax, ay] = ring[i - 1];
       const [bx, by] = ring[i];
       if (Math.abs(bx - ax) > W / 2) {
-        continue; // hopp over kanter som krysser hele kartet
+        continue; // skip edges that cross the whole map
       }
       if (
         (ax < -2 && bx < -2) ||
@@ -606,38 +606,38 @@ function render(def: RegionDef, meta: MapMeta, ne: any): Raster {
   return raster;
 }
 
-/** Landkoden et Natural Earth-objekt teller som, eller null. */
+/** The country code a Natural Earth feature counts as, or null. */
 function codeOf(f: any): CountryCode | null {
   const p = f.properties;
   if (p.ADM0_A3 === 'SOL') {
-    return 'SO'; // Somaliland regnes som en del av Somalia.
+    return 'SO'; // Somaliland is counted as part of Somalia.
   }
   if (p.ADM0_A3 === 'CYN') {
-    return 'CY'; // Nord-Kypros regnes som en del av Kypros.
+    return 'CY'; // Northern Cyprus is counted as part of Cyprus.
   }
   const code = p.ISO_A2_EH as CountryCode;
   if (!(code in CONTINENT_OF)) {
     return null;
   }
-  // Australias småterritorier (Christmas Island m.fl.) har også koden AU.
+  // Australia's small territories (Christmas Island etc.) also have the code AU.
   return code === 'AU' && p.ADM0_A3 !== 'AUS' ? null : code;
 }
 
-/** Størrelsen på en rute i landrutenettet, i bildepiksler. */
+/** The size of a cell in the country grid, in image pixels. */
 const CELL = 4;
 const B62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const b62 = (v: number) => {
   if (v < 0 || v >= 62 * 62) {
-    throw new Error(`Utenfor base62: ${v}`);
+    throw new Error(`Outside base62: ${v}`);
   }
   return B62[Math.floor(v / 62)] + B62[v % 62];
 };
 
 /**
- * Landrutenett for kartet: hvilket land (i regionen) hver rute på CELL×CELL
- * piksler hører til, kodet som rader med løp («id, lengde» i base62). Brukes
- * til å rette landmodusen. Gir også et etikettpunkt per land: ruta som ligger
- * lengst unna andre land, innenfor kartet.
+ * Country grid for the map: which country (in the region) each CELL×CELL-pixel
+ * cell belongs to, encoded as rows of runs ("id, length" in base62). Used
+ * for grading country mode. Also gives a label point per country: the cell
+ * farthest from other countries, within the map.
  */
 function cellIndex(def: RegionDef, meta: MapMeta, ne: any) {
   const codes = COUNTRY_CODES.filter(c => def.region === 'ALL' || CONTINENT_OF[c] === def.region);
@@ -647,7 +647,7 @@ function cellIndex(def: RegionDef, meta: MapMeta, ne: any) {
   const grid = new Raster(cols, rows, 0);
   const projectRing = projector(def, meta);
   const tiny: Array<[number, number, number]> = [];
-  // Polygonene fylles fra størst til minst, så små land ikke overskrives av naboene.
+  // Polygons are filled from largest to smallest, so small countries are not overwritten by their neighbors.
   const polygons: Array<{id: number; rings: Array<Array<[number, number]>>; w: number; h: number}> = [];
   for (const f of ne.features) {
     const code = codeOf(f);
@@ -679,7 +679,7 @@ function cellIndex(def: RegionDef, meta: MapMeta, ne: any) {
   for (const poly of polygons) {
     grid.fillRings(poly.rings, poly.id);
   }
-  // Små øyer og mikrostater får minst én rute, tegnet til slutt så de ikke overskrives.
+  // Small islands and microstates get at least one cell, drawn last so they are not overwritten.
   for (const [x, y, id] of tiny) {
     const cx = Math.floor(x);
     const cy = Math.floor(y);
@@ -687,8 +687,8 @@ function cellIndex(def: RegionDef, meta: MapMeta, ne: any) {
       grid.data[cy * cols + cx] = id;
     }
   }
-  // Smale land (Gambia på verdenskartet) kan falle mellom rutesentrene: stemple midten
-  // av landets største polygon.
+  // Narrow countries (Gambia on the world map) can fall between cell centers: stamp the middle
+  // of the country's largest polygon.
   for (const c of codes) {
     const id = idOf.get(c)!;
     if (grid.data.includes(id)) {
@@ -705,11 +705,11 @@ function cellIndex(def: RegionDef, meta: MapMeta, ne: any) {
       }
     }
     if (!grid.data.includes(id)) {
-      throw new Error(`${c} har ingen ruter i ${def.file}`);
+      throw new Error(`${c} has no cells in ${def.file}`);
     }
   }
 
-  // Avstand (i ruter) til nærmeste rute med et annet land, med to-pass chamfer.
+  // Distance (in cells) to the nearest cell with another country, using a two-pass chamfer.
   const dist = new Float32Array(cols * rows).fill(1e9);
   const at = (x: number, y: number) => grid.data[y * cols + x];
   for (let y = 0; y < rows; y++) {
@@ -812,14 +812,14 @@ function writeCells(all: CellData[]) {
   );
   fs.writeFileSync(
     path.join(ROOT, 'src/data/countryCells.ts'),
-    `// Generert av scripts/gen-maps.ts – ikke rediger for hånd.
+    `// Generated by scripts/gen-maps.ts – do not edit by hand.
 /**
- * Landrutenett for kartene, til landmodusen. For hvert kart:
- * - cell: rutestørrelse i bildepiksler; cols × rows ruter.
- * - codes: landene i regionen; id k i rutenettet er codes[k - 1], 0 er hav/andre land.
- * - labels: per land et punkt (bildepiksler) godt inne i landet, for fasitmerket.
- * - runs: radene etter hverandre som løp «id, lengde», to base62-tegn hver.
- * Kilde: Natural Earth 1:50m (public domain), projisert som kartbildet.
+ * Country grids for the maps, for country mode. For each map:
+ * - cell: cell size in image pixels; cols × rows cells.
+ * - codes: the countries in the region; id k in the grid is codes[k - 1], 0 is sea/other countries.
+ * - labels: per country a point (image pixels) well inside the country, for the answer marker.
+ * - runs: the rows one after another as runs "id, length", two base62 characters each.
+ * Source: Natural Earth 1:50m (public domain), projected like the map image.
  */
 import type {Region} from '../core/sheet';
 import type {CountryCode} from './countries';
@@ -861,19 +861,19 @@ async function main() {
       height,
       scaleKm: 0,
     };
-    // Skalaen til poengkurven: 1/20 av kartets diagonal, rundet til nærmeste 10 km.
+    // The scale of the score curve: 1/20 of the map's diagonal, rounded to the nearest 10 km.
     meta.scaleKm = Math.round(diagonalKm(meta) / 20 / 10) * 10;
     const png = encodePng(render(def, meta, ne));
     fs.writeFileSync(path.join(ROOT, `assets/maps/${def.file}.png`), png);
     console.log(
       `${def.file}.png ${width}×${height}, ${(png.length / 1024).toFixed(
         0,
-      )} kB, skala ${meta.scaleKm} km`,
+      )} kB, scale ${meta.scaleKm} km`,
     );
     metas[def.region] = meta;
     const cells = cellIndex(def, meta, ne);
     cellData.push({region: def.region, ...cells});
-    console.log(`  landrutenett ${cells.cols}×${cells.rows}, ${cells.count} løp, ${(cells.runs.length / 1024).toFixed(0)} kB`);
+    console.log(`  country grid ${cells.cols}×${cells.rows}, ${cells.count} runs, ${(cells.runs.length / 1024).toFixed(0)} kB`);
   }
   writeCells(cellData);
 
@@ -898,15 +898,15 @@ async function main() {
   });
   fs.writeFileSync(
     path.join(ROOT, 'src/data/maps.ts'),
-    `// Generert av scripts/gen-maps.ts – ikke rediger for hånd.
+    `// Generated by scripts/gen-maps.ts – do not edit by hand.
 /**
- * Kartene i assets/maps/: projeksjon, utsnitt (projeksjonskoordinater på en
- * enhetskule) og bildestørrelse. Se src/core/projection.ts for formlene.
+ * The maps in assets/maps/: projection, extent (projection coordinates on a
+ * unit sphere) and image size. See src/core/projection.ts for the formulas.
  */
 import type {MapMeta} from '../core/projection';
 import type {Region} from '../core/sheet';
 
-/** Antall hovedsteder på ett kartark; bildene er laget i full størrelse for denne layouten. */
+/** Number of capitals on one map sheet; the images are made at full size for this layout. */
 export const MAP_SHEET_COUNT = ${MAP_SHEET_COUNT};
 
 export const MAPS: Record<Region, MapMeta> = {
