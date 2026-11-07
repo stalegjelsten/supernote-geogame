@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'დონე დამოკიდებულია იმაზე, რამდენად ცნობილია დედაქალაქი (ან ქვეყანა), ვიკიპედიის გვერდის ნახვების მიხედვით.',
 
   statsSection: 'სტატისტიკა',
-  statsShow: 'სტატისტიკის ჩვენება',
-  statsHide: 'სტატისტიკის დამალვა',
   statsSkillCapital: 'დედაქალაქების წერა',
   statsSkillMapCapital: 'დედაქალაქები რუკაზე',
   statsSkillMapCountry: 'ქვეყნები რუკაზე',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'წაიშალოს მთელი სტატისტიკა? ამის გაუქმება შეუძლებელია.',
   statsConfirm: 'წაშლა',
   statsResetDone: 'სტატისტიკა წაიშალა.',
+  statsRecent: 'ბოლო ფურცლები (% სწორი)',
 };
 
 export default menu;

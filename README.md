@@ -33,7 +33,7 @@ Every grading of a single-player sheet is saved: which countries, which skill (w
 - **Score per country:** correct = 1, almost = 0.8, wrong or blank = 0. On the map, capitals score points/1000 and countries right/wrong; cities you skip count as 0, and cities without a mark are left out.
 - **Grading the same sheet again** replaces the previous result. The sheet is recognized by the note and the countries on the page, so it survives pages being moved.
 - **Level:** a country is *new* until it has been practiced, and *known* after three correct in a row (Leitner box 3). The box also decides when the country is due for review (0, 1, 3, 7, 14, 30 and 60 days).
-- **In the menu** under **Statistics** you see the number of graded sheets, known/learning/new per continent, how many countries are due for review and the five countries you should practice more, for the selected game and continent. **Reset statistics** deletes everything (with confirmation).
+- **In the menu** the **Statistics** tab shows, for the chosen skill (it follows the selected game, but you can pick another), the average score, the number of graded sheets and how many countries are due for review. A column chart shows the score on the last ten sheets, and each continent gets a bar with known (black), learning (gray) and new (white) countries; tap a continent to see the five countries you should practice more there. **Reset statistics** deletes everything (with confirmation).
 - **Storage:** the SDK cannot write file contents, so each graded sheet is stored as an empty folder with the result encoded in its name, in `<plugin folder>/stats/` (e.g. `g1.t.<time>.<key>.noz…`). At most 3000 entries; the oldest are deleted first. Nothing is sent from the device.
 - **Training modes:** `src/core/training.ts` has strategies for choosing countries for new sheets based on the statistics. `createSheet` and `createMapSheet` accept a strategy, but the menu has no option for it yet, so sheets are still drawn at random.
 
@@ -57,7 +57,7 @@ Install by copying `geogame.snplg` to `MyStyle/` on the device and going to Sett
 - `src/sdk/notes.ts` – wrapper around `sn-plugin-lib`
 - `src/sdk/statsStore.ts` – stores the history as empty folders in `<plugin folder>/stats/` (the SDK cannot write files)
 - `src/actions.ts` – "New sheet" and "Grade the sheet"
-- `App.tsx` – the menu opened from the toolbar
+- `App.tsx` – the menu opened from the toolbar, with the tabs New worksheet, Statistics and Language
 
 ## Which countries and capitals are included
 

@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Մակարդակը կախված է նրանից, թե որքան հայտնի է մայրաքաղաքը (կամ երկիրը)՝ ըստ Վիքիպեդիայի էջերի դիտումների։',
 
   statsSection: 'Վիճակագրություն',
-  statsShow: 'Ցույց տալ վիճակագրությունը',
-  statsHide: 'Թաքցնել վիճակագրությունը',
   statsSkillCapital: 'Մայրաքաղաքների գրում',
   statsSkillMapCapital: 'Մայրաքաղաքները քարտեզի վրա',
   statsSkillMapCountry: 'Երկրները քարտեզի վրա',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Ջնջե՞լ ամբողջ վիճակագրությունը։ Սա հնարավոր չէ հետարկել։',
   statsConfirm: 'Ջնջել',
   statsResetDone: 'Վիճակագրությունը ջնջվեց։',
+  statsRecent: 'Վերջին թերթերը (% ճիշտ)',
 };
 
 export default menu;

@@ -346,3 +346,38 @@ export function sessions(records: readonly SheetRecord[], skill: Skill): Session
     last: rs.length ? Math.max(...rs.map(r => r.time)) : null,
   };
 }
+
+export interface SheetResult {
+  time: number;
+  /** Average score on the sheet (0–1). */
+  score: number;
+  answers: number;
+}
+
+/**
+ * The result of each graded sheet for a skill, oldest first, at most `limit` (the latest).
+ * Regrading replaces the earlier result, and the parts of a split sheet count as one sheet.
+ */
+export function recentSheets(records: readonly SheetRecord[], skill: Skill, limit: number): SheetResult[] {
+  const latest = new Map<string, SheetRecord>();
+  for (const r of records) {
+    const old = latest.get(r.key);
+    if (r.skill === skill && (!old || old.time <= r.time)) {
+      latest.set(r.key, r);
+    }
+  }
+  const sheets = new Map<string, {time: number; total: number; answers: number}>();
+  for (const r of latest.values()) {
+    const id = r.key.slice(0, KEY_LENGTH);
+    const s = sheets.get(id) ?? {time: r.time, total: 0, answers: 0};
+    s.time = Math.max(s.time, r.time);
+    s.answers += r.attempts.length;
+    s.total += r.attempts.reduce((m, a) => m + a.score, 0);
+    sheets.set(id, s);
+  }
+  return [...sheets.values()]
+    .filter(s => s.answers > 0)
+    .sort((a, b) => a.time - b.time)
+    .slice(-limit)
+    .map(s => ({time: s.time, score: s.total / s.answers, answers: s.answers}));
+}

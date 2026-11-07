@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Kiwango kinategemea jinsi mji mkuu (au nchi) unavyojulikana, kwa kupima mara ambazo kurasa za Wikipedia zimetazamwa.',
 
   statsSection: 'Takwimu',
-  statsShow: 'Onyesha takwimu',
-  statsHide: 'Ficha takwimu',
   statsSkillCapital: 'Kuandika miji mikuu',
   statsSkillMapCapital: 'Miji mikuu kwenye ramani',
   statsSkillMapCountry: 'Nchi kwenye ramani',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Futa takwimu zote? Hili haliwezi kutenduliwa.',
   statsConfirm: 'Futa',
   statsResetDone: 'Takwimu zimefutwa.',
+  statsRecent: 'Karatasi za hivi karibuni (% sahihi)',
 };
 
 export default menu;

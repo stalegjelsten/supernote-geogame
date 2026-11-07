@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Səviyyə paytaxtın (və ya ölkənin) nə qədər tanındığından asılıdır və Vikipediya səhifə baxışları ilə ölçülür.',
 
   statsSection: 'Statistika',
-  statsShow: 'Statistikanı göstər',
-  statsHide: 'Statistikanı gizlət',
   statsSkillCapital: 'Paytaxtları yazmaq',
   statsSkillMapCapital: 'Xəritədə paytaxtlar',
   statsSkillMapCountry: 'Xəritədə ölkələr',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Bütün statistika silinsin? Bunu geri qaytarmaq mümkün deyil.',
   statsConfirm: 'Sil',
   statsResetDone: 'Statistika silindi.',
+  statsRecent: 'Son vərəqlər (% düz)',
 };
 
 export default menu;

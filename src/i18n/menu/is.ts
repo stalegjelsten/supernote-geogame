@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Erfiðleikastigið fer eftir því hversu þekkt höfuðborgin (eða landið) er, mælt í síðuflettingum á Wikipedia.',
 
   statsSection: 'Tölfræði',
-  statsShow: 'Sýna tölfræði',
-  statsHide: 'Fela tölfræði',
   statsSkillCapital: 'Skrifa höfuðborgir',
   statsSkillMapCapital: 'Höfuðborgir á kortinu',
   statsSkillMapCountry: 'Lönd á kortinu',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Eyða allri tölfræði? Ekki er hægt að afturkalla það.',
   statsConfirm: 'Eyða',
   statsResetDone: 'Tölfræðinni hefur verið eytt.',
+  statsRecent: 'Nýjustu blöð (% rétt)',
 };
 
 export default menu;

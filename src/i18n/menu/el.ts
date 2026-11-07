@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Το επίπεδο εξαρτάται από το πόσο γνωστή είναι η πρωτεύουσα (ή η χώρα), με βάση τις προβολές σελίδων στη Wikipedia.',
 
   statsSection: 'Στατιστικά',
-  statsShow: 'Εμφάνιση στατιστικών',
-  statsHide: 'Απόκρυψη στατιστικών',
   statsSkillCapital: 'Γραφή πρωτευουσών',
   statsSkillMapCapital: 'Πρωτεύουσες στον χάρτη',
   statsSkillMapCountry: 'Χώρες στον χάρτη',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Διαγραφή όλων των στατιστικών; Αυτό δεν αναιρείται.',
   statsConfirm: 'Διαγραφή',
   statsResetDone: 'Τα στατιστικά διαγράφηκαν.',
+  statsRecent: 'Τελευταία φύλλα (% σωστά)',
 };
 
 export default menu;

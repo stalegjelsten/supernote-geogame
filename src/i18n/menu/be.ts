@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Узровень залежыць ад таго, наколькі вядомая сталіца (або краіна), паводле праглядаў старонак у Вікіпедыі.',
 
   statsSection: 'Статыстыка',
-  statsShow: 'Паказаць статыстыку',
-  statsHide: 'Схаваць статыстыку',
   statsSkillCapital: 'Напісанне сталіц',
   statsSkillMapCapital: 'Сталіцы на карце',
   statsSkillMapCountry: 'Краіны на карце',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Выдаліць усю статыстыку? Гэта нельга адмяніць.',
   statsConfirm: 'Выдаліць',
   statsResetDone: 'Статыстыка выдалена.',
+  statsRecent: 'Апошнія аркушы (% правільна)',
 };
 
 export default menu;

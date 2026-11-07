@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Деңгей астананың (немесе елдің) қаншалықты танымал екеніне байланысты, ол Уикипедиядағы бет қаралымдарымен өлшенеді.',
 
   statsSection: 'Статистика',
-  statsShow: 'Статистиканы көрсету',
-  statsHide: 'Статистиканы жасыру',
   statsSkillCapital: 'Астаналарды жазу',
   statsSkillMapCapital: 'Картадағы астаналар',
   statsSkillMapCountry: 'Картадағы елдер',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Барлық статистика жойылсын ба? Мұны қайтару мүмкін емес.',
   statsConfirm: 'Жою',
   statsResetDone: 'Статистика жойылды.',
+  statsRecent: 'Соңғы парақтар (% дұрыс)',
 };
 
 export default menu;

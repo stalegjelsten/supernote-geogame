@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Niveli varet nga sa i njohur është kryeqyteti (ose vendi), i matur me shikimet e faqeve në Wikipedia.',
 
   statsSection: 'Statistikat',
-  statsShow: 'Shfaq statistikat',
-  statsHide: 'Fshih statistikat',
   statsSkillCapital: 'Shkrimi i kryeqyteteve',
   statsSkillMapCapital: 'Kryeqytetet në hartë',
   statsSkillMapCountry: 'Vendet në hartë',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Të fshihen të gjitha statistikat? Kjo nuk mund të zhbëhet.',
   statsConfirm: 'Fshi',
   statsResetDone: 'Statistikat u fshinë.',
+  statsRecent: 'Fletët e fundit (% saktë)',
 };
 
 export default menu;

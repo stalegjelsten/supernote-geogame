@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Nivån beror på hur känd huvudstaden (eller landet) är, mätt i sidvisningar på Wikipedia.',
 
   statsSection: 'Statistik',
-  statsShow: 'Visa statistik',
-  statsHide: 'Dölj statistik',
   statsSkillCapital: 'Skriva huvudstäder',
   statsSkillMapCapital: 'Huvudstäder på kartan',
   statsSkillMapCountry: 'Länder på kartan',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Radera all statistik? Det går inte att ångra.',
   statsConfirm: 'Radera',
   statsResetDone: 'Statistiken har raderats.',
+  statsRecent: 'Senaste arken (% rätt)',
 };
 
 export default menu;

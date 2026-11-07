@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Дәрәҗә башкаланың (яки илнең) никадәр билгеле булуына бәйле, ул Википедиядәге бит каралышлары белән үлчәнә.',
 
   statsSection: 'Статистика',
-  statsShow: 'Статистиканы күрсәтү',
-  statsHide: 'Статистиканы яшерү',
   statsSkillCapital: 'Башкалаларны язу',
   statsSkillMapCapital: 'Картадагы башкалалар',
   statsSkillMapCountry: 'Картадагы илләр',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Бөтен статистика бетерелсенме? Моны кире кайтарып булмый.',
   statsConfirm: 'Бетерү',
   statsResetDone: 'Статистика бетерелде.',
+  statsRecent: 'Соңгы битләр (% дөрес)',
 };
 
 export default menu;

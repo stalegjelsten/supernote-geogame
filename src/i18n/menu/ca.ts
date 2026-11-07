@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'El nivell depèn de com n’és de coneguda la capital (o el país), segons les visites a la pàgina de la Viquipèdia.',
 
   statsSection: 'Estadístiques',
-  statsShow: 'Mostra les estadístiques',
-  statsHide: 'Amaga les estadístiques',
   statsSkillCapital: 'Escriure capitals',
   statsSkillMapCapital: 'Capitals al mapa',
   statsSkillMapCountry: 'Països al mapa',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Vols suprimir totes les estadístiques? No es pot desfer.',
   statsConfirm: 'Suprimeix',
   statsResetDone: 'S’han suprimit les estadístiques.',
+  statsRecent: 'Darrers fulls (% encert)',
 };
 
 export default menu;

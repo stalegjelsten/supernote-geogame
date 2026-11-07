@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Die vlak hang af van hoe bekend die hoofstad (of land) is, gemeet aan bladsybesoeke op Wikipedia.',
 
   statsSection: 'Statistiek',
-  statsShow: 'Wys statistiek',
-  statsHide: 'Versteek statistiek',
   statsSkillCapital: 'Skryf hoofstede',
   statsSkillMapCapital: 'Hoofstede op die kaart',
   statsSkillMapCountry: 'Lande op die kaart',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Skrap alle statistiek? Dit kan nie ongedaan gemaak word nie.',
   statsConfirm: 'Skrap',
   statsResetDone: 'Statistiek geskrap.',
+  statsRecent: 'Jongste blaaie (% reg)',
 };
 
 export default menu;

@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Úroveň závisí od toho, aké známe je hlavné mesto (alebo krajina), podľa počtu zobrazení na Wikipédii.',
 
   statsSection: 'Štatistika',
-  statsShow: 'Zobraziť štatistiku',
-  statsHide: 'Skryť štatistiku',
   statsSkillCapital: 'Písanie hlavných miest',
   statsSkillMapCapital: 'Hlavné mestá na mape',
   statsSkillMapCountry: 'Krajiny na mape',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Odstrániť celú štatistiku? Túto akciu nemožno vrátiť späť.',
   statsConfirm: 'Odstrániť',
   statsResetDone: 'Štatistika bola odstránená.',
+  statsRecent: 'Posledné listy (% správne)',
 };
 
 export default menu;

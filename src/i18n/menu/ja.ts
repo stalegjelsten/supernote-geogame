@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'レベルは首都（または国）の知名度で決まります。知名度はWikipediaのページビュー数で測っています。',
 
   statsSection: '統計',
-  statsShow: '統計を表示',
-  statsHide: '統計を隠す',
   statsSkillCapital: '首都を書く',
   statsSkillMapCapital: '地図上の首都',
   statsSkillMapCountry: '地図上の国',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'すべての統計を削除しますか？元に戻せません。',
   statsConfirm: '削除',
   statsResetDone: '統計を削除しました。',
+  statsRecent: '最近のシート（正答率 %）',
 };
 
 export default menu;

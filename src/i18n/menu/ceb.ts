@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Ang lebel nagdepende kung unsa ka ilado ang kaulohan (o nasod), sukod sa mga pagtan-aw sa panid sa Wikipedia.',
 
   statsSection: 'Estadistika',
-  statsShow: 'Ipakita ang estadistika',
-  statsHide: 'Itago ang estadistika',
   statsSkillCapital: 'Pagsulat sa kaulohan',
   statsSkillMapCapital: 'Mga kaulohan sa mapa',
   statsSkillMapCountry: 'Mga nasod sa mapa',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Papason ang tanang estadistika? Dili na kini mabawi.',
   statsConfirm: 'Papasa',
   statsResetDone: 'Napapas na ang estadistika.',
+  statsRecent: 'Pinakabag-ong mga panid (% husto)',
 };
 
 export default menu;

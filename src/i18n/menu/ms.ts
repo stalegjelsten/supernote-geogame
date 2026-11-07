@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Tahap bergantung pada sejauh mana ibu negara (atau negara) itu dikenali, diukur melalui jumlah tontonan halaman Wikipedia.',
 
   statsSection: 'Statistik',
-  statsShow: 'Tunjukkan statistik',
-  statsHide: 'Sembunyikan statistik',
   statsSkillCapital: 'Menulis ibu negara',
   statsSkillMapCapital: 'Ibu negara pada peta',
   statsSkillMapCountry: 'Negara pada peta',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Padam semua statistik? Tindakan ini tidak boleh dibuat asal.',
   statsConfirm: 'Padam',
   statsResetDone: 'Statistik telah dipadam.',
+  statsRecent: 'Helaian terkini (% betul)',
 };
 
 export default menu;

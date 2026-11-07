@@ -117,8 +117,6 @@ export interface MenuStrings {
 
   // Statistics (stats.ts)
   statsSection: string;
-  statsShow: string;
-  statsHide: string;
   statsSkillCapital: string;
   statsSkillMapCapital: string;
   statsSkillMapCountry: string;
@@ -138,4 +136,5 @@ export interface MenuStrings {
   statsConfirmReset: string;
   statsConfirm: string;
   statsResetDone: string;
+  statsRecent: string;
 }

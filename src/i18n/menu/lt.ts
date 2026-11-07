@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Lygis priklauso nuo to, kiek žinoma sostinė (ar šalis), pagal Vikipedijos puslapių peržiūras.',
 
   statsSection: 'Statistika',
-  statsShow: 'Rodyti statistiką',
-  statsHide: 'Slėpti statistiką',
   statsSkillCapital: 'Sostinių rašymas',
   statsSkillMapCapital: 'Sostinės žemėlapyje',
   statsSkillMapCountry: 'Šalys žemėlapyje',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Ištrinti visą statistiką? Šio veiksmo atšaukti negalima.',
   statsConfirm: 'Ištrinti',
   statsResetDone: 'Statistika ištrinta.',
+  statsRecent: 'Paskutiniai lapai (% teisingai)',
 };
 
 export default menu;
