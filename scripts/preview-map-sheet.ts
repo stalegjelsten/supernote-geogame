@@ -1,10 +1,10 @@
 /**
- * Forhåndsvisning av et rettet kartark (uten enhet): tegner arket slik pluginen
- * lager det, legger på noen påtegnede merker og retter med samme kode som pluginen.
+ * Preview of a graded map sheet (without a device): draws the sheet the way the plugin
+ * makes it, adds some drawn-on marks and grades with the same code as the plugin.
  *
- *   node --no-warnings --import ./scripts/ts-resolve.mjs scripts/preview-map-sheet.ts [region] [språk] [both|capital|country] [antall] [manta|nomad]
+ *   node --no-warnings --import ./scripts/ts-resolve.mjs scripts/preview-map-sheet.ts [region] [language] [both|capital|country] [count] [manta|nomad]
  *
- * Skriver build/preview/kartark-<region>.svg og .png (PNG krever rsvg-convert).
+ * Writes build/preview/kartark-<region>.svg and .png (PNG requires rsvg-convert).
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -28,17 +28,17 @@ import type {MapEntryStyle} from '../src/i18n/map.ts';
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const region = (process.argv[2] ?? 'EU') as Region;
 const lang = getLanguage(process.argv[3] ?? 'nb')!;
-// Tredje argument: both | capital | country (hva lista viser), eller land (landmodus).
+// Third argument: both | capital | country (what the list shows), or land (country mode).
 const arg = process.argv[4] ?? 'both';
 const target = arg === 'land' ? 'country' : 'capital';
 const style = (arg === 'land' ? 'country' : arg) as MapEntryStyle;
 const count = Number(process.argv[5] ?? 10);
-// Sjette argument: «nomad» (eller «a5x») gir 1404×1872, ellers Manta.
+// Sixth argument: "nomad" (or "a5x") gives 1404×1872, otherwise Manta.
 const small = ['nomad', 'a5x'].includes((process.argv[6] ?? '').toLowerCase());
 const PAGE = small ? {width: 1404, height: 1872} : {width: 1920, height: 2560};
 if (!MAPS[region] || !lang) {
   throw new Error(
-    `Ukjent region eller språk. Regioner: ${Object.keys(MAPS).join(', ')}`,
+    `Unknown region or language. Regions: ${Object.keys(MAPS).join(', ')}`,
   );
 }
 
@@ -77,7 +77,7 @@ const truth = (i: number) => {
   );
 };
 
-// Simulert håndskrift: kryss med ulik bom, én by hoppet over (strek i ruta), én ring.
+// Simulated handwriting: crosses with varying misses, one city skipped (stroke in the box), one circle.
 type P = {x: number; y: number};
 const handLine = (a: P, b: P): P[] =>
   Array.from({length: 8}, (_, i) => ({
@@ -208,9 +208,9 @@ try {
   execFileSync('rsvg-convert', ['-o', `${base}.png`, `${base}.svg`]);
   console.log(`${base}.png`);
 } catch {
-  console.log(`${base}.svg (rsvg-convert mangler, så ingen PNG)`);
+  console.log(`${base}.svg (rsvg-convert missing, so no PNG)`);
 }
-console.log(`Poeng: ${grade.points} av ${grade.max}, ${grade.marks} merker`);
+console.log(`Points: ${grade.points} of ${grade.max}, ${grade.marks} marks`);
 for (const r of grade.results) {
   console.log(
     `${r.n}. ${r.country.capital}: ${r.assignment.kind} ${

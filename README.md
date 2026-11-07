@@ -1,74 +1,74 @@
 # World Capitals Quiz
 
-Supernote-plugin for å øve på land og hovedsteder. Pluginen lager et arbeidsark på en notatside, du skriver hovedstedene for hånd, og pluginen retter arket med håndskriftgjenkjenning.
+Supernote plugin for practicing countries and capitals. The plugin creates a worksheet on a note page, you write the capitals by hand, and the plugin grades the sheet using handwriting recognition.
 
-> **Laget med KI.** All koden i dette prosjektet er skrevet av KI (Claude fra Anthropic, via Claude Code). Det samme gjelder tekstene og oversettelsene i pluginen. Ståle Gjelsten har bestemt hva pluginen skal gjøre, styrt arbeidet og testet den på en Supernote Manta. Landnavn, hovedsteder og kart kommer fra åpne datakilder (se [Lisens og datakilder](#lisens-og-datakilder)), ikke fra KI.
+> **Made with AI.** All the code in this project was written by AI (Claude from Anthropic, via Claude Code). The same goes for the texts and translations in the plugin. Ståle Gjelsten decided what the plugin should do, directed the work and tested it on a Supernote Manta. Country names, capitals and maps come from open data sources (see [License and data sources](#license-and-data-sources)), not from AI.
 
-## Bruk
+## Usage
 
-1. Åpne et notat. Arket lages på siden du står på hvis den er tom og har hvit eller ingen mal; ellers lages det på en ny side etter den.
-2. Trykk **World Capitals Quiz** i verktøylinja, velg verdensdel og antall, og trykk **Lag arket**.
-3. Skriv hovedstedene i midtkolonnen.
-4. Trykk **World Capitals Quiz → Rett arket på denne siden**. Resultatet skrives i høyre kolonne. Du kan rette på nytt etter at du har endret svar.
+1. Open a note. The sheet is created on the current page if it is empty and has a white template or none; otherwise it is created on a new page after it.
+2. Tap **World Capitals Quiz** in the toolbar, choose a continent and a number of countries, and tap **Make sheet**.
+3. Write the capitals in the middle column.
+4. Tap **World Capitals Quiz → Grade this page**. The result is written in the right column. You can grade again after changing answers.
 
-For hovedsteder som ofte forveksles eller der landet har flere hovedsteder (for eksempel Tanzania, Sør-Afrika, Bolivia og Nigeria), får resultatcellen et lite tall, og en kort merknad står nederst på arket. Eksempel: «¹ Dar es Salaam var hovedstad til 1996 og er største by.» Merknadene ligger i `src/i18n/notes.ts` (norsk og engelsk; andre språk får engelsk).
+For capitals that are often confused, or where the country has several capitals (for example Tanzania, South Africa, Bolivia and Nigeria), the result cell gets a small number and a short note is printed at the bottom of the sheet. Example: "¹ Dar es Salaam was capital until 1996 and is the largest city." The notes live in `src/i18n/notes.ts` (Norwegian and English; other languages get English).
 
-## Nivå
+## Level
 
-Velg **Blandet**, **Lett**, **Middels** eller **Vanskelig**. Landene i verdensdelen sorteres etter hvor kjent hovedstaden er (landet, når kartet ber deg merke land), og nivået trekker fra den mest kjente, midterste eller minst kjente tredjedelen. Kjentheten er sidevisninger på Wikipedia på 13 språk (`src/data/familiarity.ts`, laget med `node scripts/gen-familiarity.js`; kilder: Wikimedia og Wikidata, CC0).
+Choose **Mixed**, **Easy**, **Medium** or **Hard**. The countries of the continent are sorted by how well known the capital is (the country, when the map asks you to mark countries), and the level draws from the best known, middle or least known third. Familiarity is based on Wikipedia page views in 13 languages (`src/data/familiarity.ts`, generated with `node scripts/gen-familiarity.js`; sources: Wikimedia and Wikidata, CC0).
 
-## Flere spillere (hot seat)
+## Multiple players (hot seat)
 
-Velg **Spillere: 2–4** i menyen og hvordan dere spiller:
+Choose **Players: 2–4** in the menu and how you play:
 
-- **Send rundt** – enheten skjules for de andre. Hver spiller får egne sider med *de samme* landene, med en «Gi enheten til Spiller 2»-side imellom. Trykk **Rett hele settet** på en av spillernes sider for å rette alle og se hvem som vant.
-- **Bytt på** – alle ser enheten. Dere deler ett ark og svarer annenhver gang; hver spiller har *egne* land, trukket så alle får omtrent like kjente, så det hjelper ikke å se på de andres svar. Tallet i svarruta (tabell) eller nummeret i lista (kart) viser hvem sin tur det er. Poeng per spiller skrives nederst.
+- **Pass around** – the device is hidden from the others. Each player gets their own pages with *the same* countries, with a "Pass the device to player 2" page in between. Tap **Grade the whole set** on any player's page to grade everyone and see who won.
+- **Take turns** – everyone sees the device. You share one sheet and answer in turn; each player has *their own* countries, drawn so everyone gets roughly equally well-known ones, so looking at the others' answers doesn't help. The number in the answer box (table) or the number in the list (map) shows whose turn it is. Points per player are written at the bottom.
 
-Hvilket spill en side hører til, står først i undertittelen («Spiller 2 av 3 · …», «Duell for 2 · …») og leses ved retting (`src/core/hotseat.ts`).
+Which game a page belongs to is stated first in the subtitle ("Player 2 of 3 · …", "Duel for 2 · …") and read when grading (`src/core/hotseat.ts`).
 
-## Statistikk
+## Statistics
 
-Hver retting av et ark for én spiller lagres: hvilke land, hvilken ferdighet (skrive hovedstad, hovedstad på kartet, land på kartet), hvor godt det gikk og når. Flerspillerark lagres ikke, siden svarene der tilhører flere spillere.
+Every grading of a single-player sheet is saved: which countries, which skill (writing the capital, capital on the map, country on the map), how well it went and when. Multiplayer sheets are not saved, since their answers belong to several players.
 
-- **Score per land:** riktig = 1, nesten = 0,8, feil eller blank = 0. På kartet gir hovedsteder poeng/1000 og land riktig/feil; byer du hopper over teller som 0, og byer uten merke tas ikke med.
-- **Ny retting av samme ark** erstatter den forrige. Arket kjennes igjen på notatet og landene på siden, så det tåler at sider flyttes.
-- **Nivå:** et land er *nytt* til det er øvd, og *kan* etter tre riktige på rad (Leitner-boks 3). Boksen bestemmer også når landet bør repeteres (0, 1, 3, 7, 14, 30 og 60 dager).
-- **I menyen** under **Statistikk** vises antall rettede ark, kan/øver på/nye per verdensdel, hvor mange land som skal repeteres og de fem landene du bør øve mer på, for spillet og verdensdelen som er valgt. **Nullstill statistikk** sletter alt (med bekreftelse).
-- **Lagring:** SDK-en kan ikke skrive filinnhold, så hvert rettet ark lagres som en tom mappe med resultatet kodet i navnet, i `<pluginmappe>/stats/` (f.eks. `g1.t.<tid>.<nøkkel>.noz…`). Høyst 3000 poster; de eldste slettes først. Ingenting sendes fra enheten.
-- **Treningsmoduser:** `src/core/training.ts` har strategier for å velge land til nye ark ut fra statistikken. `createSheet` og `createMapSheet` tar imot en strategi, men menyen har ikke noe valg for det ennå, så arkene trekkes fortsatt tilfeldig.
+- **Score per country:** correct = 1, almost = 0.8, wrong or blank = 0. On the map, capitals score points/1000 and countries right/wrong; cities you skip count as 0, and cities without a mark are left out.
+- **Grading the same sheet again** replaces the previous result. The sheet is recognized by the note and the countries on the page, so it survives pages being moved.
+- **Level:** a country is *new* until it has been practiced, and *known* after three correct in a row (Leitner box 3). The box also decides when the country is due for review (0, 1, 3, 7, 14, 30 and 60 days).
+- **In the menu** under **Statistics** you see the number of graded sheets, known/learning/new per continent, how many countries are due for review and the five countries you should practice more, for the selected game and continent. **Reset statistics** deletes everything (with confirmation).
+- **Storage:** the SDK cannot write file contents, so each graded sheet is stored as an empty folder with the result encoded in its name, in `<plugin folder>/stats/` (e.g. `g1.t.<time>.<key>.noz…`). At most 3000 entries; the oldest are deleted first. Nothing is sent from the device.
+- **Training modes:** `src/core/training.ts` has strategies for choosing countries for new sheets based on the statistics. `createSheet` and `createMapSheet` accept a strategy, but the menu has no option for it yet, so sheets are still drawn at random.
 
-## Utvikling
+## Development
 
 ```bash
 npm install
-npm test          # enhetstester for svarsammenligning, layout og radfordeling
+npm test          # unit tests for answer matching, layout and row distribution
 npm run typecheck
-npm run build     # lager build/outputs/geogame.snplg
+npm run build     # creates build/outputs/geogame.snplg
 ```
 
-Installer ved å kopiere `geogame.snplg` til `MyStyle/` på enheten og gå til Innstillinger → Apper → Plugins → Legg til plugin. Publiser via opplastingsknappen i InkHub.
+Install by copying `geogame.snplg` to `MyStyle/` on the device and going to Settings → Apps → Plugins → Add plugin. Publish via the upload button in InkHub.
 
-## Struktur
+## Structure
 
-- `src/data/countries.ts` – land, hovedsteder og godkjente alternative svar
-- `src/core/` – ren logikk uten SDK (sammenligning, layout, radfordeling), testet i `__tests__/`
-- `src/core/stats.ts` – svarhistorikk og statistikk per land (mestring, Leitner-boks, repetisjonsplan)
-- `src/core/training.ts` – strategier for å velge land til nye ark (`random`, `smart`, `weak`, `due`, `new`)
-- `src/sdk/notes.ts` – innpakning av `sn-plugin-lib`
-- `src/sdk/statsStore.ts` – lagrer historikken som tomme mapper i `<pluginmappe>/stats/` (SDK-en kan ikke skrive filer)
-- `src/actions.ts` – «Nytt ark» og «Rett arket»
-- `App.tsx` – menyen som åpnes fra verktøylinja
+- `src/data/countries.ts` – countries, capitals and accepted alternative answers
+- `src/core/` – pure logic without the SDK (matching, layout, row distribution), tested in `__tests__/`
+- `src/core/stats.ts` – answer history and per-country statistics (mastery, Leitner box, review schedule)
+- `src/core/training.ts` – strategies for choosing countries for new sheets (`random`, `smart`, `weak`, `due`, `new`)
+- `src/sdk/notes.ts` – wrapper around `sn-plugin-lib`
+- `src/sdk/statsStore.ts` – stores the history as empty folders in `<plugin folder>/stats/` (the SDK cannot write files)
+- `src/actions.ts` – "New sheet" and "Grade the sheet"
+- `App.tsx` – the menu opened from the toolbar
 
-## Hvilke land og hovedsteder er med
+## Which countries and capitals are included
 
-**197 land:** de 193 medlemslandene i FN ([FNs liste over medlemsland](https://www.un.org/en/about-us/member-states)), de to observatørstatene Vatikanstaten og Palestina, og Kosovo og Taiwan, som er anerkjent av mange land, men ikke er medlemmer av FN. Andre områder (for eksempel Vest-Sahara, Grønland og Cookøyene) er ikke med. Verdensdelen til hvert land står i `src/data/countries.ts`.
+**197 countries:** the 193 UN member states ([UN list of member states](https://www.un.org/en/about-us/member-states)), the two observer states Vatican City and Palestine, and Kosovo and Taiwan, which are recognized by many countries but are not UN members. Other territories (for example Western Sahara, Greenland and the Cook Islands) are not included. The continent of each country is listed in `src/data/countries.ts`.
 
-**Hovedsteder:** fasiten er hovedstaden (P36) til landet i [Wikidata](https://www.wikidata.org). Har landet flere hovedsteder, er fasiten den som vanligvis oppgis som offisiell hovedstad. Byer som de facto også er hovedstad (regjeringssete, delte hovedsteder) godtas som svar, men ikke tidligere hovedsteder. Se `scripts/data/co-capitals-wikidata.json` og merknadene i `src/i18n/notes.ts`.
+**Capitals:** the answer key is the country's capital (P36) in [Wikidata](https://www.wikidata.org). If the country has several capitals, the key is the one usually given as the official capital. Cities that are de facto also capitals (seat of government, shared capitals) are accepted as answers, but former capitals are not. See `scripts/data/co-capitals-wikidata.json` and the notes in `src/i18n/notes.ts`.
 
-## Lisens og datakilder
+## License and data sources
 
-Koden er lisensiert under [MIT](LICENSE). Pluginen bruker disse dataene (detaljer og lisenstekst i [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)):
+The code is licensed under [MIT](LICENSE). The plugin uses this data (details and license texts in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)):
 
-- **Landnavn**: Unicode CLDR (Unicode License v3)
-- **Hovedsteder og koordinater**: Wikidata (CC0)
-- **Kart**: Natural Earth (allemannseie). Kartene viser de faktiske grensene og tar ikke stilling i grensekonflikter.
+- **Country names**: Unicode CLDR (Unicode License v3)
+- **Capitals and coordinates**: Wikidata (CC0)
+- **Maps**: Natural Earth (public domain). The maps show the de facto boundaries and take no position in border disputes.

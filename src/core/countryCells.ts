@@ -1,6 +1,6 @@
 /**
- * Oppslag i landrutenettet (src/data/countryCells.ts): hvilket land ligger et
- * punkt i kartbildet i? Brukes til å rette landmodusen.
+ * Lookup in the country grid (src/data/countryCells.ts): which country does a
+ * point in the map image fall in? Used to correct country mode.
  */
 import {COUNTRY_CELLS} from '../data/countryCells';
 import type {CountryCode} from '../data/countries';
@@ -55,7 +55,7 @@ function decode(region: Region): Decoded {
   return d;
 }
 
-/** Landet (i regionen) i et punkt i kartbildet, eller null for hav og land utenfor regionen. */
+/** The country (in the region) at a point in the map image, or null for sea and land outside the region. */
 export function countryAt(region: Region, p: XY): CountryCode | null {
   const d = decode(region);
   const x = Math.floor(p.x / d.cell);
@@ -68,8 +68,8 @@ export function countryAt(region: Region, p: XY): CountryCode | null {
 }
 
 /**
- * Ligger punktet i landet, eller høyst `tolerancePx` bildepiksler fra det?
- * Slingringsmonnet gjør at små land (Malta, Luxembourg, øystater) kan treffes med et kryss.
+ * Is the point inside the country, or at most `tolerancePx` image pixels from it?
+ * The tolerance lets small countries (Malta, Luxembourg, island states) be hit with a cross.
  */
 export function hitsCountry(
   region: Region,
@@ -92,7 +92,7 @@ export function hitsCountry(
       }
       const dx = (x + 0.5) * d.cell - p.x;
       const dy = (y + 0.5) * d.cell - p.y;
-      // Rutas nærmeste punkt kan ligge en halv rute nærmere enn midten.
+      // A cell's nearest point can be half a cell closer than its center.
       if (
         Math.hypot(dx, dy) <= tolerancePx + d.cell * 0.71 &&
         d.grid[y * d.cols + x] === id
@@ -104,7 +104,7 @@ export function hitsCountry(
   return false;
 }
 
-/** Et punkt godt inne i landet (bildepiksler), for fasitmerket. */
+/** A point well inside the country (image pixels), for the answer mark. */
 export function countryLabel(region: Region, code: CountryCode): XY | null {
   return decode(region).labels.get(code) ?? null;
 }

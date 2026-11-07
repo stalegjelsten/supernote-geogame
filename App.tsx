@@ -1,7 +1,7 @@
 /**
- * World Capitals Quiz – meny som åpnes fra verktøylinja i NOTE.
+ * World Capitals Quiz – menu opened from the toolbar in NOTE.
  *
- * Laget for e-blekk: svart på hvitt, kompakte men tydelige trykkflater, ingen animasjoner.
+ * Made for e-ink: black on white, compact but clear touch targets, no animations.
  */
 import React, {useEffect, useMemo, useState} from 'react';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
@@ -46,7 +46,7 @@ import {
   type LanguageChoice,
 } from './src/i18n';
 
-/** Tegner menyen på nytt når språket endres (på enheten eller i menyen). */
+/** Redraws the menu when the language changes (on the device or in the menu). */
 function useLanguage() {
   const [, setTick] = useState(0);
   useEffect(() => onLanguageChange(() => setTick(t => t + 1)), []);
@@ -62,11 +62,11 @@ const COUNTS: Count[] = [10, 15, 20, 'ALL'];
 
 type Count = number | 'ALL';
 
-/** Tusenskille med mellomrom, så kartpoeng blir lesbare. */
+/** Thousands separator with spaces, so map scores are readable. */
 const thousands = (n: number) =>
   String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
-/** Tabell: skriv hovedstaden. Kart: merk hovedstaden på kartet. */
+/** Table: write the capital. Map: mark the capital on the map. */
 type Mode = 'table' | 'map';
 
 type Status =
@@ -130,7 +130,7 @@ function App(): React.JSX.Element {
   };
   const actualCount =
     count === 'ALL' ? regionSize(region) : Math.min(count, regionSize(region));
-  // Land per side avhenger av sidestørrelsen (20 på Manta, færre på Nomad og A5X).
+  // Countries per page depend on the page size (20 on Manta, fewer on Nomad and A5X).
   const [perPage, setPerPage] = useState(MAX_PER_PAGE);
   useEffect(() => {
     rowsPerPageNow().then(n => n && setPerPage(n));
@@ -138,13 +138,13 @@ function App(): React.JSX.Element {
   const pageCount = Math.ceil(actualCount / perPage);
   const [status, setStatus] = useState<Status>({kind: 'idle'});
   const [allLanguages, setAllLanguages] = useState(false);
-  // Uten «alle språk» vises bare automatisk, valgt språk og enhetens språk.
+  // Without "all languages", only automatic, the chosen language and the device language are shown.
   const shownLanguages = allLanguages
     ? MENU_LANGUAGES
     : MENU_LANGUAGES.filter(l => l.code === choice || l.code === device.code);
   const busy = status.kind === 'busy';
 
-  // Statistikk: postene hentes når visningen åpnes og etter hver retting.
+  // Statistics: the records are fetched when the view opens and after each grading.
   const stx = statsTexts(t);
   const [statsOpen, setStatsOpen] = useState(false);
   const [records, setRecords] = useState<SheetRecord[] | null>(null);
@@ -198,8 +198,8 @@ function App(): React.JSX.Element {
     }
   };
 
-  // Arket lages på siden du står på hvis den er tom og blank (hvit eller ingen mal),
-  // ellers på en ny side etter den. Ingen spørsmål.
+  // The sheet is created on the current page if it is empty and blank (white or no template),
+  // otherwise on a new page after it. No questions asked.
   const make = async () => {
     let target: 'here' | 'newPage';
     try {
@@ -248,7 +248,7 @@ function App(): React.JSX.Element {
     }, true);
   };
 
-  /** Vinner øverst, så poeng per spiller. */
+  /** Winner first, then points per player. */
   const scoreboard = (
     scores: PlayerScore[],
     missing: number[] | undefined,
@@ -275,7 +275,7 @@ function App(): React.JSX.Element {
       setStatus({kind: 'busy', message: ui.startingGrading});
       const started = Date.now();
       const progress = (message: string) => setStatus({kind: 'busy', message});
-      // Kartark rettes alltid side for side; andre ark går videre til tabellrettingen.
+      // Map sheets are always graded page by page; other sheets go on to table grading.
       const m = await gradeMapSheet(progress, scope);
       if (m) {
         const mapSeconds = ((Date.now() - started) / 1000).toFixed(1);
@@ -415,7 +415,7 @@ function App(): React.JSX.Element {
             )}
           </>
         )}
-        {/* Med alle landene i regionen er det ingenting å velge mellom. */}
+        {/* With all the countries in the region, there is nothing to choose between. */}
         {!(mode === 'table' && actualCount >= regionSize(region)) && (
           <>
             <Text style={styles.label}>{lt.label}</Text>

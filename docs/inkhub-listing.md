@@ -34,7 +34,7 @@ Features
   - Take turns: one shared sheet where players answer in turn, each with their own countries. Points per player are shown at the bottom.
 - Fix your answers and grade again as many times as you like.
 - Statistics: every graded single-player sheet is remembered per country. The menu shows how many countries you know, are learning or have not tried yet for each continent, how many are due for review, and which countries to practise more. Writing capitals, capitals on the map and countries on the map are tracked separately. Grading the same sheet again replaces the earlier result, and the statistics can be reset from the menu.
-- 55 languages, following the device language or chosen in the menu.
+- Sheets in 55 languages, following the device language or chosen in the menu.
 - Works fully offline. No data leaves the device.
 
 Tip: use a separate notebook
@@ -43,11 +43,19 @@ template. The plugin writes onto the page you are on and can add pages, so a
 separate notebook keeps your other notes untouched and makes it easy to keep
 or delete old quizzes. Each finished sheet also adds some size to the notebook.
 
+Tip: set the recognition language
+Answers are read with Supernote's own handwriting recognition, which uses the
+recognition language set on the device, not the language chosen in the plugin.
+Set it to the language you write your answers in, especially for languages with
+another script (for example Russian, Greek or Japanese). Otherwise your
+answers will be misread and marked wrong.
+
 How to use
-1. Open a notebook. The sheet goes on the current page if it is empty and white; otherwise on a new page after it.
-2. Tap World Capitals Quiz in the toolbar, choose continent, sheet type, number and players, and make the sheet.
-3. Write your answers.
-4. Open the menu again and tap Grade.
+1. Make sure the device's handwriting recognition language matches the language you will write in.
+2. Open a notebook. The sheet goes on the current page if it is empty and white; otherwise on a new page after it.
+3. Tap World Capitals Quiz in the toolbar, choose continent, sheet type, number and players, and make the sheet.
+4. Write your answers.
+5. Open the menu again and tap Grade.
 
 Permissions: reads and writes the current note page (to create and grade the sheet).
 

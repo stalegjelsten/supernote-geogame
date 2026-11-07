@@ -1,23 +1,23 @@
 /**
- * Rettferdig trekning når spillerne bytter på (hot seat, «Bytt på»).
+ * Fair draw when the players take turns (hot seat, "Take turns").
  *
- * Hver spiller får egne land, så trekningen må gi alle omtrent like vanskelige
- * oppgaver. Kjenthet måles med sidevisninger på Wikipedia (src/data/familiarity.ts):
- * hovedstaden når oppgaven er å kunne hovedstaden, landet når landet skal merkes.
+ * Each player gets their own countries, so the draw must give everyone roughly equally difficult
+ * tasks. Familiarity is measured by Wikipedia page views (src/data/familiarity.ts):
+ * the capital when the task is knowing the capital, the country when the country is to be marked.
  *
- * Trekningen går i runder, én oppgave per spiller per runde:
- *  1. Et tilfeldig land er utgangspunktet for runden.
- *  2. Resten av runden fylles med de ubrukte landene som er nærmest i kjenthet.
- *  3. Det mest kjente landet i runden går til spilleren som så langt har fått
- *     de minst kjente, og så videre, så summen jevnes ut over spillet.
- * Rekkefølgen i lista blir runde for runde, spiller 1 først (se playerAt).
+ * The draw goes in rounds, one task per player per round:
+ *  1. A random country is the starting point for the round.
+ *  2. The rest of the round is filled with the unused countries closest in familiarity.
+ *  3. The best-known country in the round goes to the player who so far has received
+ *     the least known ones, and so on, so the total evens out over the game.
+ * The order in the list is round by round, player 1 first (see playerAt).
  */
 import {FAMILIARITY} from '../data/familiarity';
 import type {CountryCode} from '../data/countries';
 
 export type FamiliarityKind = 'country' | 'capital';
 
-/** Kjenthet på log-skala, så forskjellen mellom 1 og 10 millioner visninger teller like mye som mellom 10 000 og 100 000. */
+/** Familiarity on a log scale, so the difference between 1 and 10 million views counts as much as between 10,000 and 100,000. */
 export function familiarity(code: CountryCode, kind: FamiliarityKind): number {
   const [country, capital] = FAMILIARITY[code];
   return Math.log10(1 + (kind === 'country' ? country : capital));
@@ -25,14 +25,14 @@ export function familiarity(code: CountryCode, kind: FamiliarityKind): number {
 
 export interface FairDrawOptions<T> {
   random?: () => number;
-  /** Kan `item` stå sammen med de som allerede er valgt? (f.eks. avstand på kartet) */
+  /** Can `item` go together with those already chosen? (e.g. distance on the map) */
   compatible?: (item: T, chosen: T[]) => boolean;
 }
 
 /**
- * Trekker `rounds` runder à `players` oppgaver fra `pool`.
- * Returnerer lista i spillerekkefølge: [r1 s1, r1 s2, …, r2 s1, r2 s2, …].
- * Er det for få kompatible kandidater, slakkes kravet i `compatible`.
+ * Draws `rounds` rounds of `players` tasks from `pool`.
+ * Returns the list in player order: [r1 p1, r1 p2, …, r2 p1, r2 p2, …].
+ * If there are too few compatible candidates, the `compatible` requirement is relaxed.
  */
 export function fairDraw<T>(
   pool: T[],
@@ -52,7 +52,7 @@ export function fairDraw<T>(
   for (let r = 0; r < rounds; r++) {
     const ok = (x: T) => !compatible || compatible(x, chosen);
     const okIdx = unused.map((x, i) => (ok(x) ? i : -1)).filter(i => i >= 0);
-    // Uten nok kompatible kandidater: ta hva som helst.
+    // Without enough compatible candidates: take anything.
     const strict = okIdx.length >= players;
     const candidates = strict ? okIdx : unused.map((_, i) => i);
     const anchor = unused[candidates[Math.floor(random() * candidates.length)]];
@@ -66,7 +66,7 @@ export function fairDraw<T>(
         if (strict && !ok(x)) {
           return;
         }
-        // Litt tilfeldighet ved like avstander, så samme par ikke alltid kommer sammen.
+        // A bit of randomness on equal distances, so the same pair doesn't always end up together.
         const d = Math.abs(score(x) - target) + random() * 1e-6;
         if (d < bestD) {
           bestD = d;
@@ -74,7 +74,7 @@ export function fairDraw<T>(
         }
       });
       if (best < 0) {
-        // Ingen kompatible igjen: ta nærmeste uansett.
+        // No compatible ones left: take the nearest regardless.
         unused.forEach((x, i) => {
           const d = Math.abs(score(x) - target);
           if (d < bestD) {
@@ -87,7 +87,7 @@ export function fairDraw<T>(
       group.push(x);
       chosen.push(x);
     }
-    // Mest kjent til den som har fått minst kjente så langt.
+    // Best known to the one who has received the least known so far.
     group.sort((a, b) => score(b) - score(a));
     const order = totals
       .map((t, p) => ({t, p, tie: random()}))
@@ -104,16 +104,16 @@ export function fairDraw<T>(
   return out;
 }
 
-/** Nivå på arket: blandet (alle land), eller lett/middels/vanskelig etter kjenthet. */
+/** Level on the sheet: mixed (all countries), or easy/medium/hard by familiarity. */
 export type Level = 'mixed' | 'easy' | 'medium' | 'hard';
 export const LEVELS: Level[] = ['mixed', 'easy', 'medium', 'hard'];
 
 /**
- * Landene som kan trekkes på et nivå. Lista sorteres etter kjenthet, og nivået
- * velger den mest kjente tredjedelen (lett), midten (middels) eller den minst
- * kjente (vanskelig). Trengs det flere enn en tredjedel, blir vinduet større,
- * så det alltid er nok å trekke fra. `slack` gir ekstra plass (f.eks. kartet,
- * der byer som ligger for tett, hoppes over).
+ * The countries that can be drawn at a level. The list is sorted by familiarity, and the level
+ * picks the best-known third (easy), the middle (medium) or the least
+ * known (hard). If more than a third is needed, the window grows,
+ * so there is always enough to draw from. `slack` gives extra room (e.g. the map,
+ * where cities that lie too close are skipped).
  */
 export function levelPool<T>(
   pool: T[],

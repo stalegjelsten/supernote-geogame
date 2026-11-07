@@ -1,12 +1,12 @@
 /**
- * Fordeler resultatet fra én samlet gjenkjenning av hele svarkolonnen på radene.
+ * Distributes the result from one combined recognition of the whole answer column onto the rows.
  *
- * Gjenkjenningen gir én tekstlinje per skrevet linje, ovenfra og ned. Når antall
- * ikke-tomme linjer er det samme som antall rader med håndskrift, kan vi koble dem
- * i rekkefølge. Ellers returneres null, og kalleren må gjenkjenne rad for rad.
+ * The recognition gives one text line per written line, top to bottom. When the number of
+ * non-empty lines equals the number of rows with handwriting, we can match them
+ * in order. Otherwise null is returned, and the caller must recognize row by row.
  *
- * @param text Samlet gjenkjent tekst.
- * @param rowsWithInk Radnumrene som har håndskrift, i stigende rekkefølge.
+ * @param text Combined recognized text.
+ * @param rowsWithInk The row numbers that have handwriting, in ascending order.
  */
 export function splitByRows(text: string, rowsWithInk: number[]): Map<number, string> | null {
   const lines = text

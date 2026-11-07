@@ -1,22 +1,22 @@
 /**
- * Plassering av kartarket på siden, i Android-piksler.
+ * Placement of the map sheet on the page, in Android pixels.
  *
- * Alt er proporsjonalt med sidestørrelsen (Manta 1920×2560, A5X 1404×1872 …).
- * Kartet får størst mulig plass: enten over lista (brede kart, lista i to
- * kolonner under) eller ved siden av den (høye kart, lista i én kolonne til høyre).
+ * Everything is proportional to the page size (Manta 1920×2560, A5X 1404×1872 …).
+ * The map gets as much room as possible: either above the list (wide maps, list in two
+ * columns below) or beside it (tall maps, list in one column on the right).
  *
- * Ingen import utenom typer, så byggeskriptet for kartene kan bruke filen direkte.
+ * No imports except types, so the map build script can use the file directly.
  */
 import type {Rect, Size} from './layout';
 
 export interface MapEntryLayout {
-  /** Ruta foran navnet: en strek her betyr «hopp over». */
+  /** The box before the name: a line here means "skip". */
   box: Rect;
-  /** «1. Oslo (Norge)» */
+  /** "1. Oslo (Norway)" */
   label: Rect;
-  /** Poeng og avstand etter retting. */
+  /** Points and distance after correction. */
   points: Rect;
-  /** Hele oppføringen; strøk med midtpunkt her regnes som strøk i lista. */
+  /** The whole entry; strokes with a center here count as strokes in the list. */
   band: Rect;
 }
 
@@ -25,9 +25,9 @@ export interface MapSheetLayout {
   subtitle: Rect;
   map: Rect;
   entries: MapEntryLayout[];
-  /** Totalsum etter retting. */
+  /** Total after correction. */
   total: Rect;
-  /** Plass til en merknad etter retting (f.eks. feil antall merker). */
+  /** Room for a note after correction (e.g. wrong number of marks). */
   note: Rect;
   arrangement: 'below' | 'beside';
   fontSize: number;
@@ -35,9 +35,9 @@ export interface MapSheetLayout {
 }
 
 /**
- * Samme trygge marger som tabellarket (MARGINS[3] i layout.ts), så verktøylinja
- * ikke dekker arket når den er festet til venstre, høyre eller i toppen.
- * Gjentatt her fordi filen ikke skal ha import utenom typer (se toppen).
+ * Same safe margins as the table sheet (MARGINS[3] in layout.ts), so the toolbar
+ * doesn't cover the sheet when it is docked left, right or at the top.
+ * Repeated here because the file must not have imports except types (see the top).
  */
 export const SAFE_MARGIN = {side: 0.09, top: 0.065, minPx: 150};
 
@@ -47,7 +47,7 @@ function rect(left: number, top: number, right: number, bottom: number): Rect {
   return {left: r(left), top: r(top), right: r(right), bottom: r(bottom)};
 }
 
-/** Største rektangel med bredde/høyde-forholdet `aspect` inne i en boks, midtstilt vannrett og øverst. */
+/** Largest rectangle with aspect ratio `aspect` inside a box, centered horizontally and at the top. */
 function fit(
   aspect: number,
   left: number,
@@ -66,8 +66,8 @@ function fit(
 }
 
 /**
- * @param aspect kartbildets bredde / høyde
- * @param count antall hovedsteder i lista
+ * @param aspect the map image's width / height
+ * @param count number of capitals in the list
  */
 export function computeMapLayout(
   page: Size,
@@ -75,7 +75,7 @@ export function computeMapLayout(
   count: number,
 ): MapSheetLayout {
   const {width: W, height: H} = page;
-  // Minimum i piksler: på Nomad er verktøylinja like bred i piksler som på Manta.
+  // Minimum in pixels: on Nomad the toolbar is as wide in pixels as on Manta.
   const margin = Math.max(W * SAFE_MARGIN.side, SAFE_MARGIN.minPx);
   const left = margin;
   const right = W - margin;
@@ -90,7 +90,7 @@ export function computeMapLayout(
   const contentH = contentBottom - contentTop;
   const gap = H * 0.012;
 
-  // Alternativ 1: lista i to kolonner under kartet.
+  // Option 1: the list in two columns below the map.
   const belowRows = Math.ceil(count / 2);
   const belowRowH = H * 0.034;
   const belowListH = belowRows * belowRowH;
@@ -101,7 +101,7 @@ export function computeMapLayout(
     innerW,
     contentH - belowListH - gap,
   );
-  // Alternativ 2: lista i én kolonne til høyre for kartet.
+  // Option 2: the list in one column to the right of the map.
   const sideListW = W * 0.27;
   const sideMap = fit(
     aspect,
@@ -125,7 +125,7 @@ export function computeMapLayout(
     const colW = (innerW - colGap) / 2;
     const rowH = belowRowH;
     for (let i = 0; i < count; i++) {
-      // Nummereres nedover i første kolonne, så i andre.
+      // Numbered down the first column, then the second.
       const col = i < belowRows ? 0 : 1;
       const row = i % belowRows;
       const x0 = left + col * (colW + colGap);
@@ -203,8 +203,8 @@ export function computeMapLayout(
 }
 
 /**
- * Kartets rektangel med nøyaktig samme bredde/høyde-forhold som bildet.
- * Avrundingen til hele piksler kan ellers gi et lite avvik.
+ * The map's rectangle with exactly the same aspect ratio as the image.
+ * Rounding to whole pixels can otherwise give a small deviation.
  */
 export function mapRectFor(
   page: Size,

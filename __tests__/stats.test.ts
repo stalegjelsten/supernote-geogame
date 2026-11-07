@@ -30,7 +30,7 @@ function rec(time: number, attempts: Array<[CountryCode, number]>, key = 'k' + t
   return {skill, time, key, attempts: attempts.map(([code, score]) => ({code, score}))};
 }
 
-/** Enkel, forutsigbar pseudotilfeldig generator. */
+/** Simple, predictable pseudo-random generator. */
 function seeded(seed: number) {
   let s = seed;
   return () => {
@@ -39,8 +39,8 @@ function seeded(seed: number) {
   };
 }
 
-describe('koding av poster', () => {
-  test('tur-retur gir samme post (med sekundoppløsning og kvantisert score)', () => {
+describe('encoding of entries', () => {
+  test('round trip gives the same entry (with second resolution and quantized score)', () => {
     const r = rec(T0 + 234, [['NO', 1], ['SE', 0], ['XK', 0.8]], sheetKey('/a.note', 'capital', ['NO', 'SE', 'XK']));
     const name = encodeRecord(r);
     expect(name).toMatch(/^[0-9a-z.]+$/);
@@ -54,19 +54,19 @@ describe('koding av poster', () => {
     expect(back.attempts[2].score).toBeCloseTo(0.8, 1);
   });
 
-  test('ugyldige navn avvises', () => {
+  test('invalid names are rejected', () => {
     for (const name of ['', 'lang-nb', 'g1.x.abc.key.no0', 'g1.t.abc.key.qq0', 'g1.t.abc.key.no', 'g2.t.a.b.no0']) {
       expect(decodeRecord(name)).toBeNull();
     }
   });
 
-  test('alle ferdigheter kan kodes', () => {
+  test('all skills can be encoded', () => {
     for (const skill of ['capital', 'mapCapital', 'mapCountry'] as const) {
       expect(decodeRecord(encodeRecord(rec(T0, [['FR', 0.5]], 'abc', skill)))!.skill).toBe(skill);
     }
   });
 
-  test('nøkkelen avhenger av notat og land, ikke rekkefølge', () => {
+  test('the key depends on note and country, not order', () => {
     const a = sheetKey('/x.note', 'capital', ['NO', 'SE']);
     expect(a).toHaveLength(KEY_LENGTH);
     expect(sheetKey('/x.note', 'capital', ['SE', 'NO'])).toBe(a);
@@ -74,7 +74,7 @@ describe('koding av poster', () => {
     expect(sheetKey('/x.note', 'mapCapital', ['NO', 'SE'])).not.toBe(a);
   });
 
-  test('et helt verdensark deles i poster som får plass i et mappenavn', () => {
+  test('a whole world sheet is split into entries that fit in a folder name', () => {
     const key = sheetKey('/x.note', 'capital', COUNTRY_CODES);
     const all = rec(T0, COUNTRY_CODES.map(c => [c, 1]), key);
     const parts = splitRecord(all);
@@ -87,14 +87,14 @@ describe('koding av poster', () => {
     expect(sessions(parts, 'capital').sheets).toBe(1);
   });
 
-  test('et vanlig ark på 20 land får plass i én post', () => {
+  test('a regular sheet of 20 countries fits in one entry', () => {
     const r = rec(T0, COUNTRY_CODES.slice(0, 20).map(c => [c, 1]), sheetKey('/x', 'capital', COUNTRY_CODES.slice(0, 20)));
     expect(splitRecord(r)).toHaveLength(1);
   });
 });
 
 describe('score', () => {
-  test('tabell og kart', () => {
+  test('table and map', () => {
     expect(verdictScore('correct')).toBe(1);
     expect(verdictScore('close')).toBeGreaterThan(0.7);
     expect(verdictScore('wrong')).toBe(0);
@@ -105,8 +105,8 @@ describe('score', () => {
   });
 });
 
-describe('statistikk', () => {
-  test('boks og rekke følger riktige og feile svar', () => {
+describe('statistics', () => {
+  test('box and streak follow correct and wrong answers', () => {
     const stats = computeStats(
       [rec(T0, [['NO', 1]]), rec(T0 + DAY, [['NO', 1]]), rec(T0 + 2 * DAY, [['NO', 0]]), rec(T0 + 3 * DAY, [['NO', 1]])],
       'capital',
@@ -121,26 +121,26 @@ describe('statistikk', () => {
     expect(dueAt(no)).toBe(T0 + 4 * DAY);
   });
 
-  test('tre riktige på rad = kan', () => {
+  test('three correct in a row = known', () => {
     const stats = computeStats([0, 1, 2].map(d => rec(T0 + d * DAY, [['SE', 1]])), 'capital');
     expect(levelOf(stats.get('SE'))).toBe('known');
     expect(levelOf(stats.get('NO'))).toBe('new');
   });
 
-  test('ny retting av samme ark erstatter den forrige', () => {
+  test('regrading the same sheet replaces the previous one', () => {
     const stats = computeStats([rec(T0, [['NO', 0]], 'same'), rec(T0 + 60_000, [['NO', 1]], 'same')], 'capital');
     expect(stats.get('NO')!.attempts).toBe(1);
     expect(stats.get('NO')!.lastScore).toBe(1);
   });
 
-  test('ferdighetene holdes adskilt', () => {
+  test('the skills are kept separate', () => {
     const records = [rec(T0, [['NO', 1]], 'a', 'capital'), rec(T0, [['NO', 0]], 'b', 'mapCountry')];
     expect(computeStats(records, 'capital').get('NO')!.lastScore).toBe(1);
     expect(computeStats(records, 'mapCountry').get('NO')!.lastScore).toBe(0);
     expect(computeStats(records, 'mapCapital').size).toBe(0);
   });
 
-  test('oppsummering og svakeste land', () => {
+  test('summary and weakest countries', () => {
     const records = [
       rec(T0, [['NO', 1], ['SE', 0], ['DK', 0.5]]),
       rec(T0 + DAY, [['NO', 1], ['SE', 0], ['DK', 1]]),
@@ -152,7 +152,7 @@ describe('statistikk', () => {
     expect(sessions(records, 'capital')).toMatchObject({sheets: 2, attempts: 6});
   });
 
-  test('rapport for menyen', () => {
+  test('report for the menu', () => {
     const r = statsReport([rec(T0, [['NO', 0], ['FR', 1]])], 'capital', getLanguage('nb')!, 'EU', T0);
     expect(r.focus.region).toBe('EU');
     expect(r.regions).toHaveLength(7);
@@ -160,20 +160,20 @@ describe('statistikk', () => {
   });
 });
 
-describe('treningsutvalg', () => {
+describe('training selection', () => {
   const now = T0 + 30 * DAY;
   const stats = computeStats(
     [
-      // NO: kan godt, nylig øvd.
+      // NO: knows well, recently practised.
       ...[0, 1, 2, 3].map(d => rec(now - (4 - d) * 60_000, [['NO', 1]])),
-      // SE: alltid feil, lenge siden.
+      // SE: always wrong, long ago.
       rec(T0, [['SE', 0]]),
       rec(T0 + DAY, [['SE', 0]]),
     ],
     'capital',
   );
 
-  test('vektene prioriterer riktig', () => {
+  test('the weights prioritize correctly', () => {
     const no = stats.get('NO');
     const se = stats.get('SE');
     expect(weight(no, 'random', now)).toBe(weight(se, 'random', now));
@@ -187,11 +187,11 @@ describe('treningsutvalg', () => {
     }
   });
 
-  test('vektet rekkefølge er en permutasjon og følger vektene', () => {
+  test('weighted order is a permutation and follows the weights', () => {
     const items = ['a', 'b', 'c', 'd'];
     const out = weightedOrder(items, () => 1, seeded(1));
     expect([...out].sort()).toEqual(items);
-    // «a» med stor vekt havner nesten alltid først.
+    // "a" with a large weight almost always ends up first.
     const rnd = seeded(7);
     let first = 0;
     for (let i = 0; i < 200; i++) {
@@ -200,7 +200,7 @@ describe('treningsutvalg', () => {
     expect(first).toBeGreaterThan(180);
   });
 
-  test('svake land kommer oftere med på arket', () => {
+  test('weak countries appear more often on the sheet', () => {
     const nb = getLanguage('nb')!;
     const rnd = seeded(3);
     let se = 0;
@@ -215,7 +215,7 @@ describe('treningsutvalg', () => {
     expect(no).toBeLessThan(20);
   });
 
-  test('kartutvalget tar imot en rekkefølge', () => {
+  test('the map selection accepts an order', () => {
     const nb = getLanguage('nb')!;
     const order = (pool: ReturnType<typeof pickCountries>) => {
       const first = pool.filter(c => c.code === 'SE');
@@ -224,7 +224,7 @@ describe('treningsutvalg', () => {
     expect(pickMapCountries(nb, 'EU', 5, seeded(1), undefined, order)[0].code).toBe('SE');
   });
 
-  test('standard trekning er uendret: like mange land og ingen duplikater', () => {
+  test('default draw is unchanged: same number of countries and no duplicates', () => {
     const nb = getLanguage('nb')!;
     const picked = pickCountries(nb, 'AF', 10, seeded(5));
     expect(new Set(picked.map(c => c.code)).size).toBe(10);

@@ -1,6 +1,6 @@
 /**
- * Er sidemalen blank? «White» (helt hvit) og sider uten mal regnes som blanke,
- * så arket kan lages rett på siden. `null` betyr at enheten ikke oppga malen.
+ * Is the page template blank? "White" (pure white) and pages without a template count as blank,
+ * so the sheet can be made right on the page. `null` means the device did not report the template.
  */
 export function isBlankTemplate(name: string | null): boolean {
   if (name === null) {

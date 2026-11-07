@@ -1,6 +1,6 @@
 /**
- * Statistikken slik menyen viser den: oppsummering per verdensdel og de
- * svakeste landene, med navn på menyspråket.
+ * The statistics as the menu shows them: summary per continent and the
+ * weakest countries, with names in the menu language.
  */
 import {CONTINENT_OF, CONTINENTS, COUNTRY_CODES, type CountryCode} from '../data/countries';
 import type {Language} from '../i18n';
@@ -11,9 +11,9 @@ import {computeStats, sessions, summarize, weakest, type SessionSummary, type Sh
 export interface WeakCountry {
   code: CountryCode;
   name: string;
-  /** Det som skulle svares: hovedstaden (eller landet, for landkartet). */
+  /** What was to be answered: the capital (or the country, for the country map). */
   answer: string;
-  /** Mastery i prosent. */
+  /** Mastery in percent. */
   percent: number;
   attempts: number;
 }
@@ -22,7 +22,7 @@ export interface StatsReport {
   skill: Skill;
   sessions: SessionSummary;
   regions: Array<{region: Region; summary: Summary}>;
-  /** Oppsummering for regionen som er valgt i menyen. */
+  /** Summary for the region selected in the menu. */
   focus: {region: Region; summary: Summary};
   weakest: WeakCountry[];
 }

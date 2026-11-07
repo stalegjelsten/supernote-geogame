@@ -1,25 +1,25 @@
 #!/usr/bin/env node
 /**
- * Lager språkfilene for språkene som Supernote kan gjenkjenne håndskrift på
- * (https://support.supernote.com/handwriting-recognition), utenom nb og en,
- * som er skrevet for hånd.
+ * Generates the language files for the languages Supernote can recognize handwriting in
+ * (https://support.supernote.com/handwriting-recognition), except nb and en,
+ * which are written by hand.
  *
  *   node scripts/gen-languages.js
  *
- * Kilder:
- * - Landnavn og verdensdeler: CLDR via Intl.DisplayNames i Node (full ICU).
- * - Hovedsteder: Wikidata-etiketter, lagret i scripts/data/capitals-wikidata.json
- *   (hentet med wbgetentities for hovedstaden (P36) til hvert land).
- *   Mangler et språk etikett, prøves reservespråkene i `wd`, så 'mul' og 'en'.
- * - Byer som de facto også er hovedstad (regjeringssete, flere offisielle hovedsteder):
- *   Wikidata-etiketter i scripts/data/co-capitals-wikidata.json. De godtas som svar
- *   på språket selv og på engelsk. Tidligere hovedsteder står ikke der.
- * - Kortformer uten forvaltningsledd (東京 for 東京都) og noen ekstra skrivemåter
- *   for kinesisk, japansk og koreansk: ADMIN_SUFFIXES og EXTRA_ALTERNATIVES under.
- * - Arktekstene i tabellen under er oversatt for hånd.
+ * Sources:
+ * - Country and continent names: CLDR via Intl.DisplayNames in Node (full ICU).
+ * - Capitals: Wikidata labels, stored in scripts/data/capitals-wikidata.json
+ *   (fetched with wbgetentities for the capital (P36) of each country).
+ *   If a language lacks a label, the fallback languages in `wd` are tried, then 'mul' and 'en'.
+ * - Cities that are de facto also capitals (seat of government, several official capitals):
+ *   Wikidata labels in scripts/data/co-capitals-wikidata.json. They are accepted as answers
+ *   in the language itself and in English. Former capitals are not listed there.
+ * - Short forms without administrative affixes (東京 for 東京都, Тиран for Тиран хот) and
+ *   some extra spellings: ADMIN_SUFFIXES and EXTRA_ALTERNATIVES below.
+ * - The sheet texts in the table below are translated by hand.
  *
- * Skriver src/i18n/countries/<kode>.ts og src/i18n/<kode>.ts. Hvilke språk som
- * bygges inn, styres fortsatt av LANGUAGES i src/i18n/index.ts.
+ * Writes src/i18n/countries/<code>.ts and src/i18n/<code>.ts. Which languages are
+ * bundled is still controlled by LANGUAGES in src/i18n/index.ts.
  */
 const fs = require('fs');
 const path = require('path');
@@ -27,7 +27,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const I18N = path.join(ROOT, 'src/i18n');
 
-// [kode, navn, enhetsspråk, CLDR-språk, Wikidata-reserver, overskrift, undertekst, Land, Hovedstad, Resultat, Poeng, «leste»]
+// [code, name, device locales, CLDR locale, Wikidata fallbacks, title, subtitle, Country, Capital, Result, Score, "read"]
 const TABLE = [
   ['af', 'Afrikaans', ['af'], 'af', ['af', 'nl'], 'Hoofstede', 'Skryf die hoofstad van elke land.', 'Land', 'Hoofstad', 'Resultaat', 'Punte', 'gelees'],
   ['sq', 'Shqip', ['sq'], 'sq', ['sq'], 'Kryeqytetet', 'Shkruaj kryeqytetin e çdo vendi.', 'Vendi', 'Kryeqyteti', 'Rezultati', 'Pikë', 'lexuar'],
@@ -84,15 +84,15 @@ const TABLE = [
   ['vi', 'Tiếng Việt', ['vi'], 'vi', ['vi'], 'Thủ đô', 'Viết thủ đô của mỗi quốc gia.', 'Quốc gia', 'Thủ đô', 'Kết quả', 'Điểm', 'đã đọc'],
 ];
 
-/** Verdensdeler der CLDR mangler navn. */
+/** Continents CLDR has no names for. */
 const CONTINENT_OVERRIDES = {
   mg: {EU: 'Eoropa', AS: 'Azia', AF: 'Afrika', NA: 'Amerika Avaratra', SA: 'Amerika Atsimo', OC: 'Oseania', world: 'Izao tontolo izao'},
 };
 
 /**
- * Forvaltningsledd som Wikidata tar med i hovedstadsnavnet (東京都, 北京市, 서울특별시,
- * Тиран хот, Әбү-Дәби шәһәре). Ingen skriver dem, og korte CJK-navn tåler ingen
- * skrivefeil, så navnet uten leddet godtas også. Lengste ledd først.
+ * Administrative affixes Wikidata includes in the capital's name (東京都, 北京市, 서울특별시,
+ * Тиран хот, Әбү-Дәби шәһәре). Nobody writes them, and short CJK names tolerate no
+ * typos, so the name without the affix is accepted too. Longest affix first.
  */
 const ADMIN_SUFFIXES = {
   ja: ['特別市', '地区', 'D.C.', '都', '市', '島'],
@@ -102,7 +102,7 @@ const ADMIN_SUFFIXES = {
   mn: [' хот', ' Хот'],
   tt: [' шәһәре'],
 };
-/** Hovedsteder der det siste tegnet hører til selve navnet. */
+/** Capitals where the last character is part of the name itself. */
 const KEEP_SUFFIX = new Set(['트빌리시', '네피도', '와가두구', '加德满都', '加德滿都', '自由市']);
 
 function withoutAdminSuffix(code, name) {
@@ -119,11 +119,11 @@ function withoutAdminSuffix(code, name) {
 }
 
 /**
- * Skrivemåter som er vanlige, men som verken CLDR eller Wikidata har: kana for
- * hovedsteder som skrives med kinesiske tegn, eldre og mer vanlige translitterasjoner,
- * og «by»-navn der leddet bøyer resten av navnet (gresk Πόλη του Μεξικού, irsk
- * Cathair Chuáit), så det ikke bare kan tas bort.
- * Jerusalem for Palestina legges til på alle språk (se main), slik som på nb og en.
+ * Common spellings that neither CLDR nor Wikidata has: kana for capitals written
+ * with Chinese characters, older and more common transliterations, and "city" names
+ * where the affix inflects the rest of the name (Greek Πόλη του Μεξικού, Irish
+ * Cathair Chuáit), so it cannot simply be removed.
+ * Jerusalem for Palestine is added in every language (see main), as in nb and en.
  */
 const EXTRA_ALTERNATIVES = {
   ja: {
@@ -142,7 +142,7 @@ const EXTRA_ALTERNATIVES = {
 
 const CLDR_REGION = {EU: '150', AS: '142', AF: '002', NA: '003', SA: '005', OC: '009', world: '001'};
 
-/** Serbisk kyrillisk → latinsk (fast, entydig skjema). */
+/** Serbian Cyrillic → Latin (fixed, unambiguous scheme). */
 const SR_LATN = {
   А: 'A', Б: 'B', В: 'V', Г: 'G', Д: 'D', Ђ: 'Đ', Е: 'E', Ж: 'Ž', З: 'Z', И: 'I', Ј: 'J', К: 'K', Л: 'L', Љ: 'Lj',
   М: 'M', Н: 'N', Њ: 'Nj', О: 'O', П: 'P', Р: 'R', С: 'S', Т: 'T', Ћ: 'Ć', У: 'U', Ф: 'F', Х: 'H', Ц: 'C', Ч: 'Č',
@@ -183,7 +183,7 @@ function capitalFor(labels, chain) {
       return cleanLabel(labels[l]);
     }
   }
-  throw new Error('mangler hovedstad');
+  throw new Error('missing capital');
 }
 
 const q = s => (s.includes("'") ? JSON.stringify(s) : `'${s}'`);
@@ -191,7 +191,7 @@ const q = s => (s.includes("'") ? JSON.stringify(s) : `'${s}'`);
 function main() {
   const codes = readCountryCodes();
   if (codes.length !== 197) {
-    throw new Error(`fant ${codes.length} land i src/data/countries.ts`);
+    throw new Error(`found ${codes.length} countries in src/data/countries.ts`);
   }
   const caps = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/capitals-wikidata.json'), 'utf8'));
   const coCaps = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/co-capitals-wikidata.json'), 'utf8'));
@@ -216,17 +216,17 @@ function main() {
       }
       let name = names.of(cc);
       if (seen.has(name)) {
-        throw new Error(`${code}: dobbelt landnavn «${name}» for ${seen.get(name)} og ${cc}`);
+        throw new Error(`${code}: duplicate country name "${name}" for ${seen.get(name)} and ${cc}`);
       }
       seen.set(name, cc);
       const capital = capitalFor(caps[cc].labels, wd);
-      // Godtas også: engelsk hovedstad, og byer som de facto er hovedstad (regjeringssete o.l.)
-      // på språket selv og på engelsk.
+      // Also accepted: the English capital, and cities that are de facto capitals (seat of
+      // government etc.) in the language itself and in English.
       const alts = [];
       for (const alt of [
         withoutAdminSuffix(code, capital),
         ...(EXTRA_ALTERNATIVES[code]?.[cc] ?? []),
-        // Wikidata har Øst-Jerusalem; Jerusalem godtas også, som på nb og en.
+        // Wikidata has East Jerusalem; Jerusalem is accepted too, as in nb and en.
         cc === 'PS' ? capitalFor(caps.IL.labels, wd) : undefined,
         en[cc],
         ...(coCaps[cc] ?? []).flatMap(c => {
@@ -242,7 +242,7 @@ function main() {
     }
     fs.writeFileSync(
       path.join(I18N, `countries/${code}.ts`),
-      `/**\n * ${label}: land (CLDR) og hovedsteder (Wikidata). Engelsk hovedstad som alternativ.\n * Generert av scripts/gen-languages.js – rediger tabellen eller dataene der.\n */\n` +
+      `/**\n * ${label}: countries (CLDR) and capitals (Wikidata). English capital as an alternative.\n * Generated by scripts/gen-languages.js – edit the table or the data there.\n */\n` +
         `import type {CountryNames} from '../types';\n\nconst countries: CountryNames = {\n${lines.join('\n')}\n};\n\nexport default countries;\n`,
     );
 
@@ -251,7 +251,7 @@ function main() {
     const ident = code.replace('-', '');
     fs.writeFileSync(
       path.join(I18N, `${code}.ts`),
-      '// Generert av scripts/gen-languages.js – rediger tabellen der.\n' +
+      '// Generated by scripts/gen-languages.js – edit the table there.\n' +
         `import countries from './countries/${code}';\nimport {sheetLanguage} from './base';\n\n` +
         `const ${ident} = sheetLanguage({\n` +
         `  code: ${q(code)},\n  label: ${q(label)},\n  locales: [${locales.map(q).join(', ')}],\n  countries,\n` +
@@ -261,7 +261,7 @@ function main() {
         `  colResult: ${q(colResult)},\n  scoreWord: ${q(score)},\n  readWord: ${q(read)},\n});\n\nexport default ${ident};\n`,
     );
   }
-  console.log(`Skrev ${TABLE.length} språk.`);
+  console.log(`Wrote ${TABLE.length} languages.`);
   console.log(TABLE.map(([c]) => `import ${c.replace('-', '')} from './${c}';`).join('\n'));
 }
 
