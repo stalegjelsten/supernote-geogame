@@ -1,7 +1,9 @@
 import {COUNTRY_CODES, CONTINENT_OF} from '../src/data/countries';
 import {computeLayout, maxRowsPerPage} from '../src/core/layout';
 import {isNotesText, noteMarker, planNotes} from '../src/core/notes';
-import {isResultText} from '../src/core/sheet';
+import {gradeAnswer, isResultText} from '../src/core/sheet';
+import {countryIn} from '../src/core/countries';
+import type {CountryCode} from '../src/data/countries';
 import {getLanguage} from '../src/i18n';
 import {ALL_CAPITAL_NOTES, capitalNotes} from '../src/i18n/notes';
 
@@ -85,5 +87,34 @@ describe('fotnoter', () => {
     const fullArea = {left: L.score.left, top: L.score.top, right: L.score.right - 450, bottom: Math.round(size.height * 0.985)};
     const plan = planNotes(items, fullArea, L.smallFontSize, 20)!;
     expect(plan.markers.size).toBeGreaterThanOrEqual(3);
+  });
+});
+
+describe('bare fasit godtas for forvekslede hovedsteder', () => {
+  const en = getLanguage('en')!;
+  const nbLang = getLanguage('nb')!;
+
+  test.each([
+    ['TZ', 'Dar es Salaam'],
+    ['CI', 'Abidjan'],
+    ['BI', 'Bujumbura'],
+    ['BJ', 'Cotonou'],
+    ['IL', 'Tel Aviv'],
+    ['MY', 'Putrajaya'],
+    ['LK', 'Colombo'],
+    ['PS', 'Ramallah'],
+  ])('%s: %s er feil', (code, answer) => {
+    expect(gradeAnswer(countryIn(en, code as CountryCode), answer).verdict).toBe('wrong');
+    expect(gradeAnswer(countryIn(nbLang, code as CountryCode), answer).verdict).toBe('wrong');
+  });
+
+  test.each([
+    ['ZA', 'Cape Town'],
+    ['ZA', 'Bloemfontein'],
+    ['BO', 'La Paz'],
+    ['SZ', 'Lobamba'],
+    ['TZ', 'Dodoma'],
+  ])('%s: %s er riktig', (code, answer) => {
+    expect(gradeAnswer(countryIn(en, code as CountryCode), answer).verdict).toBe('correct');
   });
 });
