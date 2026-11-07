@@ -32,6 +32,12 @@ interface Stored {
 let cache: Stored[] | null = null;
 let dirPath: string | null = null;
 
+/** Glemmer det som er lest inn, som ved en omstart av pluginen (brukes i tester). */
+export function forgetCache(): void {
+  cache = null;
+  dirPath = null;
+}
+
 async function statsDir(): Promise<string | null> {
   if (dirPath) {
     return dirPath;
@@ -50,6 +56,19 @@ async function statsDir(): Promise<string | null> {
 
 const baseName = (path: string) => path.replace(/\/+$/, '').split('/').pop() ?? path;
 
+/**
+ * Navnene i en mappe. Typene i sn-plugin-lib sier at listFiles gir strenger,
+ * men Java-koden gir objekter `{path, type}` (type 0 = mappe), og null for en
+ * tom mappe. Vi godtar begge deler.
+ */
+async function listNames(dir: string): Promise<string[]> {
+  const entries = ((await FileUtils.listFiles(dir)) ?? []) as unknown[];
+  return entries.flatMap(e => {
+    const path = typeof e === 'string' ? e : (e as {path?: unknown} | null)?.path;
+    return typeof path === 'string' ? [baseName(path)] : [];
+  });
+}
+
 async function loadStored(): Promise<Stored[]> {
   if (cache) {
     return cache;
@@ -58,10 +77,8 @@ async function loadStored(): Promise<Stored[]> {
   if (!dir) {
     return [];
   }
-  const names = (await FileUtils.listFiles(dir)) ?? [];
   const out: Stored[] = [];
-  for (const path of names) {
-    const name = baseName(path);
+  for (const name of await listNames(dir)) {
     const record = decodeRecord(name);
     if (record) {
       out.push({name, record});
@@ -136,7 +153,7 @@ export async function clearRecords(): Promise<void> {
     return;
   }
   // Slett postene én for én; det er ikke sikkert deleteDir tar mapper med innhold.
-  for (const path of (await FileUtils.listFiles(dir)) ?? []) {
-    await FileUtils.deleteDir(`${dir}/${baseName(path)}`);
+  for (const name of await listNames(dir)) {
+    await FileUtils.deleteDir(`${dir}/${name}`);
   }
 }
