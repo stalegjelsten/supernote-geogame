@@ -30,6 +30,7 @@ import {
   mapSheetDrafts,
   parseEntry,
   parseMapTitle,
+  pickFairMapCountries,
   pickMapCountries,
   type MapEntry,
   type MapEntryStyle,
@@ -37,6 +38,7 @@ import {
   type MapSheetInfo,
 } from './core/mapSheet';
 import type {Region} from './core/sheet';
+import type {Level} from './core/fairDraw';
 import {MAP_ASSETS} from './sdk/mapAssets';
 import {
   TYPE_GEO,
@@ -82,6 +84,8 @@ export interface MapSheetOptions {
   style: MapEntryStyle;
   /** Hva som skal merkes: hovedsteder (poeng etter avstand) eller land (riktig/galt). */
   target: MapTarget;
+  /** Nivå etter kjenthet; blandet hvis ikke oppgitt. */
+  level?: Level;
 }
 
 /** Lager et kartark på denne siden eller en ny side etter den. */
@@ -106,7 +110,27 @@ export async function createMapSheet(
     multi?.mode === 'shared'
       ? sharedCount(options.count, multi.players)
       : options.count;
-  const countries = pickMapCountries(lang, region, count);
+  const countries =
+    multi?.mode === 'shared'
+      ? pickFairMapCountries(
+          lang,
+          region,
+          count,
+          multi.players,
+          options.target,
+          Math.random,
+          undefined,
+          options.level,
+        )
+      : pickMapCountries(
+          lang,
+          region,
+          count,
+          Math.random,
+          undefined,
+          options.level,
+          options.target,
+        );
   if (multi?.mode === 'pass') {
     return createPassMapGame(ref, lang, region, countries, path, options, multi.players, where, progress);
   }

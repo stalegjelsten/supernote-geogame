@@ -16,6 +16,8 @@ import {
 } from './src/core/mapSheet';
 import {mapTexts, type MapEntryStyle} from './src/i18n/map';
 import {hotSeatTexts} from './src/i18n/hotseat';
+import {levelTexts} from './src/i18n/level';
+import {LEVELS, type Level} from './src/core/fairDraw';
 import {
   PLAYER_COUNTS,
   sharedCount,
@@ -106,6 +108,8 @@ function App(): React.JSX.Element {
   const ui = t.ui;
   const mt = mapTexts(t);
   const hs = hotSeatTexts(t);
+  const lt = levelTexts(t);
+  const [level, setLevel] = useState<Level>('mixed');
   const [players, setPlayers] = useState<number>(1);
   const [playMode, setPlayMode] = useState<PlayMode>('pass');
   const game = players > 1 ? {mode: playMode, players} : undefined;
@@ -180,7 +184,7 @@ function App(): React.JSX.Element {
           region,
           target,
           progress,
-          {count: mapCount, style: mapStyle, target: mapTarget},
+          {count: mapCount, style: mapStyle, target: mapTarget, level},
           game,
         );
         if (game) {
@@ -193,7 +197,15 @@ function App(): React.JSX.Element {
               : mt.ui.made(r.count),
         };
       }
-      const r = await createSheet(t, region, actualCount, target, progress, game);
+      const r = await createSheet(
+        t,
+        region,
+        actualCount,
+        target,
+        progress,
+        game,
+        level,
+      );
       return {
         message: game
           ? hs.ui.made(players, r.pages)
@@ -367,6 +379,24 @@ function App(): React.JSX.Element {
                 {ui.spread(actualCount, pageCount)}
               </Text>
             )}
+          </>
+        )}
+        {/* Med alle landene i regionen er det ingenting å velge mellom. */}
+        {!(mode === 'table' && actualCount >= regionSize(region)) && (
+          <>
+            <Text style={styles.label}>{lt.label}</Text>
+            <View style={styles.grid}>
+              {LEVELS.map(l => (
+                <Button
+                  key={l}
+                  label={lt.names[l]}
+                  selected={l === level}
+                  onPress={() => setLevel(l)}
+                  disabled={busy}
+                />
+              ))}
+            </View>
+            {level !== 'mixed' && <Text style={styles.hint}>{lt.hint}</Text>}
           </>
         )}
         <Text style={styles.label}>{hs.ui.players}</Text>

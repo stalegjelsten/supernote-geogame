@@ -1,5 +1,6 @@
 import {countryIn, findCountryByName, pickSheetLanguage, type Country} from './core/countries';
 import {currentLanguage, type Language} from './i18n';
+import type {Level} from './core/fairDraw';
 import {hotSeatTexts} from './i18n/hotseat';
 import {
   parseGameTag,
@@ -33,6 +34,7 @@ import {
   isResultText,
   parseSheetTitle,
   pickCountries,
+  pickFairCountries,
   regionSize,
   resultMark,
   resultText,
@@ -211,13 +213,18 @@ export async function createSheet(
   where: 'here' | 'newPage',
   progress: Progress,
   game?: Game,
+  level: Level = 'mixed',
 ): Promise<CreateSummary> {
   await ensurePermissions();
   const ref = await currentPage();
   const ui = currentLanguage();
   const multi = game && game.players > 1 ? game : undefined;
   const n = multi?.mode === 'shared' ? sharedCount(count, multi.players, regionSize(region)) : count;
-  const countries = pickCountries(lang, region, n);
+  // Bytt på: hver spiller får egne land, trukket så alle får omtrent like kjente.
+  const countries =
+    multi?.mode === 'shared'
+      ? pickFairCountries(lang, region, n, multi.players, Math.random, level)
+      : pickCountries(lang, region, n, Math.random, level);
   // Færre land per side på mindre sider (Nomad, A5X), så radene blir høye nok til å skrive i.
   const chunks = splitIntoPages(countries, maxRowsPerPage(ref.size));
   if (multi?.mode === 'pass') {

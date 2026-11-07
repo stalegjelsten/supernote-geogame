@@ -80,3 +80,6 @@ debug/
 
 # Nedlastede kartdata (scripts/gen-maps.ts)
 scripts/data/cache/
+
+# Mellomlager for scripts/gen-familiarity.js
+scripts/data/.familiarity-cache.json

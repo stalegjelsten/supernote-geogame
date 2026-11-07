@@ -15,6 +15,7 @@ import {LANGUAGES, type Language} from '../i18n';
 import {mapTexts, type MapEntryStyle} from '../i18n/map';
 import {hotSeatTexts} from '../i18n/hotseat';
 import type {GameTag} from './hotseat';
+import {fairDraw, familiarity, levelPool, type Level} from './fairDraw';
 import {
   countriesIn,
   countryIn,
@@ -133,10 +134,17 @@ export function pickMapCountries(
   count = MAP_SHEET_COUNT,
   random: () => number = Math.random,
   minSeparation = 0.03,
+  level: Level = 'mixed',
+  target: MapTarget = 'capital',
 ): Country[] {
   const meta = MAPS[region];
-  const pool = countriesIn(lang).filter(
-    c => region === 'ALL' || c.continent === region,
+  // Litt ekstra plass på nivåene, siden byer som ligger for tett hoppes over.
+  const pool = levelPool(
+    countriesIn(lang).filter(c => region === 'ALL' || c.continent === region),
+    level,
+    count,
+    c => familiarity(c.code, target === 'country' ? 'country' : 'capital'),
+    1.5,
   );
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(random() * (i + 1));
@@ -169,6 +177,52 @@ export function pickMapCountries(
     }
   }
   return chosen;
+}
+
+/**
+ * Bytt på: som pickMapCountries, men fordelt rettferdig på spillerne og i
+ * spillerekkefølge. Kjenthet måles på landet når landet skal merkes, ellers på hovedstaden.
+ */
+export function pickFairMapCountries(
+  lang: Language,
+  region: Region,
+  count: number,
+  players: number,
+  target: MapTarget = 'capital',
+  random: () => number = Math.random,
+  minSeparation = 0.03,
+  level: Level = 'mixed',
+): Country[] {
+  const meta = MAPS[region];
+  const kind = target === 'country' ? 'country' : 'capital';
+  const pool = levelPool(
+    countriesIn(lang).filter(c => region === 'ALL' || c.continent === region),
+    level,
+    count,
+    c => familiarity(c.code, kind),
+    1.5,
+  );
+  const where = (c: Country) => {
+    const [lon, lat] = CAPITAL_LONLAT[c.code];
+    return lonLatToImage(meta, lon, lat);
+  };
+  const minPx = minSeparation * meta.width;
+  return fairDraw(
+    pool,
+    Math.floor(count / players),
+    players,
+    c => familiarity(c.code, kind),
+    {
+      random,
+      compatible: (c, chosen) => {
+        const p = where(c);
+        return chosen.every(o => {
+          const q = where(o);
+          return Math.hypot(p.x - q.x, p.y - q.y) >= minPx;
+        });
+      },
+    },
+  );
 }
 
 export function entryText(

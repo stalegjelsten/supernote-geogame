@@ -1,6 +1,7 @@
 import {CONTINENT_OF, COUNTRY_CODES, type Continent, type CountryCode} from '../data/countries';
 import {ENGLISH, LANGUAGES, type Language} from '../i18n';
 import {countriesIn, type Country} from './countries';
+import {fairDraw, familiarity, levelPool, type Level} from './fairDraw';
 import type {MarkKind} from './marks';
 import {matchAnswer, normalizeCached, type MatchResult} from './match';
 
@@ -95,14 +96,42 @@ export function pickCountries(
   region: Region,
   count: number,
   random: () => number = Math.random,
+  level: Level = 'mixed',
 ): Country[] {
-  const pool = countriesIn(lang).filter(c => region === 'ALL' || c.continent === region);
+  const pool = levelPool(
+    countriesIn(lang).filter(c => region === 'ALL' || c.continent === region),
+    level,
+    count,
+    c => familiarity(c.code, 'capital'),
+  );
   const shuffled = [...pool];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled.slice(0, Math.min(count, shuffled.length));
+}
+
+/**
+ * Bytt på: `count` land fordelt rettferdig på `players` spillere, i spillerekkefølge
+ * (spiller 1, 2, …, 1, 2, …). Se fairDraw.
+ */
+export function pickFairCountries(
+  lang: Language,
+  region: Region,
+  count: number,
+  players: number,
+  random: () => number = Math.random,
+  level: Level = 'mixed',
+): Country[] {
+  const score = (c: Country) => familiarity(c.code, 'capital');
+  const pool = levelPool(
+    countriesIn(lang).filter(c => region === 'ALL' || c.continent === region),
+    level,
+    count,
+    score,
+  );
+  return fairDraw(pool, Math.floor(count / players), players, score, {random});
 }
 
 function answersIn(lang: Language, code: CountryCode): string[] {
