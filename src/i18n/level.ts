@@ -1,6 +1,6 @@
 /**
  * Text for the level choice in the menu. Norwegian and English are written by hand; the
- * other languages get English, like the map mode and multiplayer.
+ * other languages get their text from menu/<code>.ts.
  */
 import type {Level} from '../core/fairDraw';
 import type {Language} from './types';
@@ -26,5 +26,15 @@ const en: LevelTexts = {
 const OWN: Record<string, LevelTexts> = {nb, en};
 
 export function levelTexts(lang: Language): LevelTexts {
-  return OWN[lang.code] ?? en;
+  const m = lang.menu;
+  return (
+    OWN[lang.code] ??
+    (m
+      ? {
+          label: m.levelLabel,
+          names: {mixed: m.levelMixed, easy: m.levelEasy, medium: m.levelMedium, hard: m.levelHard},
+          hint: m.levelHint,
+        }
+      : en)
+  );
 }

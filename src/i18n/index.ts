@@ -3,10 +3,11 @@
  *
  * Only the languages imported here end up in the bundle. Remove an import and
  * its line in LANGUAGES to build without a language (English must stay, since the
- * other languages borrow the menu texts from it).
+ * other languages borrow the title and the text on map and multiplayer sheets from it).
  *
  * nb and en are written by hand. The others are the languages Supernote can
  * recognize handwriting in, and are generated with `node scripts/gen-languages.js`.
+ * Their menu texts live in menu/<code>.ts.
  */
 import af from './af';
 import az from './az';

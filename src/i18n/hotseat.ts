@@ -1,10 +1,13 @@
 /**
  * Text for multiplayer (hot seat). Norwegian and English are written by hand; the
- * other languages get English text, like the map mode (see map.ts).
+ * other languages get their menu text from menu/<code>.ts and English text on the
+ * sheet, like the map mode (see map.ts).
  *
  * The label ("Player 2 of 3", "Duel for 2") comes first in the sheet's subtitle
  * and is read back when grading, so its form must stay stable.
  */
+import {fmt, list as menuList} from './menu/build';
+import type {MenuStrings} from './menu/types';
 import type {Language} from './types';
 
 export interface HotSeatTexts {
@@ -129,8 +132,43 @@ const en: HotSeatTexts = {
 
 const OWN: Record<string, HotSeatTexts> = {nb, en};
 
+function menuUi(m: MenuStrings): HotSeatTexts['ui'] {
+  const players = (ks: number[]) => menuList(m, ks.map(k => fmt(m.hsPlayer, {k})));
+  return {
+    players: m.hsPlayers,
+    solo: m.hsSolo,
+    howToPlay: m.hsHowToPlay,
+    pass: m.hsPass,
+    shared: m.hsShared,
+    passHint: m.hsPassHint,
+    sharedHint: (each, unit) => fmt(m.hsSharedHint, {each, unit}),
+    unitCountries: m.hsUnitCountries,
+    unitCities: m.hsUnitCities,
+    made: (n, pages) => fmt(m.hsMade, {players: n, pages}),
+    winner: k => fmt(m.hsWinner, {k}),
+    tie: ks => fmt(m.hsTie, {players: players(ks)}),
+    playerScore: (k, points, max, percent) => fmt(m.hsPlayerScore, {k, points, max, percent}),
+    missingPages: ks => fmt(m.hsMissingPages, {players: players(ks)}),
+  };
+}
+
+const cache = new Map<string, HotSeatTexts>();
+
+/** Own texts for nb and en; otherwise English on the sheet and a translated menu. */
 export function hotSeatTexts(lang: Language): HotSeatTexts {
-  return OWN[lang.code] ?? en;
+  const own = OWN[lang.code];
+  if (own) {
+    return own;
+  }
+  if (!lang.menu) {
+    return en;
+  }
+  let t = cache.get(lang.code);
+  if (!t) {
+    t = {...en, ui: menuUi(lang.menu)};
+    cache.set(lang.code, t);
+  }
+  return t;
 }
 
 /** All variants of the text, so the label is recognized in any language. */

@@ -3,10 +3,12 @@
  *
  * Kept in its own file so the map mode can grow without changing the shared type
  * for all languages. Norwegian and English are written by hand. The other languages
- * get English text, but the list of cities and countries is written in the sheet's
- * language, and the title starts with the language's own title, so the language is
- * recognized when grading.
+ * get their menu text from menu/<code>.ts and English text on the sheet, but the
+ * list of cities and countries is written in the sheet's language, and the title
+ * starts with the language's own title, so the language is recognized when grading.
  */
+import {fmt, thousands as menuThousands} from './menu/build';
+import type {MenuStrings} from './menu/types';
 import type {Language} from './types';
 
 /** What the list on the map sheet shows: city and country, just the city, or just the country (then you must know the capital). */
@@ -212,9 +214,41 @@ const en: MapTexts = {
 
 const OWN: Record<string, MapTexts> = {nb, en};
 
+function menuParts(m: MenuStrings): Pick<MapTexts, 'ui' | 'progress' | 'errors'> {
+  return {
+    ui: {
+      mode: m.mapMode,
+      modeTable: m.mapModeTable,
+      modeMap: m.mapModeMap,
+      mapHint: m.mapHint,
+      show: m.mapShow,
+      showBoth: m.mapShowBoth,
+      showCapital: m.mapShowCapital,
+      showCountry: m.mapShowCountry,
+      mapCount: m.mapCount,
+      target: m.mapTarget,
+      targetCapital: m.mapTargetCapital,
+      targetCountry: m.mapTargetCountry,
+      made: count => fmt(m.mapMade, {count}),
+      countryMade: count => fmt(m.mapCountryMade, {count}),
+      result: (points, max, percent) =>
+        fmt(m.mapResult, {points: menuThousands(m, points), max: menuThousands(m, max), percent}),
+      countryResult: (correct, total, percent) => fmt(m.mapCountryResult, {correct, total, percent}),
+    },
+    progress: {
+      findingMap: m.mapFindingMap,
+      findingMarks: m.mapFindingMarks,
+    },
+    errors: {
+      mapFile: detail => fmt(m.mapFile, {detail}),
+      noEntries: m.mapNoEntries,
+    },
+  };
+}
+
 const cache = new Map<string, MapTexts>();
 
-/** The map texts for a language: own texts for nb and en, otherwise English with the language's own title. */
+/** The map texts for a language: own texts for nb and en, otherwise a translated menu and an English sheet with the language's own title. */
 export function mapTexts(lang: Language): MapTexts {
   const own = OWN[lang.code];
   if (own) {
@@ -224,6 +258,7 @@ export function mapTexts(lang: Language): MapTexts {
   if (!t) {
     t = {
       ...en,
+      ...(lang.menu ? menuParts(lang.menu) : {}),
       titlePrefix: `${lang.sheet.titlePrefix} · map`,
       countryTitlePrefix: `${lang.sheet.colCountry} · map`,
     };

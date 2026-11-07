@@ -3,6 +3,7 @@
  * and `countries/<code>.ts` with this type, and listing it in `index.ts`.
  */
 import type {Continent, CountryCode} from '../data/countries';
+import type {MenuStrings} from './menu/types';
 
 /** [country, capital, alternative answers that are also accepted] */
 export type CountryEntry = readonly [name: string, capital: string, alternatives?: readonly string[]];
@@ -17,6 +18,9 @@ export interface Language {
   label: string;
   /** Device language codes that should map to this language, e.g. ['nb', 'no', 'nn']. */
   locales: string[];
+
+  /** Translated menu texts for languages not written by hand (see menu/types.ts). */
+  menu?: MenuStrings;
 
   countries: CountryNames;
   continents: Record<Continent, string>;
