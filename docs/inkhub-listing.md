@@ -44,7 +44,7 @@ separate notebook keeps your other notes untouched and makes it easy to keep
 or delete old quizzes. Each finished sheet also adds some size to the notebook.
 
 How to use
-1. Open a blank page in a notebook.
+1. Open a notebook. The sheet goes on the current page if it is empty and white; otherwise on a new page after it.
 2. Tap World Capitals Quiz in the toolbar, choose continent, sheet type, number and players, and make the sheet.
 3. Write your answers.
 4. Open the menu again and tap Grade.

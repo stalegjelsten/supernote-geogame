@@ -6,7 +6,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {PluginManager} from 'sn-plugin-lib';
-import {countElementsOnPage, createSheet, gradeSheet, rowsPerPageNow} from './src/actions';
+import {createSheet, gradeSheet, rowsPerPageNow, sheetTarget} from './src/actions';
 import {createMapSheet, gradeMapSheet, skillOfTarget} from './src/mapActions';
 import type {SheetRecord} from './src/core/stats';
 import {statsReport} from './src/core/statsReport';
@@ -69,7 +69,6 @@ type Mode = 'table' | 'map';
 type Status =
   | {kind: 'idle'}
   | {kind: 'busy'; message: string}
-  | {kind: 'confirm'; elements: number}
   | {kind: 'done'; message: string; detail?: string}
   | {kind: 'error'; message: string};
 
@@ -194,21 +193,17 @@ function App(): React.JSX.Element {
     }
   };
 
-  const make = async (where: 'check' | 'here' | 'newPage') => {
-    if (where === 'check') {
-      try {
-        setStatus({kind: 'busy', message: ui.checkingPage});
-        const n = await countElementsOnPage();
-        if (n > 0) {
-          setStatus({kind: 'confirm', elements: n});
-          return;
-        }
-      } catch (e) {
-        setStatus({kind: 'error', message: (e as Error).message ?? String(e)});
-        return;
-      }
+  // Arket lages på siden du står på hvis den er tom og blank (hvit eller ingen mal),
+  // ellers på en ny side etter den. Ingen spørsmål.
+  const make = async () => {
+    let target: 'here' | 'newPage';
+    try {
+      setStatus({kind: 'busy', message: ui.checkingPage});
+      target = await sheetTarget();
+    } catch (e) {
+      setStatus({kind: 'error', message: (e as Error).message ?? String(e)});
+      return;
     }
-    const target = where === 'check' ? 'here' : where;
     const progress = (message: string) => setStatus({kind: 'busy', message});
     await run(async () => {
       if (mode === 'map') {
@@ -454,29 +449,10 @@ function App(): React.JSX.Element {
         <Button
           label={ui.make}
           primary
-          onPress={() => make('check')}
+          onPress={make}
           disabled={busy}
         />
 
-        {status.kind === 'confirm' && (
-          <View style={styles.box}>
-            <Text style={styles.message}>
-              {ui.pageHasContent(status.elements)}
-            </Text>
-            <View style={styles.grid}>
-              <Button
-                label={ui.makeOnNewPage}
-                primary
-                onPress={() => make('newPage')}
-              />
-              <Button label={ui.putOnThisPage} onPress={() => make('here')} />
-              <Button
-                label={ui.cancel}
-                onPress={() => setStatus({kind: 'idle'})}
-              />
-            </View>
-          </View>
-        )}
 
         <View style={styles.divider} />
 

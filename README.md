@@ -6,7 +6,7 @@ Supernote-plugin for å øve på land og hovedsteder. Pluginen lager et arbeidsa
 
 ## Bruk
 
-1. Åpne en tom side i et notat.
+1. Åpne et notat. Arket lages på siden du står på hvis den er tom og har hvit eller ingen mal; ellers lages det på en ny side etter den.
 2. Trykk **World Capitals Quiz** i verktøylinja, velg verdensdel og antall, og trykk **Lag arket**.
 3. Skriv hovedstedene i midtkolonnen.
 4. Trykk **World Capitals Quiz → Rett arket på denne siden**. Resultatet skrives i høyre kolonne. Du kan rette på nytt etter at du har endret svar.

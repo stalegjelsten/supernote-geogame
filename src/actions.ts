@@ -19,6 +19,7 @@ import {
 } from './core/hotseat';
 import {assignToRows, boxOf, nearestRow} from './core/grouping';
 import {splitByRows} from './core/lines';
+import {isBlankTemplate} from './core/template';
 import {inside, markColor, markLayout, markStrokes, strokeAsPolygon} from './core/marks';
 import {
   centeredTextRect,
@@ -55,6 +56,7 @@ import {
   deleteElements,
   ensurePermissions,
   getPageElements,
+  pageTemplateName,
   insertBlankPages,
   insertDrafts,
   jumpToPage,
@@ -103,11 +105,17 @@ export async function recordResults(notePath: string, skill: Skill, attempts: At
   await saveRecord({skill, time: Date.now(), key, attempts});
 }
 
-/** Antall elementer på siden, så UI-et kan advare før det skrives over en side med innhold. */
-export async function countElementsOnPage(): Promise<number> {
+/**
+ * Hvor et nytt ark skal lages: på siden du står på hvis den er tom og har hvit
+ * eller ingen mal, ellers på en ny side etter den.
+ */
+export async function sheetTarget(): Promise<'here' | 'newPage'> {
   await ensurePermissions();
   const ref = await currentPage();
-  return (await getPageElements(ref)).length;
+  if ((await getPageElements(ref)).length > 0) {
+    return 'newPage';
+  }
+  return isBlankTemplate(await pageTemplateName(ref)) ? 'here' : 'newPage';
 }
 
 /** Tekst som er loddrett midtstilt i cellen og krympet til den får plass. */
