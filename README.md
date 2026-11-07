@@ -2,6 +2,8 @@
 
 Supernote-plugin for å øve på land og hovedsteder. Pluginen lager et arbeidsark på en notatside, du skriver hovedstedene for hånd, og pluginen retter arket med håndskriftgjenkjenning.
 
+> **Laget med KI.** All koden i dette prosjektet er skrevet av KI (Claude fra Anthropic, via Claude Code). Det samme gjelder tekstene og oversettelsene i pluginen. Ståle Gjelsten har bestemt hva pluginen skal gjøre, styrt arbeidet og testet den på en Supernote Manta. Landnavn, hovedsteder og kart kommer fra åpne datakilder (se [Lisens og datakilder](#lisens-og-datakilder)), ikke fra KI.
+
 ## Bruk
 
 1. Åpne en tom side i et notat.

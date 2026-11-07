@@ -19,7 +19,8 @@ Handwritten quiz on world capitals and countries: worksheets, map quizzes and 2â
 
 Practise world capitals and countries with your pen. The plugin creates a
 worksheet on the current note page, you write the answers by hand, and it
-grades the sheet with Supernote's handwriting recognition.
+grades the sheet with Supernote's handwriting recognition. Built with AI:
+all code was written by AI (see below).
 
 Features
 - Capitals worksheets: write the capital of each country, then tap Grade. Each answer gets a hand-drawn check, "almost" or cross mark, the recognised text and a total score.
@@ -53,6 +54,12 @@ Stored data: your answer history (country, quiz type, score and time) is kept
 locally in the plugin's own folder, so the statistics survive between sessions.
 Nothing is written to your other files, and nothing is sent anywhere. Reset
 statistics in the menu deletes it.
+
+Built with AI
+All the code in this plugin was written by AI (Claude by Anthropic, using
+Claude Code), and so were the texts and translations. A human designed the
+features, directed the work and tested it on a Supernote Manta. Country names,
+capitals and maps come from open data sources, not from AI.
 
 Data: country names from Unicode CLDR, capitals from Wikidata (CC0), maps from
 Natural Earth (public domain). Maps show de facto boundaries and take no
