@@ -14,6 +14,8 @@
  * - Byer som de facto også er hovedstad (regjeringssete, flere offisielle hovedsteder):
  *   Wikidata-etiketter i scripts/data/co-capitals-wikidata.json. De godtas som svar
  *   på språket selv og på engelsk. Tidligere hovedsteder står ikke der.
+ * - Kortformer uten forvaltningsledd (東京 for 東京都) og noen ekstra skrivemåter
+ *   for kinesisk, japansk og koreansk: ADMIN_SUFFIXES og EXTRA_ALTERNATIVES under.
  * - Arktekstene i tabellen under er oversatt for hånd.
  *
  * Skriver src/i18n/countries/<kode>.ts og src/i18n/<kode>.ts. Hvilke språk som
@@ -85,6 +87,57 @@ const TABLE = [
 /** Verdensdeler der CLDR mangler navn. */
 const CONTINENT_OVERRIDES = {
   mg: {EU: 'Eoropa', AS: 'Azia', AF: 'Afrika', NA: 'Amerika Avaratra', SA: 'Amerika Atsimo', OC: 'Oseania', world: 'Izao tontolo izao'},
+};
+
+/**
+ * Forvaltningsledd som Wikidata tar med i hovedstadsnavnet (東京都, 北京市, 서울특별시,
+ * Тиран хот, Әбү-Дәби шәһәре). Ingen skriver dem, og korte CJK-navn tåler ingen
+ * skrivefeil, så navnet uten leddet godtas også. Lengste ledd først.
+ */
+const ADMIN_SUFFIXES = {
+  ja: ['特別市', '地区', 'D.C.', '都', '市', '島'],
+  'zh-Hans': ['哥伦比亚特区', '市', '都', '区'],
+  'zh-Hant': ['哥倫比亞特區', '市', '都', '區'],
+  ko: ['특별시', ' 시국', ' D.C.', ' 시', '시', '도', '구'],
+  mn: [' хот', ' Хот'],
+  tt: [' шәһәре'],
+};
+/** Hovedsteder der det siste tegnet hører til selve navnet. */
+const KEEP_SUFFIX = new Set(['트빌리시', '네피도', '와가두구', '加德满都', '加德滿都', '自由市']);
+
+function withoutAdminSuffix(code, name) {
+  if (KEEP_SUFFIX.has(name)) {
+    return undefined;
+  }
+  for (const suffix of ADMIN_SUFFIXES[code] ?? []) {
+    const short = name.endsWith(suffix) ? name.slice(0, -suffix.length).trim() : '';
+    if ([...short].length >= 2) {
+      return short;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Skrivemåter som er vanlige, men som verken CLDR eller Wikidata har: kana for
+ * hovedsteder som skrives med kinesiske tegn, eldre og mer vanlige translitterasjoner,
+ * og «by»-navn der leddet bøyer resten av navnet (gresk Πόλη του Μεξικού, irsk
+ * Cathair Chuáit), så det ikke bare kan tas bort.
+ * Jerusalem for Palestina legges til på alle språk (se main), slik som på nb og en.
+ */
+const EXTRA_ALTERNATIVES = {
+  ja: {
+    JP: ['トウキョウ'], CN: ['ペキン'], KP: ['ピョンヤン'], TW: ['タイペイ', 'タイホク'],
+    UA: ['キエフ'], AF: ['カブール'], AM: ['エレバン'], IN: ['デリー'], LT: ['ビリニュス'],
+    PA: ['パナマシティ'], IQ: ['バグダッド'], YE: ['サナア'], KW: ['クウェート'],
+  },
+  'zh-Hant': {TW: ['台北']},
+  ko: {UA: ['키예프']},
+  el: {MX: ['Μεξικό'], GT: ['Γουατεμάλα'], PA: ['Παναμάς', 'Παναμά'], SM: ['Σαν Μαρίνο']},
+  ga: {
+    BE: ['an Bhruiséil'], KW: ['Cuáit'], DZ: ['an Ailgéir'], GT: ['Guatamala'], MX: ['Meicsiceo'],
+    SM: ['San Mairíne'], SC: ['Victoria'], CR: ['San José'], NR: ['Yaren'],
+  },
 };
 
 const CLDR_REGION = {EU: '150', AS: '142', AF: '002', NA: '003', SA: '005', OC: '009', world: '001'};
@@ -170,7 +223,17 @@ function main() {
       // Godtas også: engelsk hovedstad, og byer som de facto er hovedstad (regjeringssete o.l.)
       // på språket selv og på engelsk.
       const alts = [];
-      for (const alt of [en[cc], ...(coCaps[cc] ?? []).flatMap(c => [capitalFor(c.labels, wd), c.en])]) {
+      for (const alt of [
+        withoutAdminSuffix(code, capital),
+        ...(EXTRA_ALTERNATIVES[code]?.[cc] ?? []),
+        // Wikidata har Øst-Jerusalem; Jerusalem godtas også, som på nb og en.
+        cc === 'PS' ? capitalFor(caps.IL.labels, wd) : undefined,
+        en[cc],
+        ...(coCaps[cc] ?? []).flatMap(c => {
+          const local = capitalFor(c.labels, wd);
+          return [local, withoutAdminSuffix(code, local), c.en];
+        }),
+      ]) {
         if (alt && alt !== capital && !alts.includes(alt)) {
           alts.push(alt);
         }
