@@ -1,0 +1,21 @@
+// Generert av scripts/gen-languages.js – rediger tabellen der.
+import countries from './countries/id';
+import {sheetLanguage} from './base';
+
+const id = sheetLanguage({
+  code: 'id',
+  label: 'Bahasa Indonesia',
+  locales: ['id', 'in'],
+  countries,
+  continents: {EU: 'Eropa', AS: 'Asia', AF: 'Afrika', NA: 'Amerika Utara', SA: 'Amerika Selatan', OC: 'Oseania'},
+  world: 'Dunia',
+  titlePrefix: 'Ibu Kota',
+  subtitle: 'Tulis ibu kota setiap negara.',
+  colCountry: 'Negara',
+  colAnswer: 'Ibu kota',
+  colResult: 'Hasil',
+  scoreWord: 'Skor',
+  readWord: 'terbaca',
+});
+
+export default id;

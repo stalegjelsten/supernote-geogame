@@ -1,0 +1,21 @@
+// Generert av scripts/gen-languages.js – rediger tabellen der.
+import countries from './countries/hy';
+import {sheetLanguage} from './base';
+
+const hy = sheetLanguage({
+  code: 'hy',
+  label: 'Հայերեն',
+  locales: ['hy'],
+  countries,
+  continents: {EU: 'Եվրոպա', AS: 'Ասիա', AF: 'Աֆրիկա', NA: 'Հյուսիսային Ամերիկա', SA: 'Հարավային Ամերիկա', OC: 'Օվկիանիա'},
+  world: 'Աշխարհ',
+  titlePrefix: 'Մայրաքաղաքներ',
+  subtitle: 'Գրեք յուրաքանչյուր երկրի մայրաքաղաքը։',
+  colCountry: 'Երկիր',
+  colAnswer: 'Մայրաքաղաք',
+  colResult: 'Արդյունք',
+  scoreWord: 'Միավոր',
+  readWord: 'կարդացվեց',
+});
+
+export default hy;

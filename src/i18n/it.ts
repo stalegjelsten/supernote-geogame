@@ -1,0 +1,21 @@
+// Generert av scripts/gen-languages.js – rediger tabellen der.
+import countries from './countries/it';
+import {sheetLanguage} from './base';
+
+const it = sheetLanguage({
+  code: 'it',
+  label: 'Italiano',
+  locales: ['it'],
+  countries,
+  continents: {EU: 'Europa', AS: 'Asia', AF: 'Africa', NA: 'Nord America', SA: 'America del Sud', OC: 'Oceania'},
+  world: 'Mondo',
+  titlePrefix: 'Capitali',
+  subtitle: 'Scrivi la capitale di ogni paese.',
+  colCountry: 'Paese',
+  colAnswer: 'Capitale',
+  colResult: 'Risultato',
+  scoreWord: 'Punti',
+  readWord: 'letto',
+});
+
+export default it;

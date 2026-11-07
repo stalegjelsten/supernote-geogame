@@ -1,0 +1,21 @@
+// Generert av scripts/gen-languages.js – rediger tabellen der.
+import countries from './countries/sr-Cyrl';
+import {sheetLanguage} from './base';
+
+const srCyrl = sheetLanguage({
+  code: 'sr-Cyrl',
+  label: 'Српски (ћирилица)',
+  locales: ['sr', 'sr_cyrl'],
+  countries,
+  continents: {EU: 'Европа', AS: 'Азија', AF: 'Африка', NA: 'Северноамерички континент', SA: 'Јужна Америка', OC: 'Океанија'},
+  world: 'свет',
+  titlePrefix: 'Главни градови',
+  subtitle: 'Напишите главни град сваке државе.',
+  colCountry: 'Држава',
+  colAnswer: 'Главни град',
+  colResult: 'Резултат',
+  scoreWord: 'Бодови',
+  readWord: 'прочитано',
+});
+
+export default srCyrl;

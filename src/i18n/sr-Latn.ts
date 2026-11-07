@@ -1,0 +1,21 @@
+// Generert av scripts/gen-languages.js – rediger tabellen der.
+import countries from './countries/sr-Latn';
+import {sheetLanguage} from './base';
+
+const srLatn = sheetLanguage({
+  code: 'sr-Latn',
+  label: 'Srpski (latinica)',
+  locales: ['sr_latn'],
+  countries,
+  continents: {EU: 'Evropa', AS: 'Azija', AF: 'Afrika', NA: 'Severnoamerički kontinent', SA: 'Južna Amerika', OC: 'Okeanija'},
+  world: 'svet',
+  titlePrefix: 'Glavni gradovi',
+  subtitle: 'Napišite glavni grad svake države.',
+  colCountry: 'Država',
+  colAnswer: 'Glavni grad',
+  colResult: 'Rezultat',
+  scoreWord: 'Bodovi',
+  readWord: 'pročitano',
+});
+
+export default srLatn;

@@ -1,0 +1,21 @@
+// Generert av scripts/gen-languages.js – rediger tabellen der.
+import countries from './countries/fi';
+import {sheetLanguage} from './base';
+
+const fi = sheetLanguage({
+  code: 'fi',
+  label: 'Suomi',
+  locales: ['fi'],
+  countries,
+  continents: {EU: 'Eurooppa', AS: 'Aasia', AF: 'Afrikka', NA: 'Pohjois-Amerikka', SA: 'Etelä-Amerikka', OC: 'Oseania'},
+  world: 'maailma',
+  titlePrefix: 'Pääkaupungit',
+  subtitle: 'Kirjoita jokaisen maan pääkaupunki.',
+  colCountry: 'Maa',
+  colAnswer: 'Pääkaupunki',
+  colResult: 'Tulos',
+  scoreWord: 'Pisteet',
+  readWord: 'luettu',
+});
+
+export default fi;

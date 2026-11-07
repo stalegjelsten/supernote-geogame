@@ -1,0 +1,21 @@
+// Generert av scripts/gen-languages.js – rediger tabellen der.
+import countries from './countries/ja';
+import {sheetLanguage} from './base';
+
+const ja = sheetLanguage({
+  code: 'ja',
+  label: '日本語',
+  locales: ['ja'],
+  countries,
+  continents: {EU: 'ヨーロッパ', AS: 'アジア', AF: 'アフリカ', NA: '北アメリカ大陸', SA: '南アメリカ', OC: 'オセアニア'},
+  world: '世界',
+  titlePrefix: '首都',
+  subtitle: '各国の首都を書いてください。',
+  colCountry: '国',
+  colAnswer: '首都',
+  colResult: '結果',
+  scoreWord: '得点',
+  readWord: '認識',
+});
+
+export default ja;

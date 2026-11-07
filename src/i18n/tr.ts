@@ -1,0 +1,21 @@
+// Generert av scripts/gen-languages.js – rediger tabellen der.
+import countries from './countries/tr';
+import {sheetLanguage} from './base';
+
+const tr = sheetLanguage({
+  code: 'tr',
+  label: 'Türkçe',
+  locales: ['tr'],
+  countries,
+  continents: {EU: 'Avrupa', AS: 'Asya', AF: 'Afrika', NA: 'Kuzey Amerika', SA: 'Güney Amerika', OC: 'Okyanusya'},
+  world: 'Dünya',
+  titlePrefix: 'Başkentler',
+  subtitle: 'Her ülkenin başkentini yazın.',
+  colCountry: 'Ülke',
+  colAnswer: 'Başkent',
+  colResult: 'Sonuç',
+  scoreWord: 'Puan',
+  readWord: 'okunan',
+});
+
+export default tr;

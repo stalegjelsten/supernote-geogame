@@ -1,0 +1,21 @@
+// Generert av scripts/gen-languages.js – rediger tabellen der.
+import countries from './countries/sw';
+import {sheetLanguage} from './base';
+
+const sw = sheetLanguage({
+  code: 'sw',
+  label: 'Kiswahili',
+  locales: ['sw'],
+  countries,
+  continents: {EU: 'Ulaya', AS: 'Asia', AF: 'Afrika', NA: 'Amerika Kaskazini', SA: 'Amerika Kusini', OC: 'Oceania'},
+  world: 'dunia',
+  titlePrefix: 'Miji Mikuu',
+  subtitle: 'Andika mji mkuu wa kila nchi.',
+  colCountry: 'Nchi',
+  colAnswer: 'Mji mkuu',
+  colResult: 'Matokeo',
+  scoreWord: 'Alama',
+  readWord: 'imesomwa',
+});
+
+export default sw;

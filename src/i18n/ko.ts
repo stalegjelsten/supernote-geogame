@@ -1,0 +1,21 @@
+// Generert av scripts/gen-languages.js – rediger tabellen der.
+import countries from './countries/ko';
+import {sheetLanguage} from './base';
+
+const ko = sheetLanguage({
+  code: 'ko',
+  label: '한국어',
+  locales: ['ko'],
+  countries,
+  continents: {EU: '유럽', AS: '아시아', AF: '아프리카', NA: '북아메리카', SA: '남아메리카', OC: '오세아니아'},
+  world: '세계',
+  titlePrefix: '수도',
+  subtitle: '각 나라의 수도를 쓰세요.',
+  colCountry: '나라',
+  colAnswer: '수도',
+  colResult: '결과',
+  scoreWord: '점수',
+  readWord: '인식',
+});
+
+export default ko;

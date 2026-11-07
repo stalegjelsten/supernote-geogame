@@ -1,0 +1,21 @@
+// Generert av scripts/gen-languages.js – rediger tabellen der.
+import countries from './countries/zh-Hant';
+import {sheetLanguage} from './base';
+
+const zhHant = sheetLanguage({
+  code: 'zh-Hant',
+  label: '繁體中文',
+  locales: ['zh_hant', 'zh_tw', 'zh_hk', 'zh_mo'],
+  countries,
+  continents: {EU: '歐洲', AS: '亞洲', AF: '非洲', NA: '北美洲', SA: '南美洲', OC: '大洋洲'},
+  world: '世界',
+  titlePrefix: '首都',
+  subtitle: '寫出每個國家的首都。',
+  colCountry: '國家',
+  colAnswer: '首都',
+  colResult: '結果',
+  scoreWord: '得分',
+  readWord: '辨識為',
+});
+
+export default zhHant;
