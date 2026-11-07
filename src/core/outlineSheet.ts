@@ -4,6 +4,7 @@
  * rotation), the hidden key that says which country is in which cell, and grading.
  */
 import {COUNTRY_CODES, type CountryCode} from '../data/countries';
+import {COUNTRY_ALIASES} from '../data/countryAliases';
 import {OUTLINE_CREDITS, OUTLINES} from '../data/outlines';
 import {LANGUAGES, getLanguage, type Language} from '../i18n';
 import {outlineTexts} from '../i18n/outline';
@@ -541,11 +542,12 @@ const ENGLISH = getLanguage('en')!;
 
 /**
  * Grades a written country name. The name in the sheet's language is the answer key; the
- * English name is also accepted. The names of other countries are never accepted as "almost".
+ * English name and the other names in COUNTRY_ALIASES (USA, UK …) are also accepted.
+ * The names of other countries are never accepted as "almost".
  */
 export function gradeCountryName(country: Country, recognized: string, lang: Language): MatchResult {
   const english = countryIn(ENGLISH, country.code).name;
-  const accepted = [...new Set([country.name, english])];
+  const accepted = [...new Set([country.name, english, ...(COUNTRY_ALIASES[country.code] ?? [])])];
   const own = new Set(accepted.map(normalizeCached));
   const rejected = new Set([...otherCountryNames(lang)].filter(n => !own.has(n)));
   return matchAnswer(recognized, accepted, rejected);
