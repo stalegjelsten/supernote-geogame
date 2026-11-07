@@ -337,7 +337,8 @@ async function gradePassMapGame(
         throw new Error('page');
       }
       const prefix = `${hotSeatTexts(ui).player(p)} · `;
-      const g = await gradeMapPage(pref, elements, pinfo, null, m => progress(prefix + m));
+      // Pass the tag on, so the page is treated as multiplayer (no statistics).
+      const g = await gradeMapPage(pref, elements, pinfo, ptag, m => progress(prefix + m));
       scores.push({player: p, points: g.points, max: g.max});
     } catch {
       missing.push(p);

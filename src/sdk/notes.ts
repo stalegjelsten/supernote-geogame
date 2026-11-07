@@ -163,7 +163,7 @@ export async function insertBlankPages(ref: PageRef, at: number, count: number):
   }
   const have = await totalPages(ref.notePath);
   if (have < target) {
-    throw new Error(`Klarte bare å lage ${have - before} av ${count} nye sider.`);
+    throw new Error(`${currentLanguage().errors.failed('insertNotePage')} (${have - before}/${count})`);
   }
 }
 

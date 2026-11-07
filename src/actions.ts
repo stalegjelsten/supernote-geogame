@@ -498,7 +498,8 @@ async function gradePassGame(
         continue;
       }
       const label = `${hotSeatTexts(ui).player(p)} · ` + (info.parts > 1 ? ui.progress.pagePrefix(k, info.parts) : '');
-      const score = await gradePage(pref, els, lang, m => progress(label + m));
+      // Pass the tag on, so the page is treated as multiplayer (no statistics).
+      const score = await gradePage(pref, els, lang, m => progress(label + m), ptag);
       scores.push({player: p, points: score.points, max: score.total});
       pages.push({part: k, points: score.points, total: score.total});
       found = true;
@@ -529,13 +530,18 @@ async function gradePage(
 
   // The countries are in the left column. We find them by name (the sheet's language first)
   // and recompute the layout. The answer key and results are written in the sheet's language.
-  const countryBoxes: Array<{country: Country; el: PageElement}> = [];
+  const found: Array<{country: Country; el: PageElement}> = [];
   for (const e of texts) {
     const c = findCountryByName(e.textBox!.textContentFull!, lang);
     if (c) {
-      countryBoxes.push({country: countryIn(lang, c.code), el: e});
+      found.push({country: countryIn(lang, c.code), el: e});
     }
   }
+  // Only the left column holds the countries. Some capitals are spelled like a country
+  // (Luxembourg, Monaco, Singapore …), and the answer key from an earlier grading sits in
+  // the result column; counting it would add a row and shift the whole layout.
+  const countryLeft = Math.min(...found.map(b => b.el.textBox!.textRect.left));
+  const countryBoxes = found.filter(b => b.el.textBox!.textRect.left <= countryLeft + ref.size.width * 0.05);
   if (!countryBoxes.length) {
     throw new Error(ui.errors.noCountries);
   }
