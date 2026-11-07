@@ -63,6 +63,12 @@ come from Wikidata (properties P36 and P625). Wikidata's structured data is
 available under CC0 1.0 (public domain dedication).
 https://www.wikidata.org · https://creativecommons.org/publicdomain/zero/1.0/
 
+## Selection of countries
+
+The 197 countries are the 193 UN member states (https://www.un.org/en/about-us/member-states),
+the two UN observer states (Vatican City and Palestine), Kosovo and Taiwan.
+This is a list of facts and is not copied from any copyrighted source.
+
 ## Natural Earth – map images
 
 The maps in `assets/maps/*.png` and the projection data in `src/data/maps.ts` were

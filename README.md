@@ -55,6 +55,12 @@ Installer ved å kopiere `geogame.snplg` til `MyStyle/` på enheten og gå til I
 - `src/actions.ts` – «Nytt ark» og «Rett arket»
 - `App.tsx` – menyen som åpnes fra verktøylinja
 
+## Hvilke land og hovedsteder er med
+
+**197 land:** de 193 medlemslandene i FN ([FNs liste over medlemsland](https://www.un.org/en/about-us/member-states)), de to observatørstatene Vatikanstaten og Palestina, og Kosovo og Taiwan, som er anerkjent av mange land, men ikke er medlemmer av FN. Andre områder (for eksempel Vest-Sahara, Grønland og Cookøyene) er ikke med. Verdensdelen til hvert land står i `src/data/countries.ts`.
+
+**Hovedsteder:** fasiten er hovedstaden (P36) til landet i [Wikidata](https://www.wikidata.org). Har landet flere hovedsteder, er fasiten den som vanligvis oppgis som offisiell hovedstad. Byer som de facto også er hovedstad (regjeringssete, delte hovedsteder) godtas som svar, men ikke tidligere hovedsteder. Se `scripts/data/co-capitals-wikidata.json` og merknadene i `src/i18n/notes.ts`.
+
 ## Lisens og datakilder
 
 Koden er lisensiert under [MIT](LICENSE). Pluginen bruker disse dataene (detaljer og lisenstekst i [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)):
