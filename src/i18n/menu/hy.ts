@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Ցանկացած անկյուն',
   outlineMade: 'Ստեղծվեց ուրվագծերի թերթ՝ {count} երկրով։',
   outlineResult: 'Ճանաչված երկրներ՝ {correct} / {total} ({percent}%)։',
+
+  sourcesTitle: 'Աղբյուրներ',
+  sourcesIntro: 'Պլագինն օգտագործում է բաց տվյալներ։ Ամեն ինչ ներառված է պլագինում, և ոչինչ ոչ մի տեղ չի ուղարկվում։',
+  sourcesNames: 'Երկրների անուններ',
+  sourcesCapitals: 'Մայրաքաղաքներ և կոորդինատներ',
+  sourcesMaps: 'Քարտեզներ և երկրների ուրվագծեր',
+  sourcesSmall: 'Փոքր երկրների ուրվագծեր',
+  sourcesChanged: 'Քարտեզներն ու ուրվագծերը վերապրոյեկտված և պարզեցված են։ Լիցենզիաների տեքստերը և մանրամասները՝ {url}',
 };
 
 export default menu;

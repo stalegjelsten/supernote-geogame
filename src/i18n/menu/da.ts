@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Vilkårlig vinkel',
   outlineMade: 'Lavede et omridsark med {count} lande.',
   outlineResult: 'Du genkendte {correct} af {total} lande ({percent} %).',
+
+  sourcesTitle: 'Kilder',
+  sourcesIntro: 'Pluginet bruger åbne data. Alt følger med pluginet, og intet sendes nogen steder hen.',
+  sourcesNames: 'Landenavne',
+  sourcesCapitals: 'Hovedstæder og koordinater',
+  sourcesMaps: 'Kort og omrids af lande',
+  sourcesSmall: 'Omrids af små lande',
+  sourcesChanged: 'Kortene og omridsene er omprojiceret og forenklet. Licenstekster og detaljer: {url}',
 };
 
 export default menu;

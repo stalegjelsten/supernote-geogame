@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: '任意角度',
   outlineMade: '已建立含{count}個國家的輪廓練習頁。',
   outlineResult: '你認出了{total}個國家中的{correct}個（{percent}%）。',
+
+  sourcesTitle: '資料來源',
+  sourcesIntro: '本外掛程式使用開放資料。所有資料都隨外掛程式提供，不會傳送到任何地方。',
+  sourcesNames: '國家名稱',
+  sourcesCapitals: '首都和座標',
+  sourcesMaps: '地圖和國家輪廓',
+  sourcesSmall: '小國的輪廓',
+  sourcesChanged: '地圖和輪廓經過重新投影和簡化。授權條款文字和詳細資訊：{url}',
 };
 
 export default menu;

@@ -20,6 +20,7 @@ import {
   type OutlineSize,
 } from './src/core/outlineSheet';
 import {outlineTexts} from './src/i18n/outline';
+import {sourcesTexts} from './src/i18n/sources';
 import {SKILLS, type SheetRecord, type Skill} from './src/core/stats';
 import type {StatsReport} from './src/core/statsReport';
 import {statsReport} from './src/core/statsReport';
@@ -766,10 +767,31 @@ function App(): React.JSX.Element {
                 disabled={busy}
               />
             </View>
+
+            <View style={styles.divider} />
+            <SourcesView t={t} />
           </>
         )}
       </ScrollView>
     </View>
+  );
+}
+
+/** The open data the plugin uses, with the credits their licenses require. */
+function SourcesView({t}: {t: ReturnType<typeof currentLanguage>}) {
+  const src = sourcesTexts(t);
+  return (
+    <>
+      <Text style={styles.section}>{src.title}</Text>
+      <Text style={styles.hint}>{src.intro}</Text>
+      {src.lines.map(([label, credit]) => (
+        <Text key={label} style={styles.hint}>
+          <Text style={styles.hintSelected}>{label}: </Text>
+          {credit}
+        </Text>
+      ))}
+      <Text style={styles.hint}>{src.changed}</Text>
+    </>
   );
 }
 

@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'İstənilən bucaq',
   outlineMade: 'Kontur vərəqi yaradıldı: {count} ölkə.',
   outlineResult: 'Tanınan ölkələr: {correct} / {total} ({percent}%).',
+
+  sourcesTitle: 'Mənbələr',
+  sourcesIntro: 'Plagin açıq məlumatlardan istifadə edir. Hər şey plaginin içindədir və heç yerə heç nə göndərilmir.',
+  sourcesNames: 'Ölkə adları',
+  sourcesCapitals: 'Paytaxtlar və koordinatlar',
+  sourcesMaps: 'Xəritələr və ölkə konturları',
+  sourcesSmall: 'Kiçik ölkələrin konturları',
+  sourcesChanged: 'Xəritələr və konturlar yenidən proyeksiya edilib və sadələşdirilib. Lisenziya mətnləri və təfərrüatlar: {url}',
 };
 
 export default menu;

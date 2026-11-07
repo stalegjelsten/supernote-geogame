@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Kahit anong anggulo',
   outlineMade: 'Gumawa ng sheet ng hugis na may {count} bansa.',
   outlineResult: 'Nakilala mo ang {correct} sa {total} bansa ({percent}%).',
+
+  sourcesTitle: 'Mga pinagkunan',
+  sourcesIntro: 'Gumagamit ang plugin ng bukas na datos. Kasama na ang lahat sa plugin at walang ipinapadala kahit saan.',
+  sourcesNames: 'Mga pangalan ng bansa',
+  sourcesCapitals: 'Mga kabisera at koordinado',
+  sourcesMaps: 'Mga mapa at hugis ng bansa',
+  sourcesSmall: 'Mga hugis ng maliliit na bansa',
+  sourcesChanged: 'Ang mga mapa at hugis ay ni-reproject at pinasimple. Mga teksto ng lisensya at detalye: {url}',
 };
 
 export default menu;

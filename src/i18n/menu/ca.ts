@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Qualsevol angle',
   outlineMade: 'S’ha creat una fitxa de siluetes amb {count} països.',
   outlineResult: 'Has reconegut {correct} de {total} països ({percent} %).',
+
+  sourcesTitle: 'Fonts',
+  sourcesIntro: 'El connector fa servir dades obertes. Tot ve inclòs amb el connector i no s’envia res enlloc.',
+  sourcesNames: 'Noms dels països',
+  sourcesCapitals: 'Capitals i coordenades',
+  sourcesMaps: 'Mapes i siluetes dels països',
+  sourcesSmall: 'Siluetes dels països petits',
+  sourcesChanged: 'Els mapes i les siluetes s’han reprojectat i simplificat. Textos de les llicències i detalls: {url}',
 };
 
 export default menu;

@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Любой угол',
   outlineMade: 'Создан лист с контурами. Стран: {count}.',
   outlineResult: 'Узнано стран: {correct} из {total} ({percent} %).',
+
+  sourcesTitle: 'Источники',
+  sourcesIntro: 'Плагин использует открытые данные. Всё включено в плагин, и ничего никуда не отправляется.',
+  sourcesNames: 'Названия стран',
+  sourcesCapitals: 'Столицы и координаты',
+  sourcesMaps: 'Карты и контуры стран',
+  sourcesSmall: 'Контуры малых стран',
+  sourcesChanged: 'Карты и контуры перепроецированы и упрощены. Тексты лицензий и подробности: {url}',
 };
 
 export default menu;

@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Góc bất kỳ',
   outlineMade: 'Đã tạo phiếu đường viền gồm {count} quốc gia.',
   outlineResult: 'Bạn nhận ra {correct}/{total} quốc gia ({percent}%).',
+
+  sourcesTitle: 'Nguồn dữ liệu',
+  sourcesIntro: 'Plugin sử dụng dữ liệu mở. Mọi thứ đều có sẵn trong plugin và không có gì được gửi đi đâu cả.',
+  sourcesNames: 'Tên quốc gia',
+  sourcesCapitals: 'Thủ đô và tọa độ',
+  sourcesMaps: 'Bản đồ và đường viền quốc gia',
+  sourcesSmall: 'Đường viền các nước nhỏ',
+  sourcesChanged: 'Bản đồ và đường viền đã được chiếu lại và đơn giản hóa. Văn bản giấy phép và chi tiết: {url}',
 };
 
 export default menu;

@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: '自由な角度',
   outlineMade: '{count}か国の輪郭シートを作成しました。',
   outlineResult: '{total}か国中{correct}か国を当てました（{percent}%）。',
+
+  sourcesTitle: '出典',
+  sourcesIntro: 'このプラグインはオープンデータを使用しています。すべてプラグインに含まれており、どこにも送信されません。',
+  sourcesNames: '国名',
+  sourcesCapitals: '首都と座標',
+  sourcesMaps: '地図と国の輪郭',
+  sourcesSmall: '小さな国の輪郭',
+  sourcesChanged: '地図と輪郭は投影を変換し、簡略化しています。ライセンス文と詳細：{url}',
 };
 
 export default menu;

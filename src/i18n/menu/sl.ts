@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Poljuben kot',
   outlineMade: 'List z obrisi je ustvarjen. Število držav: {count}.',
   outlineResult: 'Prepoznane države: {correct} od {total} ({percent} %).',
+
+  sourcesTitle: 'Viri',
+  sourcesIntro: 'Vtičnik uporablja odprte podatke. Vse je vključeno v vtičnik in nič se ne pošilja nikamor.',
+  sourcesNames: 'Imena držav',
+  sourcesCapitals: 'Glavna mesta in koordinate',
+  sourcesMaps: 'Zemljevidi in obrisi držav',
+  sourcesSmall: 'Obrisi majhnih držav',
+  sourcesChanged: 'Zemljevidi in obrisi so ponovno projicirani in poenostavljeni. Besedila licenc in podrobnosti: {url}',
 };
 
 export default menu;

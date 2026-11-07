@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'ნებისმიერი კუთხე',
   outlineMade: 'შეიქმნა კონტურების ფურცელი {count} ქვეყნით.',
   outlineResult: 'ამოცნობილი ქვეყნები: {correct} / {total} ({percent}%).',
+
+  sourcesTitle: 'წყაროები',
+  sourcesIntro: 'პლაგინი იყენებს ღია მონაცემებს. ყველაფერი პლაგინშია და არაფერი არსად იგზავნება.',
+  sourcesNames: 'ქვეყნების სახელები',
+  sourcesCapitals: 'დედაქალაქები და კოორდინატები',
+  sourcesMaps: 'რუკები და ქვეყნების კონტურები',
+  sourcesSmall: 'პატარა ქვეყნების კონტურები',
+  sourcesChanged: 'რუკები და კონტურები ხელახლა დაპროექტებული და გამარტივებულია. ლიცენზიების ტექსტები და დეტალები: {url}',
 };
 
 export default menu;

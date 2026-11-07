@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Bilo koji kut',
   outlineMade: 'Napravljen je list s obrisima. Broj država: {count}.',
   outlineResult: 'Prepoznate države: {correct} od {total} ({percent} %).',
+
+  sourcesTitle: 'Izvori',
+  sourcesIntro: 'Dodatak koristi otvorene podatke. Sve je uključeno u dodatak i ništa se nikamo ne šalje.',
+  sourcesNames: 'Imena država',
+  sourcesCapitals: 'Glavni gradovi i koordinate',
+  sourcesMaps: 'Karte i obrisi država',
+  sourcesSmall: 'Obrisi malih država',
+  sourcesChanged: 'Karte i obrisi ponovno su projicirani i pojednostavljeni. Tekstovi licencija i pojedinosti: {url}',
 };
 
 export default menu;

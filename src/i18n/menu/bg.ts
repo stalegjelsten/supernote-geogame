@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Произволен ъгъл',
   outlineMade: 'Създаден е лист с контури и {count} държави.',
   outlineResult: 'Разпознахте {correct} от {total} държави ({percent} %).',
+
+  sourcesTitle: 'Източници',
+  sourcesIntro: 'Плъгинът използва отворени данни. Всичко е включено в плъгина и нищо не се изпраща никъде.',
+  sourcesNames: 'Имена на държави',
+  sourcesCapitals: 'Столици и координати',
+  sourcesMaps: 'Карти и контури на държави',
+  sourcesSmall: 'Контури на малки държави',
+  sourcesChanged: 'Картите и контурите са препроектирани и опростени. Текстове на лицензите и подробности: {url}',
 };
 
 export default menu;

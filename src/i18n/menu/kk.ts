@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Кез келген бұрыш',
   outlineMade: 'Контур парағы жасалды: {count} ел.',
   outlineResult: 'Танылған елдер: {correct} / {total} ({percent}%).',
+
+  sourcesTitle: 'Дереккөздер',
+  sourcesIntro: 'Плагин ашық деректерді пайдаланады. Барлығы плагинге енгізілген, ешнәрсе ешқайда жіберілмейді.',
+  sourcesNames: 'Ел атаулары',
+  sourcesCapitals: 'Астаналар мен координаттар',
+  sourcesMaps: 'Карталар мен ел контурлары',
+  sourcesSmall: 'Шағын елдердің контурлары',
+  sourcesChanged: 'Карталар мен контурлар қайта проекцияланып, жеңілдетілген. Лицензия мәтіндері мен толығырақ: {url}',
 };
 
 export default menu;

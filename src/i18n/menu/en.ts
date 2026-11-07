@@ -157,6 +157,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Any angle',
   outlineMade: 'Made an outline sheet with {count} countries.',
   outlineResult: 'You recognized {correct} of {total} countries ({percent} %).',
+
+  sourcesTitle: 'Sources',
+  sourcesIntro: 'The plugin uses open data. Everything is bundled with the plugin and nothing is sent anywhere.',
+  sourcesNames: 'Country names',
+  sourcesCapitals: 'Capitals and coordinates',
+  sourcesMaps: 'Maps and country outlines',
+  sourcesSmall: 'Outlines of small countries',
+  sourcesChanged: 'The maps and outlines are reprojected and simplified. License texts and details: {url}',
 };
 
 export default menu;

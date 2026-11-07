@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Qualquer ângulo',
   outlineMade: 'Foi criada uma ficha de contornos com {count} países.',
   outlineResult: 'Reconheceu {correct} de {total} países ({percent} %).',
+
+  sourcesTitle: 'Fontes',
+  sourcesIntro: 'O plugin usa dados abertos. Tudo vem incluído no plugin e nada é enviado para lado nenhum.',
+  sourcesNames: 'Nomes dos países',
+  sourcesCapitals: 'Capitais e coordenadas',
+  sourcesMaps: 'Mapas e contornos dos países',
+  sourcesSmall: 'Contornos dos países pequenos',
+  sourcesChanged: 'Os mapas e os contornos foram reprojetados e simplificados. Textos das licenças e detalhes: {url}',
 };
 
 export default menu;

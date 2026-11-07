@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Beliebiger Winkel',
   outlineMade: 'Umrissblatt mit {count} Ländern erstellt.',
   outlineResult: 'Du hast {correct} von {total} Ländern erkannt ({percent} %).',
+
+  sourcesTitle: 'Quellen',
+  sourcesIntro: 'Das Plugin verwendet offene Daten. Alles ist im Plugin enthalten, und nichts wird irgendwohin gesendet.',
+  sourcesNames: 'Ländernamen',
+  sourcesCapitals: 'Hauptstädte und Koordinaten',
+  sourcesMaps: 'Karten und Länderumrisse',
+  sourcesSmall: 'Umrisse kleiner Länder',
+  sourcesChanged: 'Die Karten und Umrisse sind umprojiziert und vereinfacht. Lizenztexte und Details: {url}',
 };
 
 export default menu;

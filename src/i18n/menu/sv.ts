@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Valfri vinkel',
   outlineMade: 'Skapade ett konturblad med {count} länder.',
   outlineResult: 'Du kände igen {correct} av {total} länder ({percent} %).',
+
+  sourcesTitle: 'Källor',
+  sourcesIntro: 'Pluginet använder öppna data. Allt följer med pluginet och inget skickas någonstans.',
+  sourcesNames: 'Landsnamn',
+  sourcesCapitals: 'Huvudstäder och koordinater',
+  sourcesMaps: 'Kartor och konturer av länder',
+  sourcesSmall: 'Konturer av små länder',
+  sourcesChanged: 'Kartorna och konturerna är omprojicerade och förenklade. Licenstexter och detaljer: {url}',
 };
 
 export default menu;

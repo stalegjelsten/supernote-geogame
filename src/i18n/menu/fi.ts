@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Mikä tahansa kulma',
   outlineMade: 'Luotiin ääriviiva-arkki, jossa on {count} maata.',
   outlineResult: 'Tunnistit {correct}/{total} maata ({percent} %).',
+
+  sourcesTitle: 'Lähteet',
+  sourcesIntro: 'Laajennus käyttää avointa dataa. Kaikki sisältyy laajennukseen, eikä mitään lähetetä minnekään.',
+  sourcesNames: 'Maiden nimet',
+  sourcesCapitals: 'Pääkaupungit ja koordinaatit',
+  sourcesMaps: 'Kartat ja maiden ääriviivat',
+  sourcesSmall: 'Pienten maiden ääriviivat',
+  sourcesChanged: 'Kartat ja ääriviivat on projisoitu uudelleen ja yksinkertaistettu. Lisenssitekstit ja lisätiedot: {url}',
 };
 
 export default menu;

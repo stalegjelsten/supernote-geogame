@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Herhangi bir açı',
   outlineMade: 'Siluet kâğıdı oluşturuldu: {count} ülke.',
   outlineResult: '{total} ülkeden {correct} tanesini bildiniz (%{percent}).',
+
+  sourcesTitle: 'Kaynaklar',
+  sourcesIntro: 'Eklenti açık veri kullanır. Her şey eklentiyle birlikte gelir ve hiçbir yere bir şey gönderilmez.',
+  sourcesNames: 'Ülke adları',
+  sourcesCapitals: 'Başkentler ve koordinatlar',
+  sourcesMaps: 'Haritalar ve ülke siluetleri',
+  sourcesSmall: 'Küçük ülkelerin siluetleri',
+  sourcesChanged: 'Haritalar ve siluetler yeniden projekte edilip sadeleştirilmiştir. Lisans metinleri ve ayrıntılar: {url}',
 };
 
 export default menu;

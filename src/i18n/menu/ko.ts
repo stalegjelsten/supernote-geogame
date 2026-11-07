@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: '모든 각도',
   outlineMade: '나라 {count}개가 있는 윤곽 학습지를 만들었습니다.',
   outlineResult: '{total}개 나라 중 {correct}개를 알아맞혔습니다({percent}%).',
+
+  sourcesTitle: '출처',
+  sourcesIntro: '이 플러그인은 공개 데이터를 사용합니다. 모든 데이터가 플러그인에 포함되어 있으며 어디에도 전송되지 않습니다.',
+  sourcesNames: '나라 이름',
+  sourcesCapitals: '수도와 좌표',
+  sourcesMaps: '지도와 나라 윤곽',
+  sourcesSmall: '작은 나라의 윤곽',
+  sourcesChanged: '지도와 윤곽은 투영을 바꾸고 단순화했습니다. 라이선스 전문과 자세한 내용: {url}',
 };
 
 export default menu;

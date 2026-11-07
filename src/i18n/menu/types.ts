@@ -173,4 +173,13 @@ export interface MenuStrings {
   outlineRotationAny: string;
   outlineMade: string; // {count}
   outlineResult: string; // {correct} {total} {percent}
+
+  // Sources (sources.ts), in the language tab. Dataset and license names stay in English.
+  sourcesTitle: string;
+  sourcesIntro: string;
+  sourcesNames: string;
+  sourcesCapitals: string;
+  sourcesMaps: string;
+  sourcesSmall: string;
+  sourcesChanged: string; // {url}
 }

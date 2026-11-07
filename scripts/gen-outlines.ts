@@ -46,6 +46,18 @@ const GB_API = 'https://www.geoboundaries.org/api/current/gbOpen';
 const GB_CACHE = path.join(CACHE, 'geoboundaries');
 const SOURCES_FILE = path.join(ROOT, 'scripts/data/outline-sources.json');
 
+/**
+ * What must be credited on a sheet that shows a country with this license (public domain
+ * needs nothing). Unknown licenses stop the script, so nothing is used without a credit.
+ */
+const CREDIT_BY_LICENSE: Record<string, string | null> = {
+  'Public Domain': null,
+  'Open Data Commons Open Database License 1.0': '© OpenStreetMap contributors (ODbL)',
+  'Creative Commons Attribution 2.5 Generic': 'Wikimedia Commons (CC BY 2.5)',
+  'Creative Commons Attribution 3.0 Intergovernmental Organisations (CC BY 3.0 IGO)': 'OCHA ROP (CC BY 3.0 IGO)',
+  'Creative Commons Attribution 4.0 (CC BY 4.0)': 'Sentinel-2 Land Use/Land Cover (CC BY 4.0)',
+};
+
 /** Earth radius in km; the projection works on a unit sphere. */
 const R_KM = 6371;
 /** Most points per country after simplification. */
@@ -338,6 +350,16 @@ async function main() {
     sources[code] = gb.source;
   }
   fs.writeFileSync(SOURCES_FILE, JSON.stringify(sources, null, 2) + '\n');
+  const credits: string[] = [];
+  for (const [code, src] of Object.entries(sources)) {
+    if (!(src.license in CREDIT_BY_LICENSE)) {
+      throw new Error(`${code}: unknown license «${src.license}»; add it to CREDIT_BY_LICENSE`);
+    }
+    const credit = CREDIT_BY_LICENSE[src.license];
+    if (credit) {
+      credits.push(`  ${code}: '${credit}',`);
+    }
+  }
   console.log(`geoBoundaries for ${Object.keys(sources).length} countries: ${Object.keys(sources).join(' ')}`);
   const lines: string[] = [];
   let points = 0;
@@ -362,6 +384,14 @@ export type OutlineData = readonly [sizeKm: number, width: number, height: numbe
 
 export const OUTLINES: Record<CountryCode, OutlineData> = {
 ${lines.join('\n')}
+};
+
+/**
+ * Countries whose outline comes from geoBoundaries under a license that requires credit:
+ * the credit to print on a sheet that shows the country.
+ */
+export const OUTLINE_CREDITS: Partial<Record<CountryCode, string>> = {
+${credits.join('\n')}
 };
 `;
   fs.writeFileSync(OUT, src);

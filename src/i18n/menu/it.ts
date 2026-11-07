@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Qualsiasi angolo',
   outlineMade: 'Creata una scheda sagome con {count} paesi.',
   outlineResult: 'Hai riconosciuto {correct} paesi su {total} ({percent}%).',
+
+  sourcesTitle: 'Fonti',
+  sourcesIntro: 'Il plugin usa dati aperti. Tutto è incluso nel plugin e non viene inviato nulla da nessuna parte.',
+  sourcesNames: 'Nomi dei paesi',
+  sourcesCapitals: 'Capitali e coordinate',
+  sourcesMaps: 'Mappe e sagome dei paesi',
+  sourcesSmall: 'Sagome dei paesi piccoli',
+  sourcesChanged: 'Le mappe e le sagome sono riproiettate e semplificate. Testi delle licenze e dettagli: {url}',
 };
 
 export default menu;

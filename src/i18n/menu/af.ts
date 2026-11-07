@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Enige hoek',
   outlineMade: '’n Buitelynblad met {count} lande is gemaak.',
   outlineResult: 'Jy het {correct} uit {total} lande herken ({percent}%).',
+
+  sourcesTitle: 'Bronne',
+  sourcesIntro: 'Die inprop gebruik oop data. Alles is by die inprop ingesluit en niks word iewers heen gestuur nie.',
+  sourcesNames: 'Landname',
+  sourcesCapitals: 'Hoofstede en koördinate',
+  sourcesMaps: 'Kaarte en buitelyne van lande',
+  sourcesSmall: 'Buitelyne van klein lande',
+  sourcesChanged: 'Die kaarte en buitelyne is herprojekteer en vereenvoudig. Lisensietekste en besonderhede: {url}',
 };
 
 export default menu;

@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Zoro rehetra',
   outlineMade: 'Vita ny takelaka endrika misy firenena {count}.',
   outlineResult: "Fantatrao ny firenena {correct} amin'ny {total} ({percent}%).",
+
+  sourcesTitle: 'Loharano',
+  sourcesIntro: "Mampiasa angona misokatra ny plugin. Tafiditra ao anatin'ny plugin avokoa ny zava-drehetra ary tsy misy alefa na aiza na aiza.",
+  sourcesNames: "Anaran'ny firenena",
+  sourcesCapitals: 'Renivohitra sy koordinata',
+  sourcesMaps: 'Sarintany sy endriky ny firenena',
+  sourcesSmall: 'Endriky ny firenena kely',
+  sourcesChanged: 'Novaina ny projection ary notsorina ny sarintany sy ny endrika. Lahatsoratry ny fahazoan-dalana sy antsipiriany: {url}',
 };
 
 export default menu;

@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Кој било агол',
   outlineMade: 'Направен е лист со контури и {count} држави.',
   outlineResult: 'Препознавте {correct} од {total} држави ({percent} %).',
+
+  sourcesTitle: 'Извори',
+  sourcesIntro: 'Приклучокот користи отворени податоци. Сè е вклучено во приклучокот и ништо не се испраќа никаде.',
+  sourcesNames: 'Имиња на држави',
+  sourcesCapitals: 'Главни градови и координати',
+  sourcesMaps: 'Карти и контури на држави',
+  sourcesSmall: 'Контури на мали држави',
+  sourcesChanged: 'Картите и контурите се препроектирани и поедноставени. Текстови на лиценците и детали: {url}',
 };
 
 export default menu;

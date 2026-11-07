@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'N’importe quel angle',
   outlineMade: 'Fiche contours créée avec {count} pays.',
   outlineResult: 'Tu as reconnu {correct} pays sur {total} ({percent} %).',
+
+  sourcesTitle: 'Sources',
+  sourcesIntro: 'Le plugin utilise des données ouvertes. Tout est inclus dans le plugin et rien n’est envoyé nulle part.',
+  sourcesNames: 'Noms des pays',
+  sourcesCapitals: 'Capitales et coordonnées',
+  sourcesMaps: 'Cartes et contours des pays',
+  sourcesSmall: 'Contours des petits pays',
+  sourcesChanged: 'Les cartes et les contours sont reprojetés et simplifiés. Textes des licences et détails : {url}',
 };
 
 export default menu;

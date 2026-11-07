@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Elke hoek',
   outlineMade: 'Contourblad gemaakt met {count} landen.',
   outlineResult: 'Je hebt {correct} van de {total} landen herkend ({percent}%).',
+
+  sourcesTitle: 'Bronnen',
+  sourcesIntro: 'De plugin gebruikt open data. Alles zit in de plugin en er wordt niets verstuurd.',
+  sourcesNames: 'Landnamen',
+  sourcesCapitals: 'Hoofdsteden en coördinaten',
+  sourcesMaps: 'Kaarten en contouren van landen',
+  sourcesSmall: 'Contouren van kleine landen',
+  sourcesChanged: 'De kaarten en contouren zijn opnieuw geprojecteerd en vereenvoudigd. Licentieteksten en details: {url}',
 };
 
 export default menu;

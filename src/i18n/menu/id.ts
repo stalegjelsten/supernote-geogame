@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Sudut apa saja',
   outlineMade: 'Lembar siluet dengan {count} negara telah dibuat.',
   outlineResult: 'Anda mengenali {correct} dari {total} negara ({percent}%).',
+
+  sourcesTitle: 'Sumber',
+  sourcesIntro: 'Plugin ini menggunakan data terbuka. Semuanya sudah disertakan dalam plugin dan tidak ada yang dikirim ke mana pun.',
+  sourcesNames: 'Nama negara',
+  sourcesCapitals: 'Ibu kota dan koordinat',
+  sourcesMaps: 'Peta dan siluet negara',
+  sourcesSmall: 'Siluet negara kecil',
+  sourcesChanged: 'Peta dan siluet telah diproyeksikan ulang dan disederhanakan. Teks lisensi dan detail: {url}',
 };
 
 export default menu;

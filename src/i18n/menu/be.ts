@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Любы кут',
   outlineMade: 'Створаны аркуш з контурамі. Краін: {count}.',
   outlineResult: 'Пазнана {correct} з {total} краін ({percent} %).',
+
+  sourcesTitle: 'Крыніцы',
+  sourcesIntro: 'Плагін выкарыстоўвае адкрытыя даныя. Усё ўключана ў плагін, і нічога нікуды не адпраўляецца.',
+  sourcesNames: 'Назвы краін',
+  sourcesCapitals: 'Сталіцы і каардынаты',
+  sourcesMaps: 'Карты і контуры краін',
+  sourcesSmall: 'Контуры малых краін',
+  sourcesChanged: 'Карты і контуры перапраектаваны і спрошчаны. Тэксты ліцэнзій і падрабязнасці: {url}',
 };
 
 export default menu;

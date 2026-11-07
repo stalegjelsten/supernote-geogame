@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Bármilyen szög',
   outlineMade: 'Elkészült egy körvonalas lap {count} országgal.',
   outlineResult: '{correct}/{total} országot ismertél fel ({percent}%).',
+
+  sourcesTitle: 'Források',
+  sourcesIntro: 'A bővítmény nyílt adatokat használ. Minden a bővítmény része, és semmit sem küld el sehová.',
+  sourcesNames: 'Országnevek',
+  sourcesCapitals: 'Fővárosok és koordináták',
+  sourcesMaps: 'Térképek és országkörvonalak',
+  sourcesSmall: 'Kis országok körvonalai',
+  sourcesChanged: 'A térképek és a körvonalak újravetítettek és egyszerűsítettek. Licencszövegek és részletek: {url}',
 };
 
 export default menu;

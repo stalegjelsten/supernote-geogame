@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Orice unghi',
   outlineMade: 'S-a creat o fișă cu contururi (țări: {count}).',
   outlineResult: 'Țări recunoscute: {correct} din {total} ({percent}%).',
+
+  sourcesTitle: 'Surse',
+  sourcesIntro: 'Pluginul folosește date deschise. Totul este inclus în plugin și nimic nu este trimis nicăieri.',
+  sourcesNames: 'Numele țărilor',
+  sourcesCapitals: 'Capitale și coordonate',
+  sourcesMaps: 'Hărți și contururi ale țărilor',
+  sourcesSmall: 'Contururile țărilor mici',
+  sourcesChanged: 'Hărțile și contururile sunt reproiectate și simplificate. Textele licențelor și detalii: {url}',
 };
 
 export default menu;

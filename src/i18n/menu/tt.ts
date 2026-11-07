@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Теләсә нинди почмак',
   outlineMade: 'Контур бите ясалды: {count} ил.',
   outlineResult: 'Танылган илләр: {correct} / {total} ({percent}%).',
+
+  sourcesTitle: 'Чыганаклар',
+  sourcesIntro: 'Плагин ачык мәгълүматлар куллана. Барысы да плагинга кертелгән, һәм бернәрсә дә беркая да җибәрелми.',
+  sourcesNames: 'Ил исемнәре',
+  sourcesCapitals: 'Башкалалар һәм координатлар',
+  sourcesMaps: 'Карталар һәм ил контурлары',
+  sourcesSmall: 'Кечкенә илләрнең контурлары',
+  sourcesChanged: 'Карталар һәм контурлар яңадан проекцияләнгән һәм гадиләштерелгән. Лицензия текстлары һәм тулырак: {url}',
 };
 
 export default menu;

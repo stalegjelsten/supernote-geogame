@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Edozein angelu',
   outlineMade: 'Silueta-fitxa sortu da: {count} herrialde.',
   outlineResult: 'Ezagututako herrialdeak: {correct} / {total} (%{percent}).',
+
+  sourcesTitle: 'Iturriak',
+  sourcesIntro: 'Pluginak datu irekiak erabiltzen ditu. Dena pluginarekin dator eta ez da ezer inora bidaltzen.',
+  sourcesNames: 'Herrialdeen izenak',
+  sourcesCapitals: 'Hiriburuak eta koordenatuak',
+  sourcesMaps: 'Mapak eta herrialdeen siluetak',
+  sourcesSmall: 'Herrialde txikien siluetak',
+  sourcesChanged: 'Mapak eta siluetak birproiektatuta eta sinplifikatuta daude. Lizentzien testuak eta xehetasunak: {url}',
 };
 
 export default menu;

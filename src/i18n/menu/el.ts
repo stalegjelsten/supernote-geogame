@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Οποιαδήποτε γωνία',
   outlineMade: 'Δημιουργήθηκε φύλλο περιγραμμάτων με {count} χώρες.',
   outlineResult: 'Αναγνώρισες {correct} από {total} χώρες ({percent}%).',
+
+  sourcesTitle: 'Πηγές',
+  sourcesIntro: 'Το πρόσθετο χρησιμοποιεί ανοιχτά δεδομένα. Όλα περιλαμβάνονται στο πρόσθετο και τίποτα δεν αποστέλλεται πουθενά.',
+  sourcesNames: 'Ονόματα χωρών',
+  sourcesCapitals: 'Πρωτεύουσες και συντεταγμένες',
+  sourcesMaps: 'Χάρτες και περιγράμματα χωρών',
+  sourcesSmall: 'Περιγράμματα μικρών χωρών',
+  sourcesChanged: 'Οι χάρτες και τα περιγράμματα έχουν επαναπροβληθεί και απλοποιηθεί. Κείμενα αδειών και λεπτομέρειες: {url}',
 };
 
 export default menu;

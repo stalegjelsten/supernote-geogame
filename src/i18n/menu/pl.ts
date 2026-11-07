@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Dowolny kąt',
   outlineMade: 'Utworzono arkusz z konturami (kraje: {count}).',
   outlineResult: 'Rozpoznane kraje: {correct} z {total} ({percent}%).',
+
+  sourcesTitle: 'Źródła',
+  sourcesIntro: 'Wtyczka korzysta z otwartych danych. Wszystko jest zawarte we wtyczce i nic nie jest nigdzie wysyłane.',
+  sourcesNames: 'Nazwy krajów',
+  sourcesCapitals: 'Stolice i współrzędne',
+  sourcesMaps: 'Mapy i kontury krajów',
+  sourcesSmall: 'Kontury małych krajów',
+  sourcesChanged: 'Mapy i kontury zostały przeprojektowane i uproszczone. Teksty licencji i szczegóły: {url}',
 };
 
 export default menu;

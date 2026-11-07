@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Mis tahes nurk',
   outlineMade: 'Loodi kontuurileht {count} riigiga.',
   outlineResult: 'Äratuntud riike: {correct}/{total} ({percent}%).',
+
+  sourcesTitle: 'Allikad',
+  sourcesIntro: 'Pistikprogramm kasutab avatud andmeid. Kõik on pistikprogrammiga kaasas ja midagi ei saadeta kuhugi.',
+  sourcesNames: 'Riikide nimed',
+  sourcesCapitals: 'Pealinnad ja koordinaadid',
+  sourcesMaps: 'Kaardid ja riikide kontuurid',
+  sourcesSmall: 'Väikeste riikide kontuurid',
+  sourcesChanged: 'Kaardid ja kontuurid on ümber projitseeritud ja lihtsustatud. Litsentside tekstid ja üksikasjad: {url}',
 };
 
 export default menu;

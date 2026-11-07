@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: '任意角度',
   outlineMade: '已生成含{count}个国家的轮廓练习页。',
   outlineResult: '你认出了{total}个国家中的{correct}个（{percent}%）。',
+
+  sourcesTitle: '数据来源',
+  sourcesIntro: '本插件使用开放数据。所有数据都随插件提供，不会发送到任何地方。',
+  sourcesNames: '国家名称',
+  sourcesCapitals: '首都和坐标',
+  sourcesMaps: '地图和国家轮廓',
+  sourcesSmall: '小国的轮廓',
+  sourcesChanged: '地图和轮廓经过重新投影和简化。许可证文本和详细信息：{url}',
 };
 
 export default menu;

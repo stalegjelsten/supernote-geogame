@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Ľubovoľný uhol',
   outlineMade: 'List s obrysmi je vytvorený. Počet krajín: {count}.',
   outlineResult: 'Rozpoznané krajiny: {correct} z {total} ({percent} %).',
+
+  sourcesTitle: 'Zdroje',
+  sourcesIntro: 'Doplnok používa otvorené dáta. Všetko je súčasťou doplnku a nič sa nikam neodosiela.',
+  sourcesNames: 'Názvy krajín',
+  sourcesCapitals: 'Hlavné mestá a súradnice',
+  sourcesMaps: 'Mapy a obrysy krajín',
+  sourcesSmall: 'Obrysy malých krajín',
+  sourcesChanged: 'Mapy a obrysy sú preprojektované a zjednodušené. Texty licencií a podrobnosti: {url}',
 };
 
 export default menu;

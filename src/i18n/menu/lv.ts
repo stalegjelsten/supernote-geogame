@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Jebkurš leņķis',
   outlineMade: 'Izveidota kontūru lapa (valstis: {count}).',
   outlineResult: 'Atpazītas valstis: {correct} no {total} ({percent}%).',
+
+  sourcesTitle: 'Avoti',
+  sourcesIntro: 'Spraudnis izmanto atvērtos datus. Viss ir iekļauts spraudnī, un nekas netiek nekur sūtīts.',
+  sourcesNames: 'Valstu nosaukumi',
+  sourcesCapitals: 'Galvaspilsētas un koordinātas',
+  sourcesMaps: 'Kartes un valstu kontūras',
+  sourcesSmall: 'Mazo valstu kontūras',
+  sourcesChanged: 'Kartes un kontūras ir pārprojicētas un vienkāršotas. Licenču teksti un sīkāka informācija: {url}',
 };
 
 export default menu;

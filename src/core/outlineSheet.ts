@@ -4,7 +4,7 @@
  * rotation), the hidden key that says which country is in which cell, and grading.
  */
 import {COUNTRY_CODES, type CountryCode} from '../data/countries';
-import {OUTLINES} from '../data/outlines';
+import {OUTLINE_CREDITS, OUTLINES} from '../data/outlines';
 import {LANGUAGES, getLanguage, type Language} from '../i18n';
 import {outlineTexts} from '../i18n/outline';
 import {countriesIn, countryIn, type Country} from './countries';
@@ -471,15 +471,44 @@ export function outlineSheetDrafts(
     });
   });
 
+  const keyFont = Math.max(16, Math.round(L.smallFontSize * 0.7));
   drafts.push({
     kind: 'text',
     text: outlineKey(lang, placements.map(p => p.code)),
     rect: L.key,
-    fontSize: Math.max(16, Math.round(L.smallFontSize * 0.7)),
+    fontSize: keyFont,
     align: 0,
     locked: true,
   });
+  const credit = outlineCredit(placements.map(p => p.code));
+  if (credit) {
+    const creditTop = r(L.key.top + keyFont * 1.6);
+    drafts.push({
+      kind: 'text',
+      text: credit,
+      // Narrower than the page, so the line wraps instead of running into the score on the right.
+      rect: {
+        left: L.key.left,
+        top: creditTop,
+        right: r(L.key.left + (L.key.right - L.key.left) * 0.62),
+        bottom: r(creditTop + keyFont * 3.2),
+      },
+      fontSize: keyFont,
+      align: 0,
+      locked: true,
+    });
+  }
   return drafts;
+}
+
+/**
+ * The credit line for the outlines on a sheet, or null when none is needed: some small
+ * countries come from geoBoundaries under licenses that require credit (mostly OpenStreetMap,
+ * ODbL). Dataset and license names are the same in every language.
+ */
+export function outlineCredit(codes: readonly CountryCode[]): string | null {
+  const credits = [...new Set(codes.flatMap(c => OUTLINE_CREDITS[c] ?? []))];
+  return credits.length ? `geoBoundaries: ${credits.join(' · ')}` : null;
 }
 
 /**

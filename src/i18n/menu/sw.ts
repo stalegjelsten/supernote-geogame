@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Pembe yoyote',
   outlineMade: 'Imetengeneza karatasi ya maumbo yenye nchi {count}.',
   outlineResult: 'Umetambua nchi {correct} kati ya {total} ({percent}%).',
+
+  sourcesTitle: 'Vyanzo',
+  sourcesIntro: 'Programu-jalizi hii hutumia data huria. Kila kitu kimejumuishwa kwenye programu-jalizi na hakuna kinachotumwa popote.',
+  sourcesNames: 'Majina ya nchi',
+  sourcesCapitals: 'Miji mikuu na viwianishi',
+  sourcesMaps: 'Ramani na maumbo ya nchi',
+  sourcesSmall: 'Maumbo ya nchi ndogo',
+  sourcesChanged: 'Ramani na maumbo yamekadiriwa upya na kurahisishwa. Maandishi ya leseni na maelezo: {url}',
 };
 
 export default menu;

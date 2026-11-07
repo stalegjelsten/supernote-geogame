@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Calquera ángulo',
   outlineMade: 'Creouse unha ficha de siluetas con {count} países.',
   outlineResult: 'Recoñeciches {correct} de {total} países ({percent} %).',
+
+  sourcesTitle: 'Fontes',
+  sourcesIntro: 'O complemento usa datos abertos. Todo vén incluído no complemento e non se envía nada a ningures.',
+  sourcesNames: 'Nomes dos países',
+  sourcesCapitals: 'Capitais e coordenadas',
+  sourcesMaps: 'Mapas e siluetas dos países',
+  sourcesSmall: 'Siluetas dos países pequenos',
+  sourcesChanged: 'Os mapas e as siluetas están reproxectados e simplificados. Textos das licenzas e detalles: {url}',
 };
 
 export default menu;

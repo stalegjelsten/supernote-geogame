@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Uillinn ar bith',
   outlineMade: 'Rinneadh bileog imlínte (tíortha: {count}).',
   outlineResult: 'Tíortha aitheanta: {correct} as {total} ({percent}%).',
+
+  sourcesTitle: 'Foinsí',
+  sourcesIntro: 'Úsáideann an breiseán sonraí oscailte. Tá gach rud san áireamh sa bhreiseán agus ní sheoltar aon rud áit ar bith.',
+  sourcesNames: 'Ainmneacha tíortha',
+  sourcesCapitals: 'Príomhchathracha agus comhordanáidí',
+  sourcesMaps: 'Léarscáileanna agus imlínte tíortha',
+  sourcesSmall: 'Imlínte tíortha beaga',
+  sourcesChanged: 'Tá na léarscáileanna agus na himlínte athteilgthe agus simplithe. Téacsanna ceadúnais agus sonraí: {url}',
 };
 
 export default menu;

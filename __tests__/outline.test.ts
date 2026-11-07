@@ -13,9 +13,11 @@ import {
   outlineShapes,
   parseOutlineKey,
   pickOutlineCountries,
+  outlineCredit,
   roundKm,
 } from '../src/core/outlineSheet';
 import {outlineTexts} from '../src/i18n/outline';
+import {SOURCES_URL, sourcesTexts} from '../src/i18n/sources';
 import type {Rect} from '../src/core/layout';
 
 const nb = getLanguage('nb')!;
@@ -137,5 +139,22 @@ test('every language has outline texts', () => {
       true,
       false,
     ]);
+  }
+});
+
+test('sheets with countries under a credit license get a credit line, others none', () => {
+  expect(outlineCredit(['NO', 'SE', 'VA', 'AD'])).toBeNull();
+  expect(outlineCredit(['NO', 'MC', 'SM', 'BB'])).toBe(
+    'geoBoundaries: © OpenStreetMap contributors (ODbL) · Wikimedia Commons (CC BY 2.5)',
+  );
+  const drafts = outlineSheetDrafts(MANTA, nb, 'EU', [{code: 'MC', angle: 0}], {size: 'large', scale: 'fit'});
+  expect(drafts.some(d => d.kind === 'text' && d.text.includes('OpenStreetMap'))).toBe(true);
+});
+
+test('every language has a sources section with the link filled in', () => {
+  for (const lang of LANGUAGES) {
+    const s = sourcesTexts(lang);
+    expect([lang.code, s.changed.includes(SOURCES_URL), s.changed.includes('{')]).toEqual([lang.code, true, false]);
+    expect(s.lines.some(([, credit]) => credit.includes('OpenStreetMap'))).toBe(true);
   }
 });

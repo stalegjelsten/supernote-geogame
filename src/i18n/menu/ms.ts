@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Sebarang sudut',
   outlineMade: 'Lembaran bentuk dengan {count} negara telah dibuat.',
   outlineResult: 'Anda mengecam {correct} daripada {total} negara ({percent}%).',
+
+  sourcesTitle: 'Sumber',
+  sourcesIntro: 'Pemalam ini menggunakan data terbuka. Semuanya disertakan dalam pemalam dan tiada apa-apa dihantar ke mana-mana.',
+  sourcesNames: 'Nama negara',
+  sourcesCapitals: 'Ibu negara dan koordinat',
+  sourcesMaps: 'Peta dan bentuk negara',
+  sourcesSmall: 'Bentuk negara kecil',
+  sourcesChanged: 'Peta dan bentuk telah diunjurkan semula dan dipermudah. Teks lesen dan butiran: {url}',
 };
 
 export default menu;

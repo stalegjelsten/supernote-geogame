@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Bisan unsang anggulo',
   outlineMade: 'Nakahimo og worksheet sa porma nga may {count} ka nasod.',
   outlineResult: 'Nailhan nimo ang {correct} sa {total} ka nasod ({percent}%).',
+
+  sourcesTitle: 'Mga tinubdan',
+  sourcesIntro: 'Ang plugin naggamit og bukas nga datos. Ang tanan kauban na sa plugin ug walay ipadala bisan asa.',
+  sourcesNames: 'Mga ngalan sa nasod',
+  sourcesCapitals: 'Mga kaulohan ug koordinado',
+  sourcesMaps: 'Mga mapa ug porma sa nasod',
+  sourcesSmall: 'Porma sa gagmay nga mga nasod',
+  sourcesChanged: 'Ang mga mapa ug porma gi-reproject ug gipasimple. Mga teksto sa lisensya ug detalye: {url}',
 };
 
 export default menu;

@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Çdo kënd',
   outlineMade: 'U krijua një fletë konturesh me {count} vende.',
   outlineResult: 'Njohe {correct} nga {total} vende ({percent}%).',
+
+  sourcesTitle: 'Burimet',
+  sourcesIntro: 'Shtojca përdor të dhëna të hapura. Gjithçka është e përfshirë në shtojcë dhe asgjë nuk dërgohet askund.',
+  sourcesNames: 'Emrat e vendeve',
+  sourcesCapitals: 'Kryeqytetet dhe koordinatat',
+  sourcesMaps: 'Hartat dhe konturet e vendeve',
+  sourcesSmall: 'Konturet e vendeve të vogla',
+  sourcesChanged: 'Hartat dhe konturet janë riprojektuar dhe thjeshtuar. Tekstet e licencave dhe hollësitë: {url}',
 };
 
 export default menu;

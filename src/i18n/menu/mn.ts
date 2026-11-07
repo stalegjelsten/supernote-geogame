@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Дурын өнцөг',
   outlineMade: 'Хэлбэрийн хуудас үүсгэлээ: {count} улс.',
   outlineResult: 'Танисан улс: {correct} / {total} ({percent}%).',
+
+  sourcesTitle: 'Эх сурвалж',
+  sourcesIntro: 'Плагин нээлттэй өгөгдөл ашигладаг. Бүгд плагин дотор багтсан бөгөөд юу ч хаашаа ч илгээгддэггүй.',
+  sourcesNames: 'Улсын нэрс',
+  sourcesCapitals: 'Нийслэлүүд ба координат',
+  sourcesMaps: 'Газрын зураг ба улсын хэлбэр',
+  sourcesSmall: 'Жижиг улсын хэлбэр',
+  sourcesChanged: 'Газрын зураг болон хэлбэрүүдийг дахин проекцлож, хялбарчилсан. Лицензийн бичвэр ба дэлгэрэнгүй: {url}',
 };
 
 export default menu;

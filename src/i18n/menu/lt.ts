@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Bet koks kampas',
   outlineMade: 'Sukurtas kontūrų lapas (šalių: {count}).',
   outlineResult: 'Atpažintos šalys: {correct} iš {total} ({percent} %).',
+
+  sourcesTitle: 'Šaltiniai',
+  sourcesIntro: 'Papildinys naudoja atviruosius duomenis. Viskas įtraukta į papildinį ir niekas niekur nesiunčiama.',
+  sourcesNames: 'Šalių pavadinimai',
+  sourcesCapitals: 'Sostinės ir koordinatės',
+  sourcesMaps: 'Žemėlapiai ir šalių kontūrai',
+  sourcesSmall: 'Mažų šalių kontūrai',
+  sourcesChanged: 'Žemėlapiai ir kontūrai perprojektuoti ir supaprastinti. Licencijų tekstai ir išsami informacija: {url}',
 };
 
 export default menu;

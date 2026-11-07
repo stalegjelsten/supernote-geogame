@@ -152,6 +152,14 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Hvaða horn sem er',
   outlineMade: 'Bjó til útlínublað með {count} löndum.',
   outlineResult: 'Þú þekktir {correct} af {total} löndum ({percent}%).',
+
+  sourcesTitle: 'Heimildir',
+  sourcesIntro: 'Viðbótin notar opin gögn. Allt fylgir viðbótinni og ekkert er sent neitt.',
+  sourcesNames: 'Heiti landa',
+  sourcesCapitals: 'Höfuðborgir og hnit',
+  sourcesMaps: 'Kort og útlínur landa',
+  sourcesSmall: 'Útlínur lítilla landa',
+  sourcesChanged: 'Kortin og útlínurnar eru endurvörpuð og einfölduð. Leyfistextar og nánari upplýsingar: {url}',
 };
 
 export default menu;

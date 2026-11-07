@@ -110,7 +110,7 @@ Install the build the same way as under [Installation](#installation). Publish v
 
 ## License and data sources
 
-The code is licensed under [MIT](LICENSE). The plugin uses this data (details and license texts in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)):
+The code is licensed under [MIT](LICENSE). The outlines of small countries derived from OpenStreetMap are under ODbL 1.0 (see THIRD_PARTY_NOTICES.md). The menu lists the sources under **Language → Sources**, and an outline sheet with such a country gets a credit line at the bottom. The plugin uses this data (details and license texts in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)):
 
 - **Country names**: Unicode CLDR (Unicode License v3)
 - **Capitals and coordinates**: Wikidata (CC0)
