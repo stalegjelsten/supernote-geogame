@@ -41,6 +41,13 @@ import {
   strokePointsAll,
   type PageElement,
 } from './sdk/notes';
+import {recordResults, trainingOrder} from './actions';
+import {mapPointsScore, type Attempt, type Skill} from './core/stats';
+import type {Strategy} from './core/training';
+
+/** Ferdigheten et kartark øver på. */
+export const skillOfTarget = (target: MapTarget): Skill =>
+  target === 'country' ? 'mapCountry' : 'mapCapital';
 
 export type Progress = (message: string) => void;
 
@@ -66,6 +73,8 @@ export interface MapSheetOptions {
   style: MapEntryStyle;
   /** Hva som skal merkes: hovedsteder (poeng etter avstand) eller land (riktig/galt). */
   target: MapTarget;
+  /** Hvordan landene velges (se core/training.ts). Standard: tilfeldig. */
+  strategy?: Strategy;
 }
 
 /** Lager et kartark på denne siden eller en ny side etter den. */
@@ -84,7 +93,18 @@ export async function createMapSheet(
   const ui = currentLanguage();
   const ref = await currentPage();
   const path = await mapPicturePath(region);
-  const countries = pickMapCountries(lang, region, options.count);
+  const order = await trainingOrder(
+    skillOfTarget(options.target),
+    options.strategy ?? 'random',
+  );
+  const countries = pickMapCountries(
+    lang,
+    region,
+    options.count,
+    Math.random,
+    undefined,
+    order,
+  );
   let page = ref;
   if (where === 'newPage') {
     progress(ui.progress.newPages(1));
@@ -277,5 +297,23 @@ export async function gradeMapSheet(
   progress(ui.progress.writingResults);
   await insertDrafts(ref, grade.drafts);
   await saveNote();
+  // Statistikk: byer som ble hoppet over, teller som «kunne ikke»;
+  // byer uten merke tas ikke med (merket kan ha falt utenfor kartet).
+  const attempts: Attempt[] = grade.results.flatMap(r =>
+    r.assignment.kind === 'missing'
+      ? []
+      : [
+          {
+            code: r.country.code,
+            score:
+              target === 'country'
+                ? r.correct
+                  ? 1
+                  : 0
+                : mapPointsScore(r.points),
+          },
+        ],
+  );
+  await recordResults(ref.notePath, skillOfTarget(target), attempts);
   return {points: grade.points, max: grade.max, target};
 }

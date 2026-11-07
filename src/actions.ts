@@ -46,6 +46,9 @@ import {
   type PageElement,
   type PageRef,
 } from './sdk/notes';
+import {computeStats, sheetKey, verdictScore, type Attempt, type Skill} from './core/stats';
+import {orderForTraining, type Strategy} from './core/training';
+import {loadRecords, saveRecord} from './sdk/statsStore';
 
 /** Strekbredde for tabellinjer; se kommentaren i createSheet. */
 const LINE_WIDTH = 200;
@@ -54,6 +57,31 @@ const LINE_WIDTH = 200;
 const MARK_WIDTH = 300;
 
 export type Progress = (message: string) => void;
+
+/**
+ * Rekkefølgen land skal trekkes i for en treningsmodus, eller undefined for
+ * vanlig tilfeldig trekning. Leser statistikken for ferdigheten.
+ */
+export async function trainingOrder(
+  skill: Skill,
+  strategy: Strategy,
+): Promise<((pool: Country[]) => Country[]) | undefined> {
+  if (strategy === 'random') {
+    return undefined;
+  }
+  const stats = computeStats(await loadRecords(), skill);
+  const now = Date.now();
+  return pool => orderForTraining(pool, stats, strategy, now);
+}
+
+/** Lagrer resultatene fra en rettet side. Feil i lagringen stopper aldri rettingen. */
+export async function recordResults(notePath: string, skill: Skill, attempts: Attempt[]): Promise<void> {
+  if (!attempts.length) {
+    return;
+  }
+  const key = sheetKey(notePath, skill, attempts.map(a => a.code));
+  await saveRecord({skill, time: Date.now(), key, attempts});
+}
 
 /** Antall elementer på siden, så UI-et kan advare før det skrives over en side med innhold. */
 export async function countElementsOnPage(): Promise<number> {
@@ -137,6 +165,7 @@ export interface CreateSummary {
 
 /**
  * Lager et arbeidsark på språket `lang`, fordelt på flere sider hvis det er mer enn 20 land.
+ * `strategy` velger landene (se core/training.ts); 'random' trekker tilfeldig.
  * @param where 'here' = første side på nåværende side, resten på nye sider etter den;
  *   'newPage' = alle sidene på nye sider rett etter nåværende side.
  */
@@ -146,11 +175,13 @@ export async function createSheet(
   count: number,
   where: 'here' | 'newPage',
   progress: Progress,
+  strategy: Strategy = 'random',
 ): Promise<CreateSummary> {
   await ensurePermissions();
   const ref = await currentPage();
   const ui = currentLanguage();
-  const countries = pickCountries(lang, region, count);
+  const order = await trainingOrder('capital', strategy);
+  const countries = pickCountries(lang, region, count, Math.random, order);
   // Færre land per side på mindre sider (Nomad, A5X), så radene blir høye nok til å skrive i.
   const chunks = splitIntoPages(countries, maxRowsPerPage(ref.size));
 
@@ -223,8 +254,8 @@ export async function gradeSheet(scope: 'page' | 'set', progress: Progress): Pro
 
   const lang = sheetLanguageOf(elements, info);
   if (scope === 'page' || info.parts === 1) {
-    const score = await gradePage(ref, elements, lang, progress);
-    return {...score, pages: [{part: info.part, ...score}]};
+    const {points, total} = await gradePage(ref, elements, lang, progress);
+    return {points, total, pages: [{part: info.part, points, total}]};
   }
 
   // Sidene i et sett ligger etter hverandre: side 1 er (nåværende - part + 1).
@@ -240,8 +271,8 @@ export async function gradeSheet(scope: 'page' | 'set', progress: Progress): Pro
       // Siden er flyttet eller slettet; hopp over den i stedet for å rette feil side.
       continue;
     }
-    const score = await gradePage(pref, els, lang, m => progress(label + m));
-    pages.push({part: k + 1, ...score});
+    const {points: p, total: t} = await gradePage(pref, els, lang, m => progress(label + m));
+    pages.push({part: k + 1, points: p, total: t});
   }
   const points = pages.reduce((a, p) => a + p.points, 0);
   const total = pages.reduce((a, p) => a + p.total, 0);
@@ -253,7 +284,7 @@ async function gradePage(
   elements: PageElement[],
   lang: Language,
   progress: Progress,
-): Promise<{points: number; total: number}> {
+): Promise<{points: number; total: number; attempts: Attempt[]}> {
   const ui = currentLanguage();
   const texts = elements.filter(e => e.type === TYPE_TEXT && e.textBox?.textContentFull);
 
@@ -377,7 +408,9 @@ async function gradePage(
   });
   await insertDrafts(ref, drafts);
   await saveNote();
-  return {points, total};
+  const attempts = graded.map(g => ({code: g.country.code, score: verdictScore(g.result.verdict)}));
+  await recordResults(ref.notePath, 'capital', attempts);
+  return {points, total, attempts};
 }
 
 /**
