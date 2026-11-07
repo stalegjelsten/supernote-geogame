@@ -11,6 +11,8 @@ Supernote-plugin for å øve på land og hovedsteder. Pluginen lager et arbeidsa
 3. Skriv hovedstedene i midtkolonnen.
 4. Trykk **World Capitals Quiz → Rett arket på denne siden**. Resultatet skrives i høyre kolonne. Du kan rette på nytt etter at du har endret svar.
 
+For hovedsteder som ofte forveksles eller der landet har flere hovedsteder (for eksempel Tanzania, Sør-Afrika, Bolivia og Nigeria), får resultatcellen et lite tall, og en kort merknad står nederst på arket. Eksempel: «¹ Dar es Salaam var hovedstad til 1996 og er største by.» Merknadene ligger i `src/i18n/notes.ts` (norsk og engelsk; andre språk får engelsk).
+
 ## Flere spillere (hot seat)
 
 Velg **Spillere: 2–4** i menyen og hvordan dere spiller:

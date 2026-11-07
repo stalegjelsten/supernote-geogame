@@ -27,6 +27,7 @@ Features
 - Map quizzes: mark capitals or countries with a cross on a high-contrast map made for e-ink. Capitals are scored by how many kilometres you were off.
 - Europe, Asia, Africa, North America, South America, Oceania or the whole world.
 - Choose 10, 15, 20 or all countries. Long sheets are spread over several pages.
+- Footnotes on tricky capitals: countries with several capitals or a capital that is often mixed up (Tanzania, South Africa, Bolivia, Nigeria and more) get a short note at the bottom of the graded sheet.
 - Accepts common alternative spellings and the English name of the capital.
 - Multiplayer for 2–4 players on one device, for both worksheets and maps:
   - Pass around: each player gets their own pages with the same countries, with a hand-over page in between. Grade the whole set to see who won.

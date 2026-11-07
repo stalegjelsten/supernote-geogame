@@ -140,7 +140,7 @@ export function computeLayout(page: Size, rowCount: number, version: LayoutVersi
 }
 
 /** Linjehøyde som andel av skriftstørrelsen. */
-const LINE_HEIGHT = 1.35;
+export const LINE_HEIGHT = 1.35;
 
 /**
  * Skriftstørrelse som får teksten (evt. flere linjer med \n) til å passe i cellen,
