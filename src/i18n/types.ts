@@ -65,7 +65,7 @@ export interface Language {
     makeOnNewPage: string;
     putOnThisPage: string;
     cancel: string;
-    doneWriting: string;
+    checkAnswers: string;
     gradePage: string;
     gradeSet: string;
     showSheet: string;
