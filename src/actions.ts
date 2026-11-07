@@ -1,5 +1,20 @@
 import {countryIn, findCountryByName, pickSheetLanguage, type Country} from './core/countries';
 import {currentLanguage, type Language} from './i18n';
+import {hotSeatTexts} from './i18n/hotseat';
+import {
+  parseGameTag,
+  parseRowLabel,
+  passFirstPage,
+  passPageCount,
+  passPageIndex,
+  playerAt,
+  rowLabel,
+  sharedCount,
+  sumScores,
+  type Game,
+  type GameTag,
+  type PlayerScore,
+} from './core/hotseat';
 import {assignToRows, boxOf, nearestRow} from './core/grouping';
 import {splitByRows} from './core/lines';
 import {inside, markColor, markLayout, markStrokes, strokeAsPolygon} from './core/marks';
@@ -18,6 +33,7 @@ import {
   isResultText,
   parseSheetTitle,
   pickCountries,
+  regionSize,
   resultMark,
   resultText,
   sheetTitle,
@@ -74,7 +90,13 @@ function cellText(
 }
 
 /** Alle elementene for én side av et arbeidsark. */
-function sheetDrafts(size: Size, lang: Language, title: string, countries: Country[]): Draft[] {
+function sheetDrafts(
+  size: Size,
+  lang: Language,
+  title: string,
+  countries: Country[],
+  game?: {tag: GameTag; rowPlayers?: number[]},
+): Draft[] {
   const L = computeLayout(size, countries.length);
   const drafts: Draft[] = [];
 
@@ -113,9 +135,15 @@ function sheetDrafts(size: Size, lang: Language, title: string, countries: Count
     bold: true,
     locked: true,
   });
+  const hs = hotSeatTexts(lang);
+  const subtitle = !game
+    ? lang.sheet.subtitle
+    : game.tag.mode === 'pass'
+    ? hs.tablePass(game.tag.player, game.tag.players)
+    : hs.tableShared(game.tag.players);
   drafts.push({
     kind: 'text',
-    text: lang.sheet.subtitle,
+    text: subtitle,
     rect: L.subtitle,
     fontSize: L.smallFontSize,
     locked: true,
@@ -126,8 +154,44 @@ function sheetDrafts(size: Size, lang: Language, title: string, countries: Count
   drafts.push(cellText(lang.sheet.colResult, h.result, L.smallFontSize, {bold: true, locked: true}));
   countries.forEach((c, i) => {
     drafts.push(cellText(c.name, L.rows[i].country, L.fontSize, {locked: true}));
+    // Felles ark: tallet til spilleren som skal svare, helt til venstre i svarruta.
+    const player = game?.rowPlayers?.[i];
+    if (player) {
+      const a = L.rows[i].answer;
+      const cell = {...a, right: a.left + Math.round(L.smallFontSize * 1.2)};
+      drafts.push(cellText(rowLabel(player), cell, L.smallFontSize, {bold: true, locked: true}));
+    }
   });
   return drafts;
+}
+
+/** Siden mellom to spillere når enheten sendes rundt. */
+export function handoverDrafts(size: Size, lang: Language, player: number): Draft[] {
+  const hs = hotSeatTexts(lang);
+  const L = computeLayout(size, 1);
+  const left = L.title.left;
+  const right = L.title.right;
+  const mid = Math.round(size.height * 0.42);
+  const big = Math.round(L.fontSize * 1.8);
+  return [
+    {
+      kind: 'text',
+      text: hs.handover(player),
+      rect: {left, top: mid, right, bottom: mid + Math.round(big * 1.6)},
+      fontSize: big,
+      bold: true,
+      align: 1,
+      locked: true,
+    },
+    {
+      kind: 'text',
+      text: hs.handoverHint,
+      rect: {left, top: mid + Math.round(big * 1.8), right, bottom: mid + Math.round(big * 1.8 + L.smallFontSize * 2.8)},
+      fontSize: L.smallFontSize,
+      align: 1,
+      locked: true,
+    },
+  ];
 }
 
 export interface CreateSummary {
@@ -146,13 +210,19 @@ export async function createSheet(
   count: number,
   where: 'here' | 'newPage',
   progress: Progress,
+  game?: Game,
 ): Promise<CreateSummary> {
   await ensurePermissions();
   const ref = await currentPage();
   const ui = currentLanguage();
-  const countries = pickCountries(lang, region, count);
+  const multi = game && game.players > 1 ? game : undefined;
+  const n = multi?.mode === 'shared' ? sharedCount(count, multi.players, regionSize(region)) : count;
+  const countries = pickCountries(lang, region, n);
   // Færre land per side på mindre sider (Nomad, A5X), så radene blir høye nok til å skrive i.
   const chunks = splitIntoPages(countries, maxRowsPerPage(ref.size));
+  if (multi?.mode === 'pass') {
+    return createPassGame(ref, lang, region, chunks, multi.players, where, progress);
+  }
 
   const firstPage = where === 'here' ? ref.page : ref.page + 1;
   const newPages = where === 'here' ? chunks.length - 1 : chunks.length;
@@ -165,13 +235,62 @@ export async function createSheet(
     progress(chunks.length > 1 ? ui.progress.drawingPage(k + 1, chunks.length) : ui.progress.drawing);
     const page = {...ref, page: firstPage + k};
     const title = sheetTitle(lang, region, chunk.length, k + 1, chunks.length);
-    await insertDrafts(page, sheetDrafts(ref.size, lang, title, chunk));
+    // Felles ark: spillerne bytter på, regnet over hele settet (side 2 fortsetter der side 1 slapp).
+    const before = chunks.slice(0, k).reduce((a, c) => a + c.length, 0);
+    const shared = multi
+      ? {
+          tag: {mode: 'shared' as const, player: 0, players: multi.players},
+          rowPlayers: chunk.map((_, i) => playerAt(before + i, multi.players)),
+        }
+      : undefined;
+    await insertDrafts(page, sheetDrafts(ref.size, lang, title, chunk, shared));
   }
   if (firstPage !== ref.page) {
     await jumpToPage(firstPage);
   }
   await saveNote();
   return {countries: countries.length, pages: chunks.length};
+}
+
+/** Send rundt: samme land til alle, hver spiller på egne sider, med en «gi videre»-side imellom. */
+async function createPassGame(
+  ref: PageRef,
+  lang: Language,
+  region: Region,
+  chunks: Country[][],
+  players: number,
+  where: 'here' | 'newPage',
+  progress: Progress,
+): Promise<CreateSummary> {
+  const ui = currentLanguage();
+  const parts = chunks.length;
+  const total = passPageCount(players, parts);
+  const firstPage = where === 'here' ? ref.page : ref.page + 1;
+  const newPages = where === 'here' ? total - 1 : total;
+  if (newPages > 0) {
+    progress(ui.progress.newPages(newPages));
+    await insertBlankPages(ref, ref.page + 1, newPages);
+  }
+  let drawn = 0;
+  for (let p = 1; p <= players; p++) {
+    for (const [k, chunk] of chunks.entries()) {
+      progress(ui.progress.drawingPage(++drawn, total));
+      const page = {...ref, page: passPageIndex(firstPage, p, k + 1, parts)};
+      const title = sheetTitle(lang, region, chunk.length, k + 1, parts);
+      const tag = {mode: 'pass' as const, player: p, players};
+      await insertDrafts(page, sheetDrafts(ref.size, lang, title, chunk, {tag}));
+    }
+    if (p < players) {
+      progress(ui.progress.drawingPage(++drawn, total));
+      const page = {...ref, page: passPageIndex(firstPage, p, parts + 1, parts)};
+      await insertDrafts(page, handoverDrafts(ref.size, lang, p + 1));
+    }
+  }
+  if (firstPage !== ref.page) {
+    await jumpToPage(firstPage);
+  }
+  await saveNote();
+  return {countries: chunks.reduce((a, c) => a + c.length, 0), pages: total};
 }
 
 export interface PageScore {
@@ -184,6 +303,22 @@ export interface GradeSummary {
   points: number;
   total: number;
   pages: PageScore[];
+  /** Flerspiller: poeng per spiller. */
+  players?: PlayerScore[];
+  /** Send rundt: spillere der ingen sider ble funnet. */
+  missing?: number[];
+}
+
+/** Finner merkelappen for flerspiller («Spiller 2 av 3», «Duell for 2»). */
+export function gameTagOf(elements: PageElement[]): GameTag | null {
+  for (const e of elements) {
+    const text = e.type === TYPE_TEXT ? e.textBox?.textContentFull : null;
+    const tag = text ? parseGameTag(text) : null;
+    if (tag) {
+      return tag;
+    }
+  }
+  return null;
 }
 
 /** Finner overskriften på en side og leser språk og «side k av n». */
@@ -222,14 +357,24 @@ export async function gradeSheet(scope: 'page' | 'set', progress: Progress): Pro
   }
 
   const lang = sheetLanguageOf(elements, info);
+  const tag = gameTagOf(elements);
+  if (tag?.mode === 'pass' && scope === 'set') {
+    return gradePassGame(ref, info, tag, lang, progress);
+  }
   if (scope === 'page' || info.parts === 1) {
-    const score = await gradePage(ref, elements, lang, progress);
-    return {...score, pages: [{part: info.part, ...score}]};
+    const score = await gradePage(ref, elements, lang, progress, tag);
+    return {
+      points: score.points,
+      total: score.total,
+      pages: [{part: info.part, points: score.points, total: score.total}],
+      players: score.players,
+    };
   }
 
   // Sidene i et sett ligger etter hverandre: side 1 er (nåværende - part + 1).
   const first = ref.page - (info.part - 1);
   const pages: PageScore[] = [];
+  const playerScores: PlayerScore[] = [];
   for (let k = 0; k < info.parts; k++) {
     const pageIndex = first + k;
     const label = ui.progress.pagePrefix(k + 1, info.parts);
@@ -240,12 +385,74 @@ export async function gradeSheet(scope: 'page' | 'set', progress: Progress): Pro
       // Siden er flyttet eller slettet; hopp over den i stedet for å rette feil side.
       continue;
     }
-    const score = await gradePage(pref, els, lang, m => progress(label + m));
-    pages.push({part: k + 1, ...score});
+    const score = await gradePage(pref, els, lang, m => progress(label + m), tag);
+    pages.push({part: k + 1, points: score.points, total: score.total});
+    playerScores.push(...(score.players ?? []));
   }
   const points = pages.reduce((a, p) => a + p.points, 0);
   const total = pages.reduce((a, p) => a + p.total, 0);
-  return {points, total, pages};
+  return {points, total, pages, players: tag ? sumScores(playerScores) : undefined};
+}
+
+/** Send rundt: retter alle spillernes sider og summerer per spiller. */
+async function gradePassGame(
+  ref: PageRef,
+  info: SheetInfo,
+  tag: GameTag,
+  lang: Language,
+  progress: Progress,
+): Promise<GradeSummary> {
+  const ui = currentLanguage();
+  const first = passFirstPage(ref.page, tag.player, info.part, info.parts);
+  const scores: PlayerScore[] = [];
+  const pages: PageScore[] = [];
+  const missing: number[] = [];
+  for (let p = 1; p <= tag.players; p++) {
+    let found = false;
+    for (let k = 1; k <= info.parts; k++) {
+      const pageIndex = passPageIndex(first, p, k, info.parts);
+      if (pageIndex < 0) {
+        continue;
+      }
+      let pref: PageRef;
+      let els: PageElement[];
+      try {
+        pref = pageIndex === ref.page ? ref : await pageRefAt(ref, pageIndex);
+        els = await getPageElements(pref);
+      } catch {
+        continue;
+      }
+      const pinfo = sheetInfo(els);
+      const ptag = gameTagOf(els);
+      if (
+        !pinfo ||
+        pinfo.parts !== info.parts ||
+        pinfo.part !== k ||
+        !pinfo.candidates.includes(lang) ||
+        ptag?.mode !== 'pass' ||
+        ptag.player !== p ||
+        ptag.players !== tag.players
+      ) {
+        continue;
+      }
+      const label = `${hotSeatTexts(ui).player(p)} · ` + (info.parts > 1 ? ui.progress.pagePrefix(k, info.parts) : '');
+      const score = await gradePage(pref, els, lang, m => progress(label + m));
+      scores.push({player: p, points: score.points, max: score.total});
+      pages.push({part: k, points: score.points, total: score.total});
+      found = true;
+    }
+    if (!found) {
+      missing.push(p);
+    }
+  }
+  const players = sumScores(scores);
+  return {
+    points: players.reduce((a, s) => a + s.points, 0),
+    total: players.reduce((a, s) => a + s.max, 0),
+    pages,
+    players,
+    missing,
+  };
 }
 
 async function gradePage(
@@ -253,7 +460,8 @@ async function gradePage(
   elements: PageElement[],
   lang: Language,
   progress: Progress,
-): Promise<{points: number; total: number}> {
+  tag?: GameTag | null,
+): Promise<{points: number; total: number; players?: PlayerScore[]}> {
   const ui = currentLanguage();
   const texts = elements.filter(e => e.type === TYPE_TEXT && e.textBox?.textContentFull);
 
@@ -280,6 +488,21 @@ async function gradePage(
     const row = nearestRow(el.textBox!.textRect, L.rows);
     if (row >= 0) {
       rowCountry[row] = country;
+    }
+  }
+
+  // Felles ark: tallet i svarruta sier hvilken spiller raden tilhører.
+  const rowPlayer: Array<number | undefined> = L.rows.map(() => undefined);
+  if (tag?.mode === 'shared') {
+    for (const e of texts) {
+      const k = parseRowLabel(e.textBox!.textContentFull!, tag.players);
+      const r = e.textBox!.textRect;
+      if (k && r.left >= L.columnX[1] - 4 && r.right <= L.columnX[2]) {
+        const row = nearestRow(r, L.rows);
+        if (row >= 0) {
+          rowPlayer[row] = k;
+        }
+      }
     }
   }
 
@@ -367,9 +590,21 @@ async function gradePage(
     }
   }
   const total = graded.length;
+  let players: PlayerScore[] | undefined;
+  let scoreText = lang.sheet.score(points, total);
+  if (tag?.mode === 'shared') {
+    players = sumScores(
+      graded.map(g => ({
+        player: rowPlayer[g.row] ?? playerAt(g.row, tag.players),
+        points: isPoint(g.result) ? 1 : 0,
+        max: 1,
+      })),
+    );
+    scoreText = `${lang.sheet.scorePrefix} ${hotSeatTexts(lang).scoreLine(players)}`;
+  }
   drafts.push({
     kind: 'text',
-    text: lang.sheet.score(points, total),
+    text: scoreText,
     rect: L.score,
     fontSize: Math.round(L.fontSize * 1.2),
     bold: true,
@@ -377,7 +612,7 @@ async function gradePage(
   });
   await insertDrafts(ref, drafts);
   await saveNote();
-  return {points, total};
+  return {points, total, players};
 }
 
 /**

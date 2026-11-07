@@ -9,6 +9,15 @@ Supernote-plugin for å øve på land og hovedsteder. Pluginen lager et arbeidsa
 3. Skriv hovedstedene i midtkolonnen.
 4. Trykk **Geogame → Rett arket på denne siden**. Resultatet skrives i høyre kolonne. Du kan rette på nytt etter at du har endret svar.
 
+## Flere spillere (hot seat)
+
+Velg **Spillere: 2–4** i menyen og hvordan dere spiller:
+
+- **Send rundt** – enheten skjules for de andre. Hver spiller får egne sider med *de samme* landene, med en «Gi enheten til Spiller 2»-side imellom. Trykk **Rett hele settet** på en av spillernes sider for å rette alle og se hvem som vant.
+- **Bytt på** – alle ser enheten. Dere deler ett ark og svarer annenhver gang; hver spiller har *egne* land, så det hjelper ikke å se på de andres svar. Tallet i svarruta (tabell) eller nummeret i lista (kart) viser hvem sin tur det er. Poeng per spiller skrives nederst.
+
+Hvilket spill en side hører til, står først i undertittelen («Spiller 2 av 3 · …», «Duell for 2 · …») og leses ved retting (`src/core/hotseat.ts`).
+
 ## Utvikling
 
 ```bash

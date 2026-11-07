@@ -5,6 +5,20 @@
 import type {Language} from './i18n';
 import {currentLanguage} from './i18n';
 import {MAP_TOTAL_PREFIXES, mapTexts} from './i18n/map';
+import {hotSeatTexts} from './i18n/hotseat';
+import {gameTagOf, handoverDrafts} from './actions';
+import {
+  passFirstPage,
+  passPageCount,
+  passPageIndex,
+  playerAt,
+  sharedCount,
+  sumScores,
+  type Game,
+  type GameTag,
+  type PlayerScore,
+} from './core/hotseat';
+import {MAX_POINTS} from './core/scoring';
 import type {Rect} from './core/layout';
 import {inside, type Point} from './core/marks';
 import {
@@ -37,9 +51,11 @@ import {
   insertBlankPages,
   insertDrafts,
   jumpToPage,
+  pageRefAt,
   saveNote,
   strokePointsAll,
   type PageElement,
+  type PageRef,
 } from './sdk/notes';
 
 export type Progress = (message: string) => void;
@@ -79,12 +95,24 @@ export async function createMapSheet(
     style: 'both',
     target: 'capital',
   },
-): Promise<{count: number}> {
+  game?: Game,
+): Promise<{count: number; pages: number}> {
   await ensurePermissions();
   const ui = currentLanguage();
   const ref = await currentPage();
   const path = await mapPicturePath(region);
-  const countries = pickMapCountries(lang, region, options.count);
+  const multi = game && game.players > 1 ? game : undefined;
+  const count =
+    multi?.mode === 'shared'
+      ? sharedCount(options.count, multi.players)
+      : options.count;
+  const countries = pickMapCountries(lang, region, count);
+  if (multi?.mode === 'pass') {
+    return createPassMapGame(ref, lang, region, countries, path, options, multi.players, where, progress);
+  }
+  const tag: GameTag | undefined = multi
+    ? {mode: 'shared', player: 0, players: multi.players}
+    : undefined;
   let page = ref;
   if (where === 'newPage') {
     progress(ui.progress.newPages(1));
@@ -102,13 +130,55 @@ export async function createMapSheet(
       path,
       options.style,
       options.target,
+      tag,
     ),
   );
   if (page.page !== ref.page) {
     await jumpToPage(page.page);
   }
   await saveNote();
-  return {count: countries.length};
+  return {count: countries.length, pages: 1};
+}
+
+/** Send rundt: ett kartark per spiller med de samme byene, og en «gi videre»-side imellom. */
+async function createPassMapGame(
+  ref: PageRef,
+  lang: Language,
+  region: Region,
+  countries: ReturnType<typeof pickMapCountries>,
+  path: string,
+  options: MapSheetOptions,
+  players: number,
+  where: 'here' | 'newPage',
+  progress: Progress,
+): Promise<{count: number; pages: number}> {
+  const ui = currentLanguage();
+  const total = passPageCount(players, 1);
+  const first = where === 'here' ? ref.page : ref.page + 1;
+  const newPages = where === 'here' ? total - 1 : total;
+  if (newPages > 0) {
+    progress(ui.progress.newPages(newPages));
+    await insertBlankPages(ref, ref.page + 1, newPages);
+  }
+  let drawn = 0;
+  for (let p = 1; p <= players; p++) {
+    progress(ui.progress.drawingPage(++drawn, total));
+    const page = {...ref, page: passPageIndex(first, p, 1, 1)};
+    const tag: GameTag = {mode: 'pass', player: p, players};
+    await insertDrafts(
+      page,
+      mapSheetDrafts(page.size, lang, region, countries, path, options.style, options.target, tag),
+    );
+    if (p < players) {
+      progress(ui.progress.drawingPage(++drawn, total));
+      await insertDrafts({...ref, page: passPageIndex(first, p, 2, 1)}, handoverDrafts(ref.size, lang, p + 1));
+    }
+  }
+  if (first !== ref.page) {
+    await jumpToPage(first);
+  }
+  await saveNote();
+  return {count: countries.length, pages: total};
 }
 
 function mapInfo(elements: PageElement[]): MapSheetInfo | null {
@@ -168,13 +238,19 @@ export interface MapGradeSummary {
   points: number;
   max: number;
   target: MapTarget;
+  /** Flerspiller: poeng per spiller. */
+  players?: PlayerScore[];
+  /** Send rundt: spillere der kartarket ikke ble funnet. */
+  missing?: number[];
 }
 
 /**
  * Retter kartarket på siden du står på. Returnerer null hvis siden ikke er et kartark.
+ * @param scope 'set' retter alle spillernes kartark når enheten er sendt rundt.
  */
 export async function gradeMapSheet(
   progress: Progress,
+  scope: 'page' | 'set' = 'page',
 ): Promise<MapGradeSummary | null> {
   await ensurePermissions();
   const ui = currentLanguage();
@@ -185,6 +261,68 @@ export async function gradeMapSheet(
   if (!info) {
     return null;
   }
+  const tag = gameTagOf(elements);
+  if (tag?.mode === 'pass' && scope === 'set') {
+    return gradePassMapGame(ref, info, tag, progress);
+  }
+  return gradeMapPage(ref, elements, info, tag, progress);
+}
+
+async function gradePassMapGame(
+  ref: PageRef,
+  info: MapSheetInfo,
+  tag: GameTag,
+  progress: Progress,
+): Promise<MapGradeSummary> {
+  const ui = currentLanguage();
+  const first = passFirstPage(ref.page, tag.player, 1, 1);
+  const scores: PlayerScore[] = [];
+  const missing: number[] = [];
+  for (let p = 1; p <= tag.players; p++) {
+    const pageIndex = passPageIndex(first, p, 1, 1);
+    try {
+      if (pageIndex < 0) {
+        throw new Error('page');
+      }
+      const pref = pageIndex === ref.page ? ref : await pageRefAt(ref, pageIndex);
+      const elements = await getPageElements(pref);
+      const pinfo = mapInfo(elements);
+      const ptag = gameTagOf(elements);
+      if (
+        !pinfo ||
+        pinfo.region !== info.region ||
+        pinfo.target !== info.target ||
+        ptag?.mode !== 'pass' ||
+        ptag.player !== p ||
+        ptag.players !== tag.players
+      ) {
+        throw new Error('page');
+      }
+      const prefix = `${hotSeatTexts(ui).player(p)} · `;
+      const g = await gradeMapPage(pref, elements, pinfo, null, m => progress(prefix + m));
+      scores.push({player: p, points: g.points, max: g.max});
+    } catch {
+      missing.push(p);
+    }
+  }
+  const players = sumScores(scores);
+  return {
+    points: players.reduce((a, s) => a + s.points, 0),
+    max: players.reduce((a, s) => a + s.max, 0),
+    target: info.target,
+    players,
+    missing,
+  };
+}
+
+async function gradeMapPage(
+  ref: PageRef,
+  elements: PageElement[],
+  info: MapSheetInfo,
+  tag: GameTag | null,
+  progress: Progress,
+): Promise<MapGradeSummary> {
+  const ui = currentLanguage();
   const {lang, region, target} = info;
   const t = mapTexts(lang);
 
@@ -274,8 +412,30 @@ export async function gradeMapSheet(
     .map(e => e.numInPage);
   await deleteElements(ref, old);
 
+  // Felles ark: spillerne tok byene annenhver gang (nr. 1 = spiller 1, nr. 2 = spiller 2 …).
+  let players: PlayerScore[] | undefined;
+  let drafts = grade.drafts;
+  if (tag?.mode === 'shared') {
+    const countryMode = target === 'country';
+    players = sumScores(
+      grade.results.map(r => ({
+        player: playerAt(r.n - 1, tag.players),
+        points: countryMode ? (r.correct ? 1 : 0) : r.points,
+        max: countryMode ? 1 : MAX_POINTS,
+      })),
+    );
+    const totalText = countryMode
+      ? t.countryTotal(grade.points, grade.max)
+      : t.total(grade.points, grade.max);
+    const prefix = countryMode ? t.countryTotalPrefix : t.totalPrefix;
+    const line = `${prefix} ${hotSeatTexts(lang).scoreLine(players)}`;
+    drafts = drafts.map(d =>
+      d.kind === 'text' && d.text === totalText ? {...d, text: line} : d,
+    );
+  }
+
   progress(ui.progress.writingResults);
-  await insertDrafts(ref, grade.drafts);
+  await insertDrafts(ref, drafts);
   await saveNote();
-  return {points: grade.points, max: grade.max, target};
+  return {points: grade.points, max: grade.max, target, players};
 }

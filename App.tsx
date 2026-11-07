@@ -15,6 +15,14 @@ import {
   type MapTarget,
 } from './src/core/mapSheet';
 import {mapTexts, type MapEntryStyle} from './src/i18n/map';
+import {hotSeatTexts} from './src/i18n/hotseat';
+import {
+  PLAYER_COUNTS,
+  sharedCount,
+  winners,
+  type PlayMode,
+  type PlayerScore,
+} from './src/core/hotseat';
 import {
   MAX_PER_PAGE,
   regionName,
@@ -46,6 +54,10 @@ const REGIONS: Region[] = ['EU', 'AS', 'AF', 'NA', 'SA', 'OC', 'ALL'];
 const COUNTS: Count[] = [10, 15, 20, 'ALL'];
 
 type Count = number | 'ALL';
+
+/** Tusenskille med mellomrom, så kartpoeng blir lesbare. */
+const thousands = (n: number) =>
+  String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
 /** Tabell: skriv hovedstaden. Kart: merk hovedstaden på kartet. */
 type Mode = 'table' | 'map';
@@ -87,10 +99,16 @@ function Button({
   );
 }
 
+const pct = (s: PlayerScore) => (s.max ? Math.round((100 * s.points) / s.max) : 0);
+
 function App(): React.JSX.Element {
   const {t, choice, device} = useLanguage();
   const ui = t.ui;
   const mt = mapTexts(t);
+  const hs = hotSeatTexts(t);
+  const [players, setPlayers] = useState<number>(1);
+  const [playMode, setPlayMode] = useState<PlayMode>('pass');
+  const game = players > 1 ? {mode: playMode, players} : undefined;
   const [mode, setMode] = useState<Mode>('table');
   const [region, setRegion] = useState<Region>('EU');
   const [count, setCount] = useState<Count>(20);
@@ -157,11 +175,17 @@ function App(): React.JSX.Element {
     const progress = (message: string) => setStatus({kind: 'busy', message});
     await run(async () => {
       if (mode === 'map') {
-        const r = await createMapSheet(t, region, target, progress, {
-          count: mapCount,
-          style: mapStyle,
-          target: mapTarget,
-        });
+        const r = await createMapSheet(
+          t,
+          region,
+          target,
+          progress,
+          {count: mapCount, style: mapStyle, target: mapTarget},
+          game,
+        );
+        if (game) {
+          return {message: hs.ui.made(players, r.pages)};
+        }
         return {
           message:
             mapTarget === 'country'
@@ -169,9 +193,35 @@ function App(): React.JSX.Element {
               : mt.ui.made(r.count),
         };
       }
-      const r = await createSheet(t, region, actualCount, target, progress);
-      return {message: ui.made(r.countries, r.pages)};
+      const r = await createSheet(t, region, actualCount, target, progress, game);
+      return {
+        message: game
+          ? hs.ui.made(players, r.pages)
+          : ui.made(r.countries, r.pages),
+      };
     }, true);
+  };
+
+  /** Vinner øverst, så poeng per spiller. */
+  const scoreboard = (
+    scores: PlayerScore[],
+    missing: number[] | undefined,
+    footer: string,
+    fmt: (n: number) => string,
+  ) => {
+    const best = winners(scores);
+    const message =
+      scores.length < 2
+        ? hs.ui.playerScore(scores[0].player, fmt(scores[0].points), fmt(scores[0].max), pct(scores[0]))
+        : best.length === 1
+        ? hs.ui.winner(best[0])
+        : hs.ui.tie(best);
+    const lines = scores.length < 2 ? [] : scores.map(s => hs.ui.playerScore(s.player, fmt(s.points), fmt(s.max), pct(s)));
+    if (missing?.length) {
+      lines.push(hs.ui.missingPages(missing));
+    }
+    lines.push(footer);
+    return {message, detail: lines.join('\n')};
   };
 
   const grade = (scope: 'page' | 'set') =>
@@ -180,9 +230,12 @@ function App(): React.JSX.Element {
       const started = Date.now();
       const progress = (message: string) => setStatus({kind: 'busy', message});
       // Kartark rettes alltid side for side; andre ark går videre til tabellrettingen.
-      const m = await gradeMapSheet(progress);
+      const m = await gradeMapSheet(progress, scope);
       if (m) {
         const mapSeconds = ((Date.now() - started) / 1000).toFixed(1);
+        if (m.players && m.players.length) {
+          return scoreboard(m.players, m.missing, ui.gradedIn(mapSeconds), m.target === 'country' ? String : thousands);
+        }
         const mapPercent = m.max ? Math.round((100 * m.points) / m.max) : 0;
         return {
           message:
@@ -194,6 +247,9 @@ function App(): React.JSX.Element {
       }
       const r = await gradeSheet(scope, progress);
       const seconds = ((Date.now() - started) / 1000).toFixed(1);
+      if (r.players && r.players.length) {
+        return scoreboard(r.players, r.missing, ui.gradedIn(seconds), String);
+      }
       const percent = r.total ? Math.round((100 * r.points) / r.total) : 0;
       const perPage =
         r.pages.length > 1
@@ -313,6 +369,51 @@ function App(): React.JSX.Element {
             )}
           </>
         )}
+        <Text style={styles.label}>{hs.ui.players}</Text>
+        <View style={styles.grid}>
+          {PLAYER_COUNTS.map(n => (
+            <Button
+              key={n}
+              label={n === 1 ? hs.ui.solo : String(n)}
+              selected={n === players}
+              onPress={() => setPlayers(n)}
+              disabled={busy}
+            />
+          ))}
+        </View>
+        {players > 1 && (
+          <>
+            <Text style={styles.label}>{hs.ui.howToPlay}</Text>
+            <View style={styles.grid}>
+              <Button
+                label={hs.ui.pass}
+                selected={playMode === 'pass'}
+                onPress={() => setPlayMode('pass')}
+                disabled={busy}
+              />
+              <Button
+                label={hs.ui.shared}
+                selected={playMode === 'shared'}
+                onPress={() => setPlayMode('shared')}
+                disabled={busy}
+              />
+            </View>
+            <Text style={styles.hint}>
+              {playMode === 'pass'
+                ? hs.ui.passHint
+                : hs.ui.sharedHint(
+                    sharedCount(
+                      mode === 'map' ? mapCount : actualCount,
+                      players,
+                      mode === 'map' ? mapCount : regionSize(region),
+                    ) / players,
+                    mode === 'map' && mapTarget === 'capital'
+                      ? hs.ui.unitCities
+                      : hs.ui.unitCountries,
+                  )}
+            </Text>
+          </>
+        )}
         <Button
           label={ui.make}
           primary
@@ -350,7 +451,7 @@ function App(): React.JSX.Element {
             onPress={() => grade('page')}
             disabled={busy}
           />
-          {mode === 'table' && (
+          {(mode === 'table' || players > 1) && (
             <Button
               label={ui.gradeSet}
               primary

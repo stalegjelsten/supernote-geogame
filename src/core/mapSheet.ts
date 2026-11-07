@@ -13,6 +13,8 @@ import {CONTINENT_OF, CONTINENTS} from '../data/countries';
 import {MAPS, MAP_SHEET_COUNT} from '../data/maps';
 import {LANGUAGES, type Language} from '../i18n';
 import {mapTexts, type MapEntryStyle} from '../i18n/map';
+import {hotSeatTexts} from '../i18n/hotseat';
+import type {GameTag} from './hotseat';
 import {
   countriesIn,
   countryIn,
@@ -273,6 +275,30 @@ function textDraft(
   };
 }
 
+/**
+ * Bruksanvisningen under overskriften. Flerspiller: første linje får
+ * merkelappen («Spiller 2 av 3 · …» eller «Duell for 2 · …»), andre linje er som før.
+ */
+export function mapSubtitle(
+  lang: Language,
+  style: MapEntryStyle,
+  target: MapTarget,
+  tag?: GameTag,
+): string {
+  const t = mapTexts(lang);
+  const base = target === 'country' ? t.countrySubtitle : t.subtitle(style);
+  if (!tag) {
+    return base;
+  }
+  const [first, ...rest] = base.split('\n');
+  const hs = hotSeatTexts(lang);
+  const line =
+    tag.mode === 'pass'
+      ? hs.mapPass(tag.player, tag.players, first)
+      : hs.mapShared(tag.players);
+  return [line, ...rest].join('\n');
+}
+
 /** Alt som tegnes når et kartark lages: overskrift, bruksanvisning, kartbilde, ruter og liste. */
 export function mapSheetDrafts(
   page: Size,
@@ -282,9 +308,10 @@ export function mapSheetDrafts(
   picturePath: string,
   style: MapEntryStyle = 'both',
   target: MapTarget = 'capital',
+  tag?: GameTag,
 ): Draft[] {
   const L = mapLayoutFor(page, region, countries.length);
-  const t = mapTexts(lang);
+  const subtitle = mapSubtitle(lang, style, target, tag);
   // I landmodusen står bare landet i lista.
   const listStyle: MapEntryStyle = target === 'country' ? 'country' : style;
   const drafts: Draft[] = [
@@ -299,7 +326,7 @@ export function mapSheetDrafts(
     },
     {
       kind: 'text',
-      text: target === 'country' ? t.countrySubtitle : t.subtitle(style),
+      text: subtitle,
       rect: L.subtitle,
       fontSize: L.smallFontSize,
       locked: true,
