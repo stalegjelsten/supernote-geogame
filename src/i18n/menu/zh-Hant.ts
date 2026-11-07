@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: '難度取決於首都（或國家）的知名度，依維基百科頁面瀏覽量衡量。',
 
   statsSection: '統計',
-  statsShow: '顯示統計',
-  statsHide: '隱藏統計',
   statsSkillCapital: '書寫首都',
   statsSkillMapCapital: '地圖上的首都',
   statsSkillMapCountry: '地圖上的國家',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: '刪除所有統計？此操作無法復原。',
   statsConfirm: '刪除',
   statsResetDone: '統計已刪除。',
+  statsRecent: '最近的練習紙（正確率 %）',
 };
 
 export default menu;

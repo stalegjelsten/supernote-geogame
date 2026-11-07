@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: '난이도는 수도(또는 나라)가 얼마나 잘 알려져 있는지에 따라 정해지며, 위키백과 페이지 조회수로 측정합니다.',
 
   statsSection: '통계',
-  statsShow: '통계 보기',
-  statsHide: '통계 숨기기',
   statsSkillCapital: '수도 쓰기',
   statsSkillMapCapital: '지도에서 수도 찾기',
   statsSkillMapCountry: '지도에서 나라 찾기',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: '모든 통계를 삭제할까요? 되돌릴 수 없습니다.',
   statsConfirm: '삭제',
   statsResetDone: '통계를 삭제했습니다.',
+  statsRecent: '최근 시트 (정답률 %)',
 };
 
 export default menu;

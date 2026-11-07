@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'A szint attól függ, mennyire ismert a főváros (vagy az ország), a Wikipédia-oldalak megtekintései alapján.',
 
   statsSection: 'Statisztika',
-  statsShow: 'Statisztika megjelenítése',
-  statsHide: 'Statisztika elrejtése',
   statsSkillCapital: 'Fővárosok írása',
   statsSkillMapCapital: 'Fővárosok a térképen',
   statsSkillMapCountry: 'Országok a térképen',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Törlöd az összes statisztikát? Ez nem vonható vissza.',
   statsConfirm: 'Törlés',
   statsResetDone: 'Statisztika törölve.',
+  statsRecent: 'Legutóbbi lapok (% helyes)',
 };
 
 export default menu;

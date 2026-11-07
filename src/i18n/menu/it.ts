@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Il livello dipende da quanto è nota la capitale (o il paese), misurato dalle visite alla pagina Wikipedia.',
 
   statsSection: 'Statistiche',
-  statsShow: 'Mostra statistiche',
-  statsHide: 'Nascondi statistiche',
   statsSkillCapital: 'Scrivere le capitali',
   statsSkillMapCapital: 'Capitali sulla mappa',
   statsSkillMapCountry: 'Paesi sulla mappa',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Eliminare tutte le statistiche? L’operazione non può essere annullata.',
   statsConfirm: 'Elimina',
   statsResetDone: 'Statistiche eliminate.',
+  statsRecent: 'Ultimi fogli (% giusto)',
 };
 
 export default menu;

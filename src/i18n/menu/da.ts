@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Niveauet afhænger af, hvor kendt hovedstaden (eller landet) er, målt i visninger på Wikipedia.',
 
   statsSection: 'Statistik',
-  statsShow: 'Vis statistik',
-  statsHide: 'Skjul statistik',
   statsSkillCapital: 'Skrive hovedstæder',
   statsSkillMapCapital: 'Hovedstæder på kortet',
   statsSkillMapCountry: 'Lande på kortet',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Slet al statistik? Det kan ikke fortrydes.',
   statsConfirm: 'Slet',
   statsResetDone: 'Statistikken er slettet.',
+  statsRecent: 'Seneste ark (% rigtigt)',
 };
 
 export default menu;

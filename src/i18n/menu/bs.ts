@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Nivo zavisi od toga koliko je poznat glavni grad (ili država), mjereno pregledima na Wikipediji.',
 
   statsSection: 'Statistika',
-  statsShow: 'Prikaži statistiku',
-  statsHide: 'Sakrij statistiku',
   statsSkillCapital: 'Pisanje glavnih gradova',
   statsSkillMapCapital: 'Glavni gradovi na karti',
   statsSkillMapCountry: 'Države na karti',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Izbrisati svu statistiku? Ovo se ne može poništiti.',
   statsConfirm: 'Izbriši',
   statsResetDone: 'Statistika je izbrisana.',
+  statsRecent: 'Posljednji listovi (% tačno)',
 };
 
 export default menu;

@@ -63,6 +63,7 @@ test('finished menu texts have no placeholders left', () => {
       st.weakItem('A', 'B', 30, 1),
       st.weakItem('A', 'B', 30, 4),
       st.region('X', 1, 2, 3),
+      st.recent,
     ];
     for (const t of texts) {
       expect([lang.code, t]).toEqual([lang.code, expect.not.stringMatching(/\{\w+\}/)]);

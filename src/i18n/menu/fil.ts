@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Nakadepende ang antas sa kung gaano kakilala ang kabisera (o bansa), batay sa dami ng view ng pahina nito sa Wikipedia.',
 
   statsSection: 'Estadistika',
-  statsShow: 'Ipakita ang estadistika',
-  statsHide: 'Itago ang estadistika',
   statsSkillCapital: 'Pagsulat ng kabisera',
   statsSkillMapCapital: 'Mga kabisera sa mapa',
   statsSkillMapCountry: 'Mga bansa sa mapa',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Burahin ang lahat ng estadistika? Hindi na ito maibabalik.',
   statsConfirm: 'Burahin',
   statsResetDone: 'Nabura na ang estadistika.',
+  statsRecent: 'Pinakabagong mga pahina (% tama)',
 };
 
 export default menu;

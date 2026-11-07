@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Poziom zależy od tego, jak znana jest stolica (lub kraj), mierzonego liczbą wyświetleń strony w Wikipedii.',
 
   statsSection: 'Statystyki',
-  statsShow: 'Pokaż statystyki',
-  statsHide: 'Ukryj statystyki',
   statsSkillCapital: 'Wpisywanie stolic',
   statsSkillMapCapital: 'Stolice na mapie',
   statsSkillMapCountry: 'Kraje na mapie',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Usunąć wszystkie statystyki? Tej operacji nie można cofnąć.',
   statsConfirm: 'Usuń',
   statsResetDone: 'Statystyki zostały usunięte.',
+  statsRecent: 'Ostatnie arkusze (% dobrze)',
 };
 
 export default menu;

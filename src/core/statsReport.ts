@@ -6,7 +6,18 @@ import {CONTINENT_OF, CONTINENTS, COUNTRY_CODES, type CountryCode} from '../data
 import type {Language} from '../i18n';
 import {countryIn} from './countries';
 import type {Region} from './sheet';
-import {computeStats, sessions, summarize, weakest, type SessionSummary, type SheetRecord, type Skill, type Summary} from './stats';
+import {
+  computeStats,
+  recentSheets,
+  sessions,
+  summarize,
+  weakest,
+  type SessionSummary,
+  type SheetRecord,
+  type SheetResult,
+  type Skill,
+  type Summary,
+} from './stats';
 
 export interface WeakCountry {
   code: CountryCode;
@@ -25,6 +36,8 @@ export interface StatsReport {
   /** Summary for the region selected in the menu. */
   focus: {region: Region; summary: Summary};
   weakest: WeakCountry[];
+  /** The latest graded sheets, oldest first. */
+  recent: SheetResult[];
 }
 
 export function codesIn(region: Region): CountryCode[] {
@@ -38,6 +51,7 @@ export function statsReport(
   focus: Region,
   now: number,
   weakLimit = 5,
+  recentLimit = 10,
 ): StatsReport {
   const stats = computeStats(records, skill);
   const regions = [...CONTINENTS, 'ALL' as const].map(region => ({region, summary: summarize(stats, codesIn(region), now)}));
@@ -56,5 +70,6 @@ export function statsReport(
         attempts: s.attempts,
       };
     }),
+    recent: recentSheets(records, skill, recentLimit),
   };
 }

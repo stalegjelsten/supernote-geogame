@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Рівень залежить від того, наскільки відома столиця (або країна), за переглядами сторінок у Вікіпедії.',
 
   statsSection: 'Статистика',
-  statsShow: 'Показати статистику',
-  statsHide: 'Сховати статистику',
   statsSkillCapital: 'Написання столиць',
   statsSkillMapCapital: 'Столиці на карті',
   statsSkillMapCountry: 'Країни на карті',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Видалити всю статистику? Цю дію не можна скасувати.',
   statsConfirm: 'Видалити',
   statsResetDone: 'Статистику видалено.',
+  statsRecent: 'Останні аркуші (% правильно)',
 };
 
 export default menu;

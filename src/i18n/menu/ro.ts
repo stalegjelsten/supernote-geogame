@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Nivelul depinde de cât de cunoscută este capitala (sau țara), măsurat după vizualizările paginii de Wikipedia.',
 
   statsSection: 'Statistici',
-  statsShow: 'Arată statisticile',
-  statsHide: 'Ascunde statisticile',
   statsSkillCapital: 'Scrierea capitalelor',
   statsSkillMapCapital: 'Capitale pe hartă',
   statsSkillMapCountry: 'Țări pe hartă',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Ștergi toate statisticile? Acțiunea nu poate fi anulată.',
   statsConfirm: 'Șterge',
   statsResetDone: 'Statisticile au fost șterse.',
+  statsRecent: 'Ultimele foi (% corect)',
 };
 
 export default menu;

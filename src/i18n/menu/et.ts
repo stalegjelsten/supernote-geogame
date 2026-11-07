@@ -99,8 +99,6 @@ const menu: MenuStrings = {
   levelHint: 'Tase sõltub sellest, kui tuntud on pealinn (või riik), mõõdetuna Vikipeedia lehtede vaatamistega.',
 
   statsSection: 'Statistika',
-  statsShow: 'Näita statistikat',
-  statsHide: 'Peida statistika',
   statsSkillCapital: 'Pealinnade kirjutamine',
   statsSkillMapCapital: 'Pealinnad kaardil',
   statsSkillMapCountry: 'Riigid kaardil',
@@ -120,6 +118,7 @@ const menu: MenuStrings = {
   statsConfirmReset: 'Kas kustutada kogu statistika? Seda ei saa tagasi võtta.',
   statsConfirm: 'Kustuta',
   statsResetDone: 'Statistika kustutatud.',
+  statsRecent: 'Viimased lehed (% õigesti)',
 };
 
 export default menu;
