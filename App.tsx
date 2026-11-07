@@ -99,26 +99,39 @@ function Button({
   selected,
   primary,
   disabled,
+  running,
 }: {
   label: string;
   onPress: () => void;
   selected?: boolean;
   primary?: boolean;
   disabled?: boolean;
+  /** This button started what is running now: it stays black and gets "…", while the others go gray. */
+  running?: boolean;
 }) {
   const filled = selected || primary;
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled}
-      style={[
+      style={({pressed}) => [
         styles.button,
         filled && styles.buttonFilled,
-        disabled && styles.buttonDisabled,
+        disabled && !running && styles.buttonDisabled,
+        // Inverted while the pen is on it, so the tap shows at once on e-ink.
+        pressed && (filled ? styles.buttonPressedFilled : styles.buttonFilled),
+        running && styles.buttonRunning,
       ]}>
-      <Text style={[styles.buttonText, filled && styles.buttonTextFilled]}>
-        {label}
-      </Text>
+      {({pressed}) => (
+        <Text
+          style={[
+            styles.buttonText,
+            (filled || pressed || running) && styles.buttonTextFilled,
+            pressed && filled && styles.buttonTextPressedFilled,
+          ]}>
+          {running ? `${label} …` : label}
+        </Text>
+      )}
     </Pressable>
   );
 }
@@ -166,12 +179,15 @@ function App(): React.JSX.Element {
   }, []);
   const pageCount = Math.ceil(actualCount / perPage);
   const [status, setStatus] = useState<Status>({kind: 'idle'});
+  /** Which button started what is running now. */
+  const [running, setRunning] = useState<'make' | 'gradePage' | 'gradeSet' | null>(null);
   const [allLanguages, setAllLanguages] = useState(false);
   // Without "all languages", only automatic, the chosen language and the device language are shown.
   const shownLanguages = allLanguages
     ? MENU_LANGUAGES
     : MENU_LANGUAGES.filter(l => l.code === choice || l.code === device.code);
   const busy = status.kind === 'busy';
+  const runningNow = busy ? running : null;
 
   const [tab, setTab] = useState<Tab>('game');
 
@@ -242,6 +258,7 @@ function App(): React.JSX.Element {
   const make = async () => {
     let target: 'here' | 'newPage';
     try {
+      setRunning('make');
       setStatus({kind: 'busy', message: ui.checkingPage});
       target = await sheetTarget();
     } catch (e) {
@@ -321,6 +338,7 @@ function App(): React.JSX.Element {
 
   const grade = (scope: 'page' | 'set') =>
     run(async () => {
+      setRunning(scope === 'page' ? 'gradePage' : 'gradeSet');
       setStatus({kind: 'busy', message: ui.startingGrading});
       const started = Date.now();
       const progress = (message: string) => setStatus({kind: 'busy', message});
@@ -395,6 +413,36 @@ function App(): React.JSX.Element {
           </Pressable>
         ))}
       </View>
+
+      {/* The status sits right under the tabs, not at the bottom of the menu, so it is
+          always on screen: on Manta the bottom of the menu is below the edge. */}
+      {status.kind === 'busy' && (
+        <View style={styles.busyBar}>
+          <Text style={styles.busyText}>{status.message}</Text>
+        </View>
+      )}
+      {status.kind === 'done' && (
+        <View style={styles.statusBar}>
+          <View style={styles.statusHead}>
+            <Text style={[styles.score, styles.statusText]}>{status.message}</Text>
+            <Pressable onPress={() => setStatus({kind: 'idle'})} style={styles.close}>
+              <Text style={styles.closeText}>✕</Text>
+            </Pressable>
+          </View>
+          {status.detail ? <Text style={styles.message}>{status.detail}</Text> : null}
+          <Button label={ui.showSheet} primary onPress={close} />
+        </View>
+      )}
+      {status.kind === 'error' && (
+        <View style={styles.statusBar}>
+          <View style={styles.statusHead}>
+            <Text style={[styles.message, styles.statusText]}>{ui.somethingWrong(status.message)}</Text>
+            <Pressable onPress={() => setStatus({kind: 'idle'})} style={styles.close}>
+              <Text style={styles.closeText}>✕</Text>
+            </Pressable>
+          </View>
+        </View>
+      )}
 
       <ScrollView contentContainerStyle={styles.body}>
         {tab === 'game' && (
@@ -643,6 +691,7 @@ function App(): React.JSX.Element {
               primary
               onPress={make}
               disabled={busy}
+              running={runningNow === 'make'}
             />
 
 
@@ -655,6 +704,7 @@ function App(): React.JSX.Element {
                 primary
                 onPress={() => grade('page')}
                 disabled={busy}
+                running={runningNow === 'gradePage'}
               />
               {(mode === 'table' || (mode === 'map' && players > 1)) && (
                 <Button
@@ -662,31 +712,11 @@ function App(): React.JSX.Element {
                   primary
                   onPress={() => grade('set')}
                   disabled={busy}
+                  running={runningNow === 'gradeSet'}
                 />
               )}
             </View>
 
-            {status.kind === 'busy' && (
-              <View style={styles.box}>
-                <Text style={styles.message}>{status.message}</Text>
-              </View>
-            )}
-            {status.kind === 'done' && (
-              <View style={styles.box}>
-                <Text style={styles.score}>{status.message}</Text>
-                {status.detail ? (
-                  <Text style={styles.message}>{status.detail}</Text>
-                ) : null}
-                <Button label={ui.showSheet} primary onPress={close} />
-              </View>
-            )}
-            {status.kind === 'error' && (
-              <View style={styles.box}>
-                <Text style={styles.message}>
-                  {ui.somethingWrong(status.message)}
-                </Text>
-              </View>
-            )}
           </>
         )}
 
@@ -943,6 +973,24 @@ const styles = StyleSheet.create({
   buttonDisabled: {borderColor: GRAY},
   buttonText: {fontSize: 18, color: BLACK},
   buttonTextFilled: {color: WHITE, fontWeight: '700'},
+  buttonPressedFilled: {backgroundColor: WHITE, borderWidth: 4},
+  buttonTextPressedFilled: {color: BLACK},
+  buttonRunning: {backgroundColor: BLACK, borderColor: BLACK, borderWidth: 4},
+  busyBar: {
+    backgroundColor: BLACK,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+  },
+  busyText: {fontSize: 24, fontWeight: '700', color: WHITE},
+  statusBar: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    gap: 10,
+    borderBottomWidth: 4,
+    borderColor: BLACK,
+  },
+  statusHead: {flexDirection: 'row', alignItems: 'flex-start', gap: 10},
+  statusText: {flex: 1},
   divider: {height: 2, backgroundColor: BLACK, marginVertical: 8},
   box: {
     borderWidth: 2,
