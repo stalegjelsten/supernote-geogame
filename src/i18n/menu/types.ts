@@ -26,7 +26,7 @@ export interface MenuStrings {
   makeOnNewPage: string;
   putOnThisPage: string;
   cancel: string;
-  doneWriting: string;
+  checkAnswers: string;
   gradePage: string;
   gradeSet: string;
   showSheet: string;
@@ -114,6 +114,19 @@ export interface MenuStrings {
   levelMedium: string;
   levelHard: string;
   levelHint: string;
+
+  // Training (training.ts)
+  trainingLabel: string;
+  trainingRandom: string;
+  trainingSmart: string;
+  trainingWeak: string;
+  trainingDue: string;
+  trainingNew: string;
+  trainingRandomHint: string;
+  trainingSmartHint: string;
+  trainingWeakHint: string;
+  trainingDueHint: string;
+  trainingNewHint: string;
 
   // Statistics (stats.ts)
   statsSection: string;

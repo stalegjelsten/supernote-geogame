@@ -68,7 +68,14 @@ Every grading of a single-player sheet is saved: which countries, which skill (w
 - **Level:** a country is *new* until it has been practiced, and *known* after three passes in a row (score at least 0.7, so "almost" counts; Leitner box 3). The box also decides when the country is due for review (0, 1, 3, 7, 14, 30 and 60 days).
 - **In the menu** the **Statistics** tab shows, for the chosen skill (it follows the selected game, but you can pick another), the average score, the number of graded sheets and how many countries in the selected continent are due for review. Once two or more sheets are graded, a column chart shows the score on the last ten. Each continent, and the whole world, gets a bar with known (black), learning (gray) and new (white) countries; tap one to see up to five countries you should practice more. **Reset statistics** deletes everything (with confirmation).
 - **Storage:** the SDK cannot write file contents, so each graded sheet is stored as an empty folder with the result encoded in its name, in `<plugin folder>/stats/` (e.g. `g1.t.<time>.<key>.noz…`). At most 3000 entries; the oldest are deleted first. Nothing is sent from the device.
-- **Training modes:** `src/core/training.ts` has strategies for choosing countries for new sheets based on the statistics. `createSheet` and `createMapSheet` accept a strategy, but the menu has no option for it yet, so sheets are still drawn at random.
+- **Practice:** the **Practice** choice in the menu decides which countries a new single-player sheet gets, using the statistics for the skill being practiced (`src/core/training.ts`):
+  - **Smart** (default) – mostly countries due for review and countries you struggle with, plus a few new ones. With no statistics yet, it draws like Random.
+  - **Weak** – the countries with the lowest score, filled up with new ones if there are few.
+  - **Review** – the countries that are due on the review schedule.
+  - **New** – countries you have never practiced.
+  - **Random** – all countries equally likely; the statistics are not used.
+
+  The countries are drawn at random in proportion to a weight, so sheets vary even when the same countries are prioritized, and the level and continent still decide which countries can be drawn. Multiplayer sheets are always drawn at random, since the statistics belong to one player.
 
 ## Development
 

@@ -35,6 +35,8 @@ import {mapTexts, type MapEntryStyle} from './src/i18n/map';
 import {hotSeatTexts} from './src/i18n/hotseat';
 import {levelTexts} from './src/i18n/level';
 import {LEVELS, type Level} from './src/core/fairDraw';
+import {trainingTexts} from './src/i18n/training';
+import {STRATEGIES, type Strategy} from './src/core/training';
 import {
   PLAYER_COUNTS,
   sharedCount,
@@ -131,11 +133,16 @@ function App(): React.JSX.Element {
   const lt = levelTexts(t);
   const ot = outlineTexts(t);
   const [level, setLevel] = useState<Level>('mixed');
+  const tt = trainingTexts(t);
+  // Smart by default: with no statistics yet it draws like random.
+  const [strategy, setStrategy] = useState<Strategy>('smart');
   const [players, setPlayers] = useState<number>(1);
   const [playMode, setPlayMode] = useState<PlayMode>('pass');
   const [mode, setMode] = useState<Mode>('table');
   // Outline sheets are for one player.
   const game = players > 1 && mode !== 'outline' ? {mode: playMode, players} : undefined;
+  // The statistics belong to one player, so multiplayer sheets are always drawn at random.
+  const usedStrategy: Strategy = game ? 'random' : strategy;
   const [region, setRegion] = useState<Region>('EU');
   const [count, setCount] = useState<Count>(20);
   const [mapCount, setMapCount] = useState<number>(MAP_SHEET_COUNT);
@@ -250,7 +257,7 @@ function App(): React.JSX.Element {
           scale: outlineScale,
           rotation: outlineRotation,
           level,
-        });
+        }, usedStrategy);
         return {message: ot.ui.made(r.count)};
       }
       if (mode === 'map') {
@@ -259,7 +266,7 @@ function App(): React.JSX.Element {
           region,
           target,
           progress,
-          {count: mapCount, style: mapStyle, target: mapTarget, level},
+          {count: mapCount, style: mapStyle, target: mapTarget, level, strategy: usedStrategy},
           game,
         );
         if (game) {
@@ -279,7 +286,7 @@ function App(): React.JSX.Element {
         target,
         progress,
         game,
-        'random',
+        usedStrategy,
         level,
       );
       return {
@@ -563,6 +570,23 @@ function App(): React.JSX.Element {
                   ))}
                 </View>
                 {level !== 'mixed' && <Text style={styles.hint}>{lt.hint}</Text>}
+                {!game && (
+                  <>
+                    <Text style={styles.label}>{tt.label}</Text>
+                    <View style={styles.grid}>
+                      {STRATEGIES.map(st => (
+                        <Button
+                          key={st}
+                          label={tt.names[st]}
+                          selected={st === strategy}
+                          onPress={() => setStrategy(st)}
+                          disabled={busy}
+                        />
+                      ))}
+                    </View>
+                    <Text style={styles.hint}>{tt.hints[strategy]}</Text>
+                  </>
+                )}
               </>
             )}
             {mode !== 'outline' && (
@@ -624,7 +648,7 @@ function App(): React.JSX.Element {
 
             <View style={styles.divider} />
 
-            <Text style={styles.section}>{ui.doneWriting}</Text>
+            <Text style={styles.section}>{ui.checkAnswers}</Text>
             <View style={styles.grid}>
               <Button
                 label={ui.gradePage}

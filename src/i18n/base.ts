@@ -49,7 +49,7 @@ function menuUi(m: MenuStrings): Language['ui'] {
     makeOnNewPage: m.makeOnNewPage,
     putOnThisPage: m.putOnThisPage,
     cancel: m.cancel,
-    doneWriting: m.doneWriting,
+    checkAnswers: m.checkAnswers,
     gradePage: m.gradePage,
     gradeSet: m.gradeSet,
     showSheet: m.showSheet,
