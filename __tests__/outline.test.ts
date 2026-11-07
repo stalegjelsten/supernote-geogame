@@ -1,5 +1,7 @@
 import {COUNTRY_CODES} from '../src/data/countries';
 import {OUTLINES} from '../src/data/outlines';
+import {COUNTRY_ALIASES} from '../src/data/countryAliases';
+import {normalize} from '../src/core/match';
 import {getLanguage, LANGUAGES} from '../src/i18n';
 import {countryIn} from '../src/core/countries';
 import {decodeRings, encodeRings, OUTLINE_GRID} from '../src/core/outlineCodec';
@@ -82,6 +84,33 @@ test('grading accepts the name in the sheet language and in English, not another
   // Writing exactly another country is wrong, even if it looks like the answer.
   const ng = countryIn(nb, 'NG');
   expect(gradeCountryName(ng, 'Niger', nb).verdict).toBe('wrong');
+});
+
+test('other names such as USA and UK are accepted on sheets in any language', () => {
+  const en = getLanguage('en')!;
+  const de = getLanguage('de')!;
+  expect(gradeCountryName(countryIn(en, 'US'), 'USA', en).verdict).toBe('correct');
+  expect(gradeCountryName(countryIn(de, 'US'), 'USA', de).verdict).toBe('correct');
+  expect(gradeCountryName(countryIn(nb, 'GB'), 'UK', nb).verdict).toBe('correct');
+  expect(gradeCountryName(countryIn(nb, 'NL'), 'Holland', nb).verdict).toBe('correct');
+  expect(gradeCountryName(countryIn(en, 'MM'), 'Burma', en).verdict).toBe('correct');
+  // Short aliases need to be exact.
+  expect(gradeCountryName(countryIn(nb, 'GB'), 'UA', nb).verdict).toBe('wrong');
+});
+
+test('no other name is the name of another country in any language', () => {
+  const owner = new Map<string, string>();
+  for (const l of LANGUAGES) {
+    for (const code of COUNTRY_CODES) {
+      owner.set(normalize(countryIn(l, code).name), code);
+    }
+  }
+  for (const [code, names] of Object.entries(COUNTRY_ALIASES)) {
+    for (const name of names!) {
+      const other = owner.get(normalize(name));
+      expect([name, other === undefined || other === code]).toEqual([name, true]);
+    }
+  }
 });
 
 test('the cells fit on the page and do not overlap', () => {

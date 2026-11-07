@@ -28,7 +28,7 @@ Choose **Game: Map** in the menu to mark places with a cross on a high-contrast 
 
 ## Outline quiz
 
-Choose **Game: Outline** to get the outlines of 6, 9, 12, 16 or 20 countries in a grid, and write the name of the country on the line in each box. Grade with **Grade this page**; the name is accepted in the sheet's language and in English, with a few typos allowed ("almost").
+Choose **Game: Outline** to get the outlines of 6, 9, 12, 16 or 20 countries in a grid, and write the name of the country on the line in each box. Grade with **Grade this page**; the name is accepted in the sheet's language and in English, with a few typos allowed ("almost"), and so are common other names such as USA, UK, UAE, Holland and Burma (`src/data/countryAliases.ts`).
 
 - **Size:** large, medium or small outlines.
 - **Scale:** *Fill the box* (every country as large as the box allows), *Fill the box, with scale bar* (the same, with a scale bar in km in each box), or *Relative size*: the countries are drawn in proportion to each other on a logarithmic scale, since on a linear scale most countries become specks next to Russia. A country ten times as long as another is drawn about 1.4 times as large (each factor of ten takes 30 % off the size, down to at least 15 %). These boxes also get a scale bar.
