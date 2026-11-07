@@ -20,7 +20,14 @@ Hvilket spill en side hører til, står først i undertittelen («Spiller 2 av 3
 
 ## Statistikk
 
-Hver retting lagres: hvilket land, hvilken ferdighet (skrive hovedstad, hovedstad på kartet, land på kartet) og hvor godt det gikk. Retter du samme ark på nytt, erstattes den forrige rettingen. Menyen viser statistikk for spillet og verdensdelen som er valgt, og landene du bør øve mer på.
+Hver retting av et ark for én spiller lagres: hvilke land, hvilken ferdighet (skrive hovedstad, hovedstad på kartet, land på kartet), hvor godt det gikk og når. Flerspillerark lagres ikke, siden svarene der tilhører flere spillere.
+
+- **Score per land:** riktig = 1, nesten = 0,8, feil eller blank = 0. På kartet gir hovedsteder poeng/1000 og land riktig/feil; byer du hopper over teller som 0, og byer uten merke tas ikke med.
+- **Ny retting av samme ark** erstatter den forrige. Arket kjennes igjen på notatet og landene på siden, så det tåler at sider flyttes.
+- **Nivå:** et land er *nytt* til det er øvd, og *kan* etter tre riktige på rad (Leitner-boks 3). Boksen bestemmer også når landet bør repeteres (0, 1, 3, 7, 14, 30 og 60 dager).
+- **I menyen** under **Statistikk** vises antall rettede ark, kan/øver på/nye per verdensdel, hvor mange land som skal repeteres og de fem landene du bør øve mer på, for spillet og verdensdelen som er valgt. **Nullstill statistikk** sletter alt (med bekreftelse).
+- **Lagring:** SDK-en kan ikke skrive filinnhold, så hvert rettet ark lagres som en tom mappe med resultatet kodet i navnet, i `<pluginmappe>/stats/` (f.eks. `g1.t.<tid>.<nøkkel>.noz…`). Høyst 3000 poster; de eldste slettes først. Ingenting sendes fra enheten.
+- **Treningsmoduser:** `src/core/training.ts` har strategier for å velge land til nye ark ut fra statistikken. `createSheet` og `createMapSheet` tar imot en strategi, men menyen har ikke noe valg for det ennå, så arkene trekkes fortsatt tilfeldig.
 
 ## Utvikling
 

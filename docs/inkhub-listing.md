@@ -31,6 +31,7 @@ Features
   - Pass around: each player gets their own pages with the same countries, with a hand-over page in between. Grade the whole set to see who won.
   - Take turns: one shared sheet where players answer in turn, each with their own countries. Points per player are shown at the bottom.
 - Fix your answers and grade again as many times as you like.
+- Statistics: every graded single-player sheet is remembered per country. The menu shows how many countries you know, are learning or have not tried yet for each continent, how many are due for review, and which countries to practise more. Writing capitals, capitals on the map and countries on the map are tracked separately. Grading the same sheet again replaces the earlier result, and the statistics can be reset from the menu.
 - 55 languages, following the device language or chosen in the menu.
 - Works fully offline. No data leaves the device.
 
@@ -48,6 +49,11 @@ How to use
 
 Permissions: reads and writes the current note page (to create and grade the sheet).
 
+Stored data: your answer history (country, quiz type, score and time) is kept
+locally in the plugin's own folder, so the statistics survive between sessions.
+Nothing is written to your other files, and nothing is sent anywhere. Reset
+statistics in the menu deletes it.
+
 Data: country names from Unicode CLDR, capitals from Wikidata (CC0), maps from
 Natural Earth (public domain). Maps show de facto boundaries and take no
 position on disputed territories. Open source under the MIT License.
@@ -61,4 +67,5 @@ position on disputed territories. Open source under the MIT License.
 5. Map quiz before grading, with crosses on the map.
 6. Map quiz after grading, with distance in km.
 7. Multiplayer: a graded set with the winner, or a shared sheet with points per player.
-8. (Optional) a sheet in another language, e.g. Japanese or German.
+8. Statistics in the menu: countries known per continent and countries to practise more.
+9. (Optional) a sheet in another language, e.g. Japanese or German.
