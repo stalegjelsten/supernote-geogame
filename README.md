@@ -4,12 +4,23 @@ Supernote plugin for practicing countries and capitals. The plugin creates a wor
 
 > **Made with AI.** All the code in this project was written by AI (Claude from Anthropic, via Claude Code). The same goes for the texts and translations in the plugin. Ståle Gjelsten decided what the plugin should do, directed the work and tested it on a Supernote Manta. Country names, capitals and maps come from open data sources (see [License and data sources](#license-and-data-sources)), not from AI.
 
+## Installation
+
+The plugin has been submitted to InkHub and is pending review. Until it is approved there, you can install it manually:
+
+1. Download `geogame.snplg` from the [latest release](https://github.com/stalegjelsten/supernote-geogame/releases/latest).
+2. Copy the file to your Supernote, for example to the `MyStyle/` folder (via USB, Browse & Access or Supernote Cloud).
+3. On the device, go to **Settings → Apps → Plugins → Select Plugin Package** and choose `geogame.snplg`.
+4. Open a note: **World Capitals Quiz** now appears in the toolbar under **Plugins** (🧩).
+
+To update, install the new `geogame.snplg` from a later release the same way.
+
 ## Usage
 
 1. Open a note. The sheet is created on the current page if it is empty and has a white template or none; otherwise it is created on a new page after it.
-2. Tap **World Capitals Quiz** in the toolbar, choose a continent and a number of countries, and tap **Make sheet**.
+2. Tap **Plugins** (🧩) in the toolbar, then **World Capitals Quiz**, choose a continent and a number of countries, and tap **Make sheet**.
 3. Write the capitals in the middle column.
-4. Tap **World Capitals Quiz → Grade this page**. The result is written in the right column. You can grade again after changing answers.
+4. Tap **Plugins → World Capitals Quiz → Grade this page**. The result is written in the right column. You can grade again after changing answers.
 
 For capitals that are often confused, or where the country has several capitals (for example Tanzania, South Africa, Bolivia and Nigeria), the result cell gets a small number and a short note is printed at the bottom of the sheet. Example: "¹ Dar es Salaam was capital until 1996 and is the largest city." The notes live in `src/i18n/notes.ts` (Norwegian and English; other languages get English).
 
@@ -46,7 +57,7 @@ npm run typecheck
 npm run build     # creates build/outputs/geogame.snplg
 ```
 
-Install by copying `geogame.snplg` to `MyStyle/` on the device and going to Settings → Apps → Plugins → Add plugin. Publish via the upload button in InkHub.
+Install the build the same way as under [Installation](#installation). Publish via the upload button in InkHub.
 
 ## Structure
 
