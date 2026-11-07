@@ -34,7 +34,7 @@ Choose **Game: Outline** to get the outlines of 6, 9, 12, 16 or 20 countries in 
 - **Scale:** *Fill the box* (every country as large as the box allows), *Fill the box, with scale bar* (the same, with a scale bar in km in each box), or *Relative size*: the countries are drawn in proportion to each other on a logarithmic scale, since on a linear scale most countries become specks next to Russia. A country ten times as long as another is drawn about 1.4 times as large (each factor of ten takes 30 % off the size, down to at least 15 %). These boxes also get a scale bar.
 - **Rotation:** none, a little (up to ±35°) or any angle.
 
-The outlines come from Natural Earth 1:10m (public domain). Each country is projected on its own (Lambert azimuthal equal-area centred on the country), overseas parts far from the main part (such as French Guiana) and very small islands are left out, and the shapes are simplified to at most 420 points (`node --no-warnings --import ./scripts/ts-resolve.mjs scripts/gen-outlines.ts`). Which country is in which box is stored in a short code at the bottom of the sheet ("ID o1.nb.…"), so the names don't show. Outline sheets are for one player, and the results are saved in the statistics as **Countries by outline**. Preview a sheet without a device with `scripts/preview-outline-sheet.ts`.
+The outlines come from Natural Earth 1:10m (public domain), and for 30 small countries, where Natural Earth is too coarse to show the shape, from geoBoundaries (open licenses per country, mostly OpenStreetMap under ODbL; see THIRD_PARTY_NOTICES.md). Each country is projected on its own (Lambert azimuthal equal-area centred on the country), overseas parts far from the main part (such as French Guiana) and very small islands are left out, and the shapes are simplified to at most 420 points (`node --no-warnings --import ./scripts/ts-resolve.mjs scripts/gen-outlines.ts`). Which country is in which box is stored in a short code at the bottom of the sheet ("ID o1.nb.…"), so the names don't show. Outline sheets are for one player, and the results are saved in the statistics as **Countries by outline**. Preview a sheet without a device with `scripts/preview-outline-sheet.ts`.
 
 ## Languages
 
@@ -114,4 +114,4 @@ The code is licensed under [MIT](LICENSE). The plugin uses this data (details an
 
 - **Country names**: Unicode CLDR (Unicode License v3)
 - **Capitals and coordinates**: Wikidata (CC0)
-- **Maps and country outlines**: Natural Earth (public domain). The maps show the de facto boundaries and take no position in border disputes.
+- **Maps and country outlines**: Natural Earth (public domain); outlines of small countries from geoBoundaries (OpenStreetMap/ODbL, CC BY and public domain). The maps show the de facto boundaries and take no position in border disputes.

@@ -6,8 +6,13 @@
  *
  * Writes src/data/outlines.ts.
  *
- * Source: Natural Earth 1:10m Admin 0 – Countries (public domain),
- * https://www.naturalearthdata.com. Downloaded to scripts/data/cache/ on first run.
+ * Sources:
+ * - Natural Earth 1:10m Admin 0 – Countries (public domain), https://www.naturalearthdata.com.
+ * - geoBoundaries gbOpen ADM0 (https://www.geoboundaries.org) for small countries, where
+ *   Natural Earth has too few points to show the shape (Monaco has 12). Each of these has its
+ *   own open license (often OpenStreetMap, ODbL); source and license per country are written
+ *   to scripts/data/outline-sources.json and listed in THIRD_PARTY_NOTICES.md.
+ * Downloads are cached in scripts/data/cache/.
  *
  * Each country is projected on its own with a Lambert azimuthal equal-area projection
  * centred on the country, so the shape is not distorted by a world projection and the
@@ -29,6 +34,17 @@ const NE_URL =
   'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson';
 const NE_FILE = path.join(CACHE, 'ne_10m_admin_0_countries.geojson');
 const OUT = path.join(ROOT, 'src/data/outlines.ts');
+
+/**
+ * Countries whose largest ring in Natural Earth has fewer points than this get their outline
+ * from geoBoundaries instead.
+ */
+const GB_THRESHOLD = 150;
+/** geoBoundaries outlines that are worse than Natural Earth (Singapore is pieced together from districts). */
+const GB_SKIP = new Set<CountryCode>(['SG']);
+const GB_API = 'https://www.geoboundaries.org/api/current/gbOpen';
+const GB_CACHE = path.join(CACHE, 'geoboundaries');
+const SOURCES_FILE = path.join(ROOT, 'scripts/data/outline-sources.json');
 
 /** Earth radius in km; the projection works on a unit sphere. */
 const R_KM = 6371;
@@ -250,20 +266,79 @@ function outlineOf(code: CountryCode, lonlatRings: LonLat[][]): Outline {
   };
 }
 
+async function fetchCached(url: string, file: string): Promise<string> {
+  if (!fs.existsSync(file)) {
+    fs.mkdirSync(path.dirname(file), {recursive: true});
+    console.log(`Downloading ${url}`);
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error(`Download failed: ${res.status} ${url}`);
+    }
+    fs.writeFileSync(file, Buffer.from(await res.arrayBuffer()));
+  }
+  return fs.readFileSync(file, 'utf8');
+}
+
+interface GbSource {
+  iso3: string;
+  boundaryID: string;
+  source: string;
+  license: string;
+  licenseSource: string;
+}
+
+/** The outline of a country from geoBoundaries gbOpen ADM0, with its source and license. */
+async function geoBoundaries(iso3: string): Promise<{rings: LonLat[][]; source: GbSource}> {
+  const meta = JSON.parse(await fetchCached(`${GB_API}/${iso3}/ADM0/`, path.join(GB_CACHE, `${iso3}.json`)));
+  const gj = JSON.parse(await fetchCached(meta.gjDownloadURL, path.join(GB_CACHE, `${iso3}.geojson`)));
+  const rings = gj.features.flatMap((f: any) => outerRings(f.geometry));
+  return {
+    rings,
+    source: {
+      iso3,
+      boundaryID: meta.boundaryID,
+      source: meta.boundarySource,
+      license: meta.boundaryLicense,
+      licenseSource: meta.licenseSource,
+    },
+  };
+}
+
 async function main() {
   const ne = await ensureNaturalEarth();
   const byCode = new Map<CountryCode, LonLat[][]>();
+  const iso3 = new Map<CountryCode, string>();
   for (const f of ne.features) {
     const code = codeOf(f);
     if (!code) {
       continue;
     }
     byCode.set(code, [...(byCode.get(code) ?? []), ...outerRings(f.geometry)]);
+    if (f.properties.ISO_A3_EH && f.properties.ISO_A3_EH !== '-99' && !iso3.has(code)) {
+      iso3.set(code, f.properties.ISO_A3_EH);
+    }
   }
   const missing = COUNTRY_CODES.filter(c => !byCode.has(c));
   if (missing.length) {
     throw new Error(`No outline for ${missing.join(', ')}`);
   }
+  // Small countries: more detailed outlines from geoBoundaries.
+  const sources: Record<string, GbSource> = {};
+  for (const code of COUNTRY_CODES) {
+    const largest = Math.max(...byCode.get(code)!.map(r => r.length));
+    if (largest >= GB_THRESHOLD || GB_SKIP.has(code)) {
+      continue;
+    }
+    const gb = await geoBoundaries(iso3.get(code)!);
+    const gbLargest = Math.max(...gb.rings.map(r => r.length));
+    if (gbLargest <= largest) {
+      continue;
+    }
+    byCode.set(code, gb.rings);
+    sources[code] = gb.source;
+  }
+  fs.writeFileSync(SOURCES_FILE, JSON.stringify(sources, null, 2) + '\n');
+  console.log(`geoBoundaries for ${Object.keys(sources).length} countries: ${Object.keys(sources).join(' ')}`);
   const lines: string[] = [];
   let points = 0;
   for (const code of COUNTRY_CODES) {
@@ -277,7 +352,9 @@ async function main() {
  * The rings are in a grid where the largest side is ${OUTLINE_GRID} units, y pointing down,
  * encoded with src/core/outlineCodec.ts. Each country is projected on its own
  * (Lambert azimuthal equal-area centred on the country), so areas can be compared.
- * Source: Natural Earth 1:10m Admin 0 – Countries (public domain).
+ * Sources: Natural Earth 1:10m Admin 0 – Countries (public domain), and for small countries
+ * geoBoundaries gbOpen ADM0 (open licenses per country, mostly OpenStreetMap under ODbL; see
+ * scripts/data/outline-sources.json and THIRD_PARTY_NOTICES.md).
  */
 import type {CountryCode} from './countries';
 

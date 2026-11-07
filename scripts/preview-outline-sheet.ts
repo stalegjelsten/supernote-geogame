@@ -3,7 +3,9 @@
  * and, with "graded", the results as if some answers were written.
  *
  *   node --no-warnings --import ./scripts/ts-resolve.mjs scripts/preview-outline-sheet.ts \
- *     [region] [language] [count] [large|medium|small] [fit|same] [none|some|any] [manta|nomad] [graded]
+ *     [region] [language] [count] [large|medium|small] [fit|bar|log] [none|some|any] [manta|nomad] [graded]
+ *
+ * CODES=MC,VA,SM (environment) draws exactly those countries.
  *
  * Writes build/preview/omriss-<region>.svg and .png (PNG requires rsvg-convert).
  */
@@ -23,6 +25,8 @@ import {
   type OutlineSize,
 } from '../src/core/outlineSheet.ts';
 import type {Draft} from '../src/core/draft.ts';
+import {countryIn} from '../src/core/countries.ts';
+import type {CountryCode} from '../src/data/countries.ts';
 import type {Region} from '../src/core/sheet.ts';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -42,10 +46,10 @@ const random = () => {
   return (seed - 1) / 2147483646;
 };
 
-const countries =
-  region === ('WORLD' as Region)
-    ? pickOutlineCountries(lang, 'ALL', count, random)
-    : pickOutlineCountries(lang, region, count, random);
+// CODES=MC,VA,SM … draws exactly these countries.
+const countries = process.env.CODES
+  ? process.env.CODES.split(',').map(code => countryIn(lang, code as CountryCode))
+  : pickOutlineCountries(lang, region, count, random);
 const placements = countries.map(c => ({code: c.code, angle: randomAngle(rotation, random)}));
 const sheet = outlineSheetDrafts(PAGE, lang, region, placements, {size, scale});
 // "Answers": right, a typo, and wrong, in turn.

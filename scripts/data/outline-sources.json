@@ -1,0 +1,212 @@
+{
+  "AD": {
+    "iso3": "AND",
+    "boundaryID": "AND-ADM0-62012451",
+    "source": "geoBoundaries, Wikimedia Commons",
+    "license": "Public Domain",
+    "licenseSource": "commons.wikimedia.org/wiki/File"
+  },
+  "LI": {
+    "iso3": "LIE",
+    "boundaryID": "LIE-ADM0-60073359",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "MT": {
+    "iso3": "MLT",
+    "boundaryID": "MLT-ADM0-38034468",
+    "source": "geoBoundaries, Wikimedia Commons",
+    "license": "Public Domain",
+    "licenseSource": "commons.wikimedia.org/wiki/File"
+  },
+  "MC": {
+    "iso3": "MCO",
+    "boundaryID": "MCO-ADM0-9783051",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "SM": {
+    "iso3": "SMR",
+    "boundaryID": "SMR-ADM0-7152903",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "VA": {
+    "iso3": "VAT",
+    "boundaryID": "VAT-ADM0-52476719",
+    "source": "geoBoundaries, Wikimedia Commons",
+    "license": "Public Domain",
+    "licenseSource": "upload.wikimedia.org/wikipedia/commons/9/9c/Flag_map_of_Vatican_City.svg"
+  },
+  "BH": {
+    "iso3": "BHR",
+    "boundaryID": "BHR-ADM0-88433195",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "BN": {
+    "iso3": "BRN",
+    "boundaryID": "BRN-ADM0-51999400",
+    "source": "Wikimedia Commons",
+    "license": "Public Domain",
+    "licenseSource": "commons.wikimedia.org/wiki/File"
+  },
+  "MV": {
+    "iso3": "MDV",
+    "boundaryID": "MDV-ADM0-21348113",
+    "source": "Sentinel-2 10-Meter Land Use/LandCover",
+    "license": "Creative Commons Attribution 4.0 (CC BY 4.0)",
+    "licenseSource": "sentinel.esa.int/documents/247904/690755/Sentinel_Data_Legal_Notice"
+  },
+  "SZ": {
+    "iso3": "SWZ",
+    "boundaryID": "SWZ-ADM0-58888499",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "CV": {
+    "iso3": "CPV",
+    "boundaryID": "CPV-ADM0-57358268",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "KM": {
+    "iso3": "COM",
+    "boundaryID": "COM-ADM0-59328049",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "MU": {
+    "iso3": "MUS",
+    "boundaryID": "MUS-ADM0-6221475",
+    "source": "OpenStreetMap, Wambachers",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "ST": {
+    "iso3": "STP",
+    "boundaryID": "STP-ADM0-85558007",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "SC": {
+    "iso3": "SYC",
+    "boundaryID": "SYC-ADM0-56145704",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "AG": {
+    "iso3": "ATG",
+    "boundaryID": "ATG-ADM0-82762519",
+    "source": "geoBoundaries, Wikimedia",
+    "license": "Public Domain",
+    "licenseSource": "commons.wikimedia.org/wiki/File"
+  },
+  "BB": {
+    "iso3": "BRB",
+    "boundaryID": "BRB-ADM0-86514546",
+    "source": "geoBoundaries, Wikimedia",
+    "license": "Creative Commons Attribution 2.5 Generic",
+    "licenseSource": "commons.wikimedia.org/wiki/File"
+  },
+  "DM": {
+    "iso3": "DMA",
+    "boundaryID": "DMA-ADM0-26965486",
+    "source": "geoBoundaries, Wikimedia Commons",
+    "license": "Creative Commons Attribution 2.5 Generic",
+    "licenseSource": "commons.wikimedia.org/wiki/File"
+  },
+  "GD": {
+    "iso3": "GRD",
+    "boundaryID": "GRD-ADM0-78934639",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "KN": {
+    "iso3": "KNA",
+    "boundaryID": "KNA-ADM0-85017041",
+    "source": "geoBoundaries, Wikimedia Commons",
+    "license": "Creative Commons Attribution 2.5 Generic",
+    "licenseSource": "commons.wikimedia.org/wiki/File"
+  },
+  "LC": {
+    "iso3": "LCA",
+    "boundaryID": "LCA-ADM0-98054014",
+    "source": "geoBoundaries, Wikimedia Commons",
+    "license": "Public Domain",
+    "licenseSource": "commons.wikimedia.org/wiki/File"
+  },
+  "VC": {
+    "iso3": "VCT",
+    "boundaryID": "VCT-ADM0-27863697",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "KI": {
+    "iso3": "KIR",
+    "boundaryID": "KIR-ADM0-77750713",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "MH": {
+    "iso3": "MHL",
+    "boundaryID": "MHL-ADM0-89087692",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "FM": {
+    "iso3": "FSM",
+    "boundaryID": "FSM-ADM0-75748993",
+    "source": "OCHA ROP, Federated States of Micronesia Division of Statistics, 2010 Census of Population and Housing and Secretariat of the Pacific Community, Statistics for Development Division",
+    "license": "Creative Commons Attribution 3.0 Intergovernmental Organisations (CC BY 3.0 IGO)",
+    "licenseSource": "Data https"
+  },
+  "NR": {
+    "iso3": "NRU",
+    "boundaryID": "NRU-ADM0-75428603",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "PW": {
+    "iso3": "PLW",
+    "boundaryID": "PLW-ADM0-91809328",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "WS": {
+    "iso3": "WSM",
+    "boundaryID": "WSM-ADM0-28090321",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "TO": {
+    "iso3": "TON",
+    "boundaryID": "TON-ADM0-98642404",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  },
+  "TV": {
+    "iso3": "TUV",
+    "boundaryID": "TUV-ADM0-95523829",
+    "source": "OpenStreetMap, Wambacher",
+    "license": "Open Data Commons Open Database License 1.0",
+    "licenseSource": "www.openstreetmap.org/copyright"
+  }
+}
