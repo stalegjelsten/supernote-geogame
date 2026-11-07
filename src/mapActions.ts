@@ -59,6 +59,13 @@ import {
   type PageElement,
   type PageRef,
 } from './sdk/notes';
+import {recordResults, trainingOrder} from './actions';
+import {mapPointsScore, type Attempt, type Skill} from './core/stats';
+import type {Strategy} from './core/training';
+
+/** Ferdigheten et kartark øver på. */
+export const skillOfTarget = (target: MapTarget): Skill =>
+  target === 'country' ? 'mapCountry' : 'mapCapital';
 
 export type Progress = (message: string) => void;
 
@@ -86,6 +93,8 @@ export interface MapSheetOptions {
   target: MapTarget;
   /** Nivå etter kjenthet; blandet hvis ikke oppgitt. */
   level?: Level;
+  /** Hvordan landene velges (se core/training.ts). Standard: tilfeldig. */
+  strategy?: Strategy;
 }
 
 /** Lager et kartark på denne siden eller en ny side etter den. */
@@ -110,6 +119,7 @@ export async function createMapSheet(
     multi?.mode === 'shared'
       ? sharedCount(options.count, multi.players)
       : options.count;
+  // Bytt på: rettferdig trekning (treningsmodusen gjelder én spiller og brukes ikke der).
   const countries =
     multi?.mode === 'shared'
       ? pickFairMapCountries(
@@ -128,6 +138,10 @@ export async function createMapSheet(
           count,
           Math.random,
           undefined,
+          await trainingOrder(
+            skillOfTarget(options.target),
+            options.strategy ?? 'random',
+          ),
           options.level,
           options.target,
         );
@@ -461,5 +475,26 @@ async function gradeMapPage(
   progress(ui.progress.writingResults);
   await insertDrafts(ref, drafts);
   await saveNote();
+  // Statistikk: byer som ble hoppet over, teller som «kunne ikke»;
+  // byer uten merke tas ikke med (merket kan ha falt utenfor kartet).
+  const attempts: Attempt[] = grade.results.flatMap(r =>
+    r.assignment.kind === 'missing'
+      ? []
+      : [
+          {
+            code: r.country.code,
+            score:
+              target === 'country'
+                ? r.correct
+                  ? 1
+                  : 0
+                : mapPointsScore(r.points),
+          },
+        ],
+  );
+  // Statistikk bare for én spiller; på flerspillerark tilhører svarene flere.
+  if (!tag) {
+    await recordResults(ref.notePath, skillOfTarget(target), attempts);
+  }
   return {points: grade.points, max: grade.max, target, players};
 }

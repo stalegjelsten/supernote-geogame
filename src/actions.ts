@@ -2,6 +2,8 @@ import {countryIn, findCountryByName, pickSheetLanguage, type Country} from './c
 import {currentLanguage, type Language} from './i18n';
 import type {Level} from './core/fairDraw';
 import {hotSeatTexts} from './i18n/hotseat';
+import {capitalNotes} from './i18n/notes';
+import {isNotesText, planNotes} from './core/notes';
 import {
   parseGameTag,
   parseRowLabel,
@@ -18,6 +20,7 @@ import {
 } from './core/hotseat';
 import {assignToRows, boxOf, nearestRow} from './core/grouping';
 import {splitByRows} from './core/lines';
+import {isBlankTemplate} from './core/template';
 import {inside, markColor, markLayout, markStrokes, strokeAsPolygon} from './core/marks';
 import {
   centeredTextRect,
@@ -25,6 +28,8 @@ import {
   fitFontSize,
   guessLayoutVersion,
   maxRowsPerPage,
+  textWidthEm,
+  type SheetLayout,
   type Rect,
   type Size,
 } from './core/layout';
@@ -53,6 +58,7 @@ import {
   deleteElements,
   ensurePermissions,
   getPageElements,
+  pageTemplateName,
   insertBlankPages,
   insertDrafts,
   jumpToPage,
@@ -64,6 +70,9 @@ import {
   type PageElement,
   type PageRef,
 } from './sdk/notes';
+import {computeStats, sheetKey, verdictScore, type Attempt, type Skill} from './core/stats';
+import {orderForTraining, type Strategy} from './core/training';
+import {loadRecords, saveRecord} from './sdk/statsStore';
 
 /** Strekbredde for tabellinjer; se kommentaren i createSheet. */
 const LINE_WIDTH = 200;
@@ -73,11 +82,42 @@ const MARK_WIDTH = 300;
 
 export type Progress = (message: string) => void;
 
-/** Antall elementer på siden, så UI-et kan advare før det skrives over en side med innhold. */
-export async function countElementsOnPage(): Promise<number> {
+/**
+ * Rekkefølgen land skal trekkes i for en treningsmodus, eller undefined for
+ * vanlig tilfeldig trekning. Leser statistikken for ferdigheten.
+ */
+export async function trainingOrder(
+  skill: Skill,
+  strategy: Strategy,
+): Promise<((pool: Country[]) => Country[]) | undefined> {
+  if (strategy === 'random') {
+    return undefined;
+  }
+  const stats = computeStats(await loadRecords(), skill);
+  const now = Date.now();
+  return pool => orderForTraining(pool, stats, strategy, now);
+}
+
+/** Lagrer resultatene fra en rettet side. Feil i lagringen stopper aldri rettingen. */
+export async function recordResults(notePath: string, skill: Skill, attempts: Attempt[]): Promise<void> {
+  if (!attempts.length) {
+    return;
+  }
+  const key = sheetKey(notePath, skill, attempts.map(a => a.code));
+  await saveRecord({skill, time: Date.now(), key, attempts});
+}
+
+/**
+ * Hvor et nytt ark skal lages: på siden du står på hvis den er tom og har hvit
+ * eller ingen mal, ellers på en ny side etter den.
+ */
+export async function sheetTarget(): Promise<'here' | 'newPage'> {
   await ensurePermissions();
   const ref = await currentPage();
-  return (await getPageElements(ref)).length;
+  if ((await getPageElements(ref)).length > 0) {
+    return 'newPage';
+  }
+  return isBlankTemplate(await pageTemplateName(ref)) ? 'here' : 'newPage';
 }
 
 /** Tekst som er loddrett midtstilt i cellen og krympet til den får plass. */
@@ -203,6 +243,7 @@ export interface CreateSummary {
 
 /**
  * Lager et arbeidsark på språket `lang`, fordelt på flere sider hvis det er mer enn 20 land.
+ * `strategy` velger landene (se core/training.ts); 'random' trekker tilfeldig.
  * @param where 'here' = første side på nåværende side, resten på nye sider etter den;
  *   'newPage' = alle sidene på nye sider rett etter nåværende side.
  */
@@ -213,6 +254,7 @@ export async function createSheet(
   where: 'here' | 'newPage',
   progress: Progress,
   game?: Game,
+  strategy: Strategy = 'random',
   level: Level = 'mixed',
 ): Promise<CreateSummary> {
   await ensurePermissions();
@@ -220,11 +262,12 @@ export async function createSheet(
   const ui = currentLanguage();
   const multi = game && game.players > 1 ? game : undefined;
   const n = multi?.mode === 'shared' ? sharedCount(count, multi.players, regionSize(region)) : count;
-  // Bytt på: hver spiller får egne land, trukket så alle får omtrent like kjente.
+  // Bytt på: hver spiller får egne land, trukket så alle får omtrent like kjente
+  // (treningsmodusen brukes ikke der, siden spillerne har ulik statistikk).
   const countries =
     multi?.mode === 'shared'
       ? pickFairCountries(lang, region, n, multi.players, Math.random, level)
-      : pickCountries(lang, region, n, Math.random, level);
+      : pickCountries(lang, region, n, Math.random, await trainingOrder('capital', strategy), level);
   // Færre land per side på mindre sider (Nomad, A5X), så radene blir høye nok til å skrive i.
   const chunks = splitIntoPages(countries, maxRowsPerPage(ref.size));
   if (multi?.mode === 'pass') {
@@ -569,7 +612,8 @@ async function gradePage(
       if (e.type === TYPE_TEXT && e.textBox?.textContentFull) {
         const r = e.textBox.textRect;
         const center = {x: (r.left + r.right) / 2, y: (r.top + r.bottom) / 2};
-        return inside(center, resultArea) || isResultText(e.textBox.textContentFull);
+        const t = e.textBox.textContentFull;
+        return inside(center, resultArea) || isResultText(t) || isNotesText(t);
       }
       if (e.type === TYPE_GEO && e.geometry?.points?.length) {
         return e.geometry.points.every(p => inside(p, resultArea));
@@ -580,22 +624,7 @@ async function gradePage(
   await deleteElements(ref, old);
 
   progress(ui.progress.writingResults);
-  let points = 0;
-  const drafts: Draft[] = [];
-  for (const g of graded) {
-    if (isPoint(g.result)) {
-      points++;
-    }
-    const kind = resultMark(g.result);
-    const {mark, text: textCell} = markLayout(L.rows[g.row].result, kind);
-    for (const stroke of markStrokes(kind, mark, g.row + 1)) {
-      drafts.push({kind: 'path', points: strokeAsPolygon(stroke), color: markColor(kind), width: MARK_WIDTH});
-    }
-    const text = resultText(g.country, g.recognized, g.result, lang);
-    if (text) {
-      drafts.push(cellText(text, textCell, L.fontSize, {bold: g.result.verdict !== 'wrong'}));
-    }
-  }
+  const points = graded.filter(g => isPoint(g.result)).length;
   const total = graded.length;
   let players: PlayerScore[] | undefined;
   let scoreText = lang.sheet.score(points, total);
@@ -609,17 +638,68 @@ async function gradePage(
     );
     scoreText = `${lang.sheet.scorePrefix} ${hotSeatTexts(lang).scoreLine(players)}`;
   }
+  const scoreFont = Math.round(L.fontSize * 1.2);
+
+  // Merknader om hovedsteder (forvekslinger, flere hovedsteder) som fotnoter nederst.
+  const noteTexts = capitalNotes(lang);
+  const noteItems = graded.flatMap(g => {
+    const note = noteTexts[g.country.code];
+    return note ? [{row: g.row, text: note, important: g.result.verdict !== 'correct'}] : [];
+  });
+  const notes = noteItems.length ? planNotes(noteItems, notesArea(L, ref.size, scoreText, scoreFont), L.smallFontSize, NOTE_MIN_FONT) : null;
+
+  const drafts: Draft[] = [];
+  for (const g of graded) {
+    const kind = resultMark(g.result);
+    const {mark, text: textCell} = markLayout(L.rows[g.row].result, kind);
+    for (const stroke of markStrokes(kind, mark, g.row + 1)) {
+      drafts.push({kind: 'path', points: strokeAsPolygon(stroke), color: markColor(kind), width: MARK_WIDTH});
+    }
+    const marker = notes?.markers.get(g.row);
+    const base = resultText(g.country, g.recognized, g.result, lang);
+    // Fotnotetallet står etter hovedstaden (første linje), eller alene ved et riktig svar.
+    const text = marker ? (base ? base.replace(/^([^\n]*)/, `$1 ${marker}`) : marker) : base;
+    if (text) {
+      drafts.push(cellText(text, textCell, L.fontSize, {bold: g.result.verdict !== 'wrong'}));
+    }
+  }
+  if (notes) {
+    drafts.push({kind: 'text', text: notes.text, rect: notes.rect, fontSize: notes.fontSize, align: 0});
+  }
   drafts.push({
     kind: 'text',
     text: scoreText,
     rect: L.score,
-    fontSize: Math.round(L.fontSize * 1.2),
+    fontSize: scoreFont,
     bold: true,
     align: 2,
   });
   await insertDrafts(ref, drafts);
   await saveNote();
+  // Statistikk bare for én spiller; på flerspillerark tilhører svarene flere.
+  if (!tag) {
+    const attempts = graded.map(g => ({code: g.country.code, score: verdictScore(g.result.verdict)}));
+    await recordResults(ref.notePath, 'capital', attempts);
+  }
   return {points, total, players};
+}
+
+/** Minste skrift for fotnotene (ca. 1,7 mm på Manta). */
+const NOTE_MIN_FONT = 20;
+
+/**
+ * Plassen til fotnotene: til venstre for poengsummen og ned mot bunnen av siden.
+ * Blir det for smalt ved siden av poengsummen (lang poenglinje på flerspillerark),
+ * brukes plassen under den i stedet.
+ */
+function notesArea(L: SheetLayout, size: Size, scoreText: string, scoreFont: number): Rect {
+  const bottom = Math.round(size.height * 0.985);
+  const width = L.score.right - L.score.left;
+  const besideRight = Math.round(L.score.right - textWidthEm(scoreText) * scoreFont - L.fontSize);
+  if (besideRight - L.score.left >= width * 0.45) {
+    return {left: L.score.left, top: L.score.top, right: besideRight, bottom};
+  }
+  return {left: L.score.left, top: L.score.bottom, right: L.score.right, bottom};
 }
 
 /**

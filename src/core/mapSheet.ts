@@ -43,7 +43,7 @@ import {
   type MapMeta,
 } from './projection';
 import {MAX_POINTS, mapPoints} from './scoring';
-import {regionName, type Region} from './sheet';
+import {regionName, shuffle, type CountryOrder, type Region} from './sheet';
 
 export {MAP_SHEET_COUNT};
 export type {MapEntryStyle};
@@ -126,7 +126,8 @@ export function parseMapTitle(title: string): MapSheetInfo | null {
 /**
  * Trekker `count` byer fra regionen. Byer som ville ligget nærmere hverandre
  * enn `minSeparation` (andel av kartets bredde) unngås, så merkene ikke havner
- * oppå hverandre (f.eks. Roma og Vatikanstaten).
+ * oppå hverandre (f.eks. Roma og Vatikanstaten). Landene prøves i rekkefølgen
+ * `order` gir (tilfeldig, eller en treningsmodus).
  */
 export function pickMapCountries(
   lang: Language,
@@ -134,22 +135,22 @@ export function pickMapCountries(
   count = MAP_SHEET_COUNT,
   random: () => number = Math.random,
   minSeparation = 0.03,
+  order: CountryOrder = all => shuffle(all, random),
   level: Level = 'mixed',
   target: MapTarget = 'capital',
 ): Country[] {
   const meta = MAPS[region];
-  // Litt ekstra plass på nivåene, siden byer som ligger for tett hoppes over.
-  const pool = levelPool(
-    countriesIn(lang).filter(c => region === 'ALL' || c.continent === region),
-    level,
-    count,
-    c => familiarity(c.code, target === 'country' ? 'country' : 'capital'),
-    1.5,
+  // Nivået velger hvilke land som er med (litt ekstra plass, siden byer som
+  // ligger for tett hoppes over), `order` rekkefølgen de prøves i.
+  const pool = order(
+    levelPool(
+      countriesIn(lang).filter(c => region === 'ALL' || c.continent === region),
+      level,
+      count,
+      c => familiarity(c.code, target === 'country' ? 'country' : 'capital'),
+      1.5,
+    ),
   );
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
   const where = (c: Country) => {
     const [lon, lat] = CAPITAL_LONLAT[c.code];
     return lonLatToImage(meta, lon, lat);

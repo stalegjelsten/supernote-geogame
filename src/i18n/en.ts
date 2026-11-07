@@ -21,7 +21,7 @@ const en: Language = {
     titlePrefix: 'Capitals',
     partSuffix: (part, parts) => ` · page ${part} of ${parts}`,
     partPattern: /page (\d+) of (\d+)\s*$/,
-    subtitle: 'Write the capital in the middle column. Grade the sheet from the Geogame menu when you are done.',
+    subtitle: 'Write the capital in the middle column. Grade the sheet from the World Capitals Quiz menu when you are done.',
     colCountry: 'Country',
     colAnswer: 'Capital',
     colResult: 'Result',
@@ -31,7 +31,7 @@ const en: Language = {
   },
 
   ui: {
-    title: 'Geogame – capitals',
+    title: 'World Capitals Quiz',
     newSheet: 'New worksheet',
     region: 'Continent',
     count: 'Number of countries',
@@ -72,13 +72,13 @@ const en: Language = {
   },
 
   errors: {
-    noSheet: 'No Geogame sheet found on this page. Make a new sheet first.',
+    noSheet: 'No World Capitals Quiz sheet found on this page. Make a new sheet first.',
     noCountries: 'No countries found on the sheet.',
     openNote: 'Open a note page (.note) first.',
     failed: what => `${what} failed`,
     newPageTemplates: details => `Could not make a new page. Tried templates:\n${details}`,
     newPageNoTemplates: 'Could not make a new page: no page templates found on the device.',
-    permission: 'Geogame reads and writes the worksheet on the page.',
+    permission: 'World Capitals Quiz reads and writes the worksheet on the page.',
   },
 };
 

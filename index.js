@@ -16,10 +16,10 @@ PluginManager.init();
 // Følg enhetens språk og hent et lagret språkvalg fra menyen.
 startLanguageTracking();
 
-// Én knapp i verktøylinja i NOTE som åpner Geogame-menyen.
+// Én knapp i verktøylinja i NOTE som åpner World Capitals Quiz-menyen.
 PluginManager.registerButton(1, ['NOTE'], {
   id: 100,
-  name: 'Geogame',
+  name: 'World Capitals Quiz',
   icon: Image.resolveAssetSource(require('./assets/icon.png')).uri,
   showType: 1,
 });

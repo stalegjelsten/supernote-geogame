@@ -202,14 +202,14 @@ describe('nivå', () => {
     const avg = (cs: Array<{code: Parameters<typeof familiarity>[0]}>) =>
       cs.reduce((a, c) => a + familiarity(c.code, 'capital'), 0) / cs.length;
     for (const region of ['EU', 'AF', 'ALL'] as const) {
-      const easy = pickCountries(nb, region, 10, Math.random, 'easy');
-      const hard = pickCountries(nb, region, 10, Math.random, 'hard');
+      const easy = pickCountries(nb, region, 10, Math.random, undefined, 'easy');
+      const hard = pickCountries(nb, region, 10, Math.random, undefined, 'hard');
       expect(easy).toHaveLength(10);
       expect(hard).toHaveLength(10);
       expect(avg(easy)).toBeGreaterThan(avg(hard));
     }
-    const mapEasy = pickMapCountries(nb, 'EU', 10, Math.random, 0.03, 'easy');
-    const mapHard = pickMapCountries(nb, 'EU', 10, Math.random, 0.03, 'hard');
+    const mapEasy = pickMapCountries(nb, 'EU', 10, Math.random, 0.03, undefined, 'easy');
+    const mapHard = pickMapCountries(nb, 'EU', 10, Math.random, 0.03, undefined, 'hard');
     expect(mapEasy).toHaveLength(10);
     expect(avg(mapEasy)).toBeGreaterThan(avg(mapHard));
     expect(pickFairCountries(nb, 'AS', 10, 2, Math.random, 'hard')).toHaveLength(10);

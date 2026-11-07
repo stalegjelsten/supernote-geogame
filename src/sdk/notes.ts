@@ -88,6 +88,22 @@ async function templateCandidates(ref: PageRef): Promise<string[]> {
   return [...new Set(out)];
 }
 
+/**
+ * Navnet på malen til siden. Tom streng hvis siden ikke har mal, `null` hvis
+ * enheten ikke svarte (da vet vi ikke, og behandler siden som om den har mal).
+ */
+export async function pageTemplateName(ref: PageRef): Promise<string | null> {
+  try {
+    const cur = unwrap<{name?: string} | null>(
+      await PluginFileAPI.getNotePageTemplate(ref.notePath, ref.page),
+      'getNotePageTemplate',
+    );
+    return cur?.name?.trim() ?? '';
+  } catch {
+    return null;
+  }
+}
+
 /** Malen som virket sist, så vi slipper å prøve oss frem for hver side. */
 let workingTemplate: string | null = null;
 

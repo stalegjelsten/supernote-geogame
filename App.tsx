@@ -1,13 +1,17 @@
 /**
- * Geogame – meny som åpnes fra verktøylinja i NOTE.
+ * World Capitals Quiz – meny som åpnes fra verktøylinja i NOTE.
  *
  * Laget for e-blekk: svart på hvitt, kompakte men tydelige trykkflater, ingen animasjoner.
  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {PluginManager} from 'sn-plugin-lib';
-import {countElementsOnPage, createSheet, gradeSheet, rowsPerPageNow} from './src/actions';
-import {createMapSheet, gradeMapSheet} from './src/mapActions';
+import {createSheet, gradeSheet, rowsPerPageNow, sheetTarget} from './src/actions';
+import {createMapSheet, gradeMapSheet, skillOfTarget} from './src/mapActions';
+import type {SheetRecord} from './src/core/stats';
+import {statsReport} from './src/core/statsReport';
+import {statsTexts} from './src/i18n/stats';
+import {clearRecords, loadRecords} from './src/sdk/statsStore';
 import {
   MAP_COUNTS,
   MAP_ENTRY_STYLES,
@@ -67,7 +71,6 @@ type Mode = 'table' | 'map';
 type Status =
   | {kind: 'idle'}
   | {kind: 'busy'; message: string}
-  | {kind: 'confirm'; elements: number}
   | {kind: 'done'; message: string; detail?: string}
   | {kind: 'error'; message: string};
 
@@ -140,6 +143,36 @@ function App(): React.JSX.Element {
     : LANGUAGES.filter(l => l.code === choice || l.code === device.code);
   const busy = status.kind === 'busy';
 
+  // Statistikk: postene hentes når visningen åpnes og etter hver retting.
+  const stx = statsTexts(t);
+  const [statsOpen, setStatsOpen] = useState(false);
+  const [records, setRecords] = useState<SheetRecord[] | null>(null);
+  const [confirmReset, setConfirmReset] = useState(false);
+  const skill = mode === 'table' ? 'capital' : skillOfTarget(mapTarget);
+  const report = useMemo(
+    () =>
+      records ? statsReport(records, skill, t, region, Date.now()) : null,
+    [records, skill, t, region],
+  );
+  const refreshStats = () => loadRecords().then(setRecords);
+  const toggleStats = () => {
+    setConfirmReset(false);
+    if (!statsOpen) {
+      refreshStats();
+    }
+    setStatsOpen(o => !o);
+  };
+  const resetStats = async () => {
+    setConfirmReset(false);
+    try {
+      await clearRecords();
+      setStatus({kind: 'done', message: stx.resetDone});
+    } catch (e) {
+      setStatus({kind: 'error', message: (e as Error).message ?? String(e)});
+    }
+    refreshStats();
+  };
+
   const close = () => {
     setStatus({kind: 'idle'});
     PluginManager.closePluginView();
@@ -159,23 +192,22 @@ function App(): React.JSX.Element {
     } catch (e) {
       setStatus({kind: 'error', message: (e as Error).message ?? String(e)});
     }
+    if (statsOpen) {
+      refreshStats();
+    }
   };
 
-  const make = async (where: 'check' | 'here' | 'newPage') => {
-    if (where === 'check') {
-      try {
-        setStatus({kind: 'busy', message: ui.checkingPage});
-        const n = await countElementsOnPage();
-        if (n > 0) {
-          setStatus({kind: 'confirm', elements: n});
-          return;
-        }
-      } catch (e) {
-        setStatus({kind: 'error', message: (e as Error).message ?? String(e)});
-        return;
-      }
+  // Arket lages på siden du står på hvis den er tom og blank (hvit eller ingen mal),
+  // ellers på en ny side etter den. Ingen spørsmål.
+  const make = async () => {
+    let target: 'here' | 'newPage';
+    try {
+      setStatus({kind: 'busy', message: ui.checkingPage});
+      target = await sheetTarget();
+    } catch (e) {
+      setStatus({kind: 'error', message: (e as Error).message ?? String(e)});
+      return;
     }
-    const target = where === 'check' ? 'here' : where;
     const progress = (message: string) => setStatus({kind: 'busy', message});
     await run(async () => {
       if (mode === 'map') {
@@ -204,6 +236,7 @@ function App(): React.JSX.Element {
         target,
         progress,
         game,
+        'random',
         level,
       );
       return {
@@ -447,29 +480,10 @@ function App(): React.JSX.Element {
         <Button
           label={ui.make}
           primary
-          onPress={() => make('check')}
+          onPress={make}
           disabled={busy}
         />
 
-        {status.kind === 'confirm' && (
-          <View style={styles.box}>
-            <Text style={styles.message}>
-              {ui.pageHasContent(status.elements)}
-            </Text>
-            <View style={styles.grid}>
-              <Button
-                label={ui.makeOnNewPage}
-                primary
-                onPress={() => make('newPage')}
-              />
-              <Button label={ui.putOnThisPage} onPress={() => make('here')} />
-              <Button
-                label={ui.cancel}
-                onPress={() => setStatus({kind: 'idle'})}
-              />
-            </View>
-          </View>
-        )}
 
         <View style={styles.divider} />
 
@@ -510,6 +524,93 @@ function App(): React.JSX.Element {
             <Text style={styles.message}>
               {ui.somethingWrong(status.message)}
             </Text>
+          </View>
+        )}
+
+        <View style={styles.divider} />
+
+        <Text style={styles.section}>{stx.section}</Text>
+        <Button
+          label={statsOpen ? stx.hide : stx.show}
+          onPress={toggleStats}
+          disabled={busy}
+        />
+        {statsOpen && (
+          <View style={styles.box}>
+            {!report ? (
+              <Text style={styles.message}>{stx.loading}</Text>
+            ) : (
+              <>
+                <Text style={styles.label}>{stx.skill[skill]}</Text>
+                {report.sessions.sheets === 0 ? (
+                  <Text style={styles.message}>{stx.none}</Text>
+                ) : (
+                  <>
+                    <Text style={styles.message}>
+                      {stx.sheets(
+                        report.sessions.sheets,
+                        report.sessions.attempts,
+                        Math.round(100 * (report.sessions.score ?? 0)),
+                      )}
+                    </Text>
+                    {report.regions.map(({region: r, summary: s}) => (
+                      <Text
+                        key={r}
+                        style={[
+                          styles.hint,
+                          r === region && styles.hintSelected,
+                        ]}>
+                        {stx.region(
+                          regionName(r, t),
+                          s.known,
+                          s.learning,
+                          s.new,
+                        )}
+                      </Text>
+                    ))}
+                    {report.focus.summary.due > 0 && (
+                      <Text style={styles.message}>
+                        {stx.due(report.focus.summary.due)}
+                      </Text>
+                    )}
+                    {report.weakest.length > 0 && (
+                      <>
+                        <Text style={styles.label}>
+                          {stx.weakest} ({regionName(region, t)})
+                        </Text>
+                        {report.weakest.map(w => (
+                          <Text key={w.code} style={styles.hint}>
+                            {stx.weakItem(w.name, w.answer, w.percent, w.attempts)}
+                          </Text>
+                        ))}
+                      </>
+                    )}
+                    {confirmReset ? (
+                      <>
+                        <Text style={styles.message}>{stx.confirmReset}</Text>
+                        <View style={styles.grid}>
+                          <Button
+                            label={stx.confirm}
+                            primary
+                            onPress={resetStats}
+                          />
+                          <Button
+                            label={stx.cancel}
+                            onPress={() => setConfirmReset(false)}
+                          />
+                        </View>
+                      </>
+                    ) : (
+                      <Button
+                        label={stx.reset}
+                        onPress={() => setConfirmReset(true)}
+                        disabled={busy}
+                      />
+                    )}
+                  </>
+                )}
+              </>
+            )}
           </View>
         )}
 
@@ -569,6 +670,7 @@ const styles = StyleSheet.create({
   section: {fontSize: 22, fontWeight: '700', color: BLACK, marginTop: 4},
   label: {fontSize: 18, color: BLACK, marginTop: 4},
   hint: {fontSize: 16, color: BLACK},
+  hintSelected: {fontWeight: '700'},
   grid: {flexDirection: 'row', flexWrap: 'wrap', gap: 8},
   button: {
     alignSelf: 'flex-start',
