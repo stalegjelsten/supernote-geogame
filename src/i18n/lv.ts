@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/lv';
+import menu from './menu/lv';
 import {sheetLanguage} from './base';
 
 const lv = sheetLanguage({
@@ -16,6 +17,7 @@ const lv = sheetLanguage({
   colResult: 'Rezultāts',
   scoreWord: 'Punkti',
   readWord: 'nolasīts',
+  menu,
 });
 
 export default lv;

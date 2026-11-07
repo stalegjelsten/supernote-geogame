@@ -3,10 +3,13 @@
  *
  * Ligger i en egen fil så kartmodusen kan bygges ut uten å endre fellestypen
  * for alle språk. Norsk og engelsk er skrevet for hånd. De andre språkene får
- * engelsk tekst, men lista over byer og land skrives på arkets språk, og
+ * menyteksten fra menu/<kode>.ts og engelsk tekst på arket, men lista over
+ * byer og land skrives på arkets språk, og
  * overskriften starter med språkets egen overskrift, så språket kjennes igjen
  * ved retting.
  */
+import {fmt, thousands as menuThousands} from './menu/build';
+import type {MenuStrings} from './menu/types';
 import type {Language} from './types';
 
 /** Hva lista på kartarket oppgir: by og land, bare byen, eller bare landet (da må du kunne hovedstaden). */
@@ -212,9 +215,41 @@ const en: MapTexts = {
 
 const OWN: Record<string, MapTexts> = {nb, en};
 
+function menuParts(m: MenuStrings): Pick<MapTexts, 'ui' | 'progress' | 'errors'> {
+  return {
+    ui: {
+      mode: m.mapMode,
+      modeTable: m.mapModeTable,
+      modeMap: m.mapModeMap,
+      mapHint: m.mapHint,
+      show: m.mapShow,
+      showBoth: m.mapShowBoth,
+      showCapital: m.mapShowCapital,
+      showCountry: m.mapShowCountry,
+      mapCount: m.mapCount,
+      target: m.mapTarget,
+      targetCapital: m.mapTargetCapital,
+      targetCountry: m.mapTargetCountry,
+      made: count => fmt(m.mapMade, {count}),
+      countryMade: count => fmt(m.mapCountryMade, {count}),
+      result: (points, max, percent) =>
+        fmt(m.mapResult, {points: menuThousands(m, points), max: menuThousands(m, max), percent}),
+      countryResult: (correct, total, percent) => fmt(m.mapCountryResult, {correct, total, percent}),
+    },
+    progress: {
+      findingMap: m.mapFindingMap,
+      findingMarks: m.mapFindingMarks,
+    },
+    errors: {
+      mapFile: detail => fmt(m.mapFile, {detail}),
+      noEntries: m.mapNoEntries,
+    },
+  };
+}
+
 const cache = new Map<string, MapTexts>();
 
-/** Karttekstene for et språk: egne for nb og en, ellers engelsk med språkets egen overskrift. */
+/** Karttekstene for et språk: egne for nb og en, ellers oversatt meny og engelsk ark med språkets egen overskrift. */
 export function mapTexts(lang: Language): MapTexts {
   const own = OWN[lang.code];
   if (own) {
@@ -224,6 +259,7 @@ export function mapTexts(lang: Language): MapTexts {
   if (!t) {
     t = {
       ...en,
+      ...(lang.menu ? menuParts(lang.menu) : {}),
       titlePrefix: `${lang.sheet.titlePrefix} · map`,
       countryTitlePrefix: `${lang.sheet.colCountry} · map`,
     };

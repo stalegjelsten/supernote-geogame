@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/ka';
+import menu from './menu/ka';
 import {sheetLanguage} from './base';
 
 const ka = sheetLanguage({
@@ -16,6 +17,7 @@ const ka = sheetLanguage({
   colResult: 'შედეგი',
   scoreWord: 'ქულა',
   readWord: 'წაკითხულია',
+  menu,
 });
 
 export default ka;

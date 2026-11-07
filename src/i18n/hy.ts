@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/hy';
+import menu from './menu/hy';
 import {sheetLanguage} from './base';
 
 const hy = sheetLanguage({
@@ -16,6 +17,7 @@ const hy = sheetLanguage({
   colResult: 'Արդյունք',
   scoreWord: 'Միավոր',
   readWord: 'կարդացվեց',
+  menu,
 });
 
 export default hy;

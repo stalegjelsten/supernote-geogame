@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/ms';
+import menu from './menu/ms';
 import {sheetLanguage} from './base';
 
 const ms = sheetLanguage({
@@ -16,6 +17,7 @@ const ms = sheetLanguage({
   colResult: 'Keputusan',
   scoreWord: 'Markah',
   readWord: 'dibaca',
+  menu,
 });
 
 export default ms;

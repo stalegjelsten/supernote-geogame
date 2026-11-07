@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/sr-Cyrl';
+import menu from './menu/sr-Cyrl';
 import {sheetLanguage} from './base';
 
 const srCyrl = sheetLanguage({
@@ -16,6 +17,7 @@ const srCyrl = sheetLanguage({
   colResult: 'Резултат',
   scoreWord: 'Бодови',
   readWord: 'прочитано',
+  menu,
 });
 
 export default srCyrl;

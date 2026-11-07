@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/et';
+import menu from './menu/et';
 import {sheetLanguage} from './base';
 
 const et = sheetLanguage({
@@ -16,6 +17,7 @@ const et = sheetLanguage({
   colResult: 'Tulemus',
   scoreWord: 'Punktid',
   readWord: 'loetud',
+  menu,
 });
 
 export default et;

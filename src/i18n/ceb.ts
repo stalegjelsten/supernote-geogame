@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/ceb';
+import menu from './menu/ceb';
 import {sheetLanguage} from './base';
 
 const ceb = sheetLanguage({
@@ -16,6 +17,7 @@ const ceb = sheetLanguage({
   colResult: 'Resulta',
   scoreWord: 'Puntos',
   readWord: 'nabasa',
+  menu,
 });
 
 export default ceb;

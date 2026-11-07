@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/ko';
+import menu from './menu/ko';
 import {sheetLanguage} from './base';
 
 const ko = sheetLanguage({
@@ -16,6 +17,7 @@ const ko = sheetLanguage({
   colResult: '결과',
   scoreWord: '점수',
   readWord: '인식',
+  menu,
 });
 
 export default ko;

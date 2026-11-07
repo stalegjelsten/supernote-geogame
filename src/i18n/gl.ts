@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/gl';
+import menu from './menu/gl';
 import {sheetLanguage} from './base';
 
 const gl = sheetLanguage({
@@ -16,6 +17,7 @@ const gl = sheetLanguage({
   colResult: 'Resultado',
   scoreWord: 'Puntos',
   readWord: 'lido',
+  menu,
 });
 
 export default gl;

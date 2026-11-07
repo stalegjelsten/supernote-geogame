@@ -3,10 +3,11 @@
  *
  * Bare språkene som er importert her havner i bundelen. Fjern en import og
  * linja i LANGUAGES for å bygge uten et språk (engelsk må være med, siden de
- * andre språkene låner menytekstene derfra).
+ * andre språkene låner tittelen og tekst på kart- og flerspillerark derfra).
  *
  * nb og en er skrevet for hånd. De andre er språkene Supernote kan gjenkjenne
- * håndskrift på, og lages med `node scripts/gen-languages.js`.
+ * håndskrift på, og lages med `node scripts/gen-languages.js`. Menytekstene
+ * deres står i menu/<kode>.ts.
  */
 import af from './af';
 import az from './az';

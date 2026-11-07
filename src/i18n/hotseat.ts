@@ -1,10 +1,13 @@
 /**
  * Tekst for flerspiller (hot seat). Norsk og engelsk er skrevet for hånd; de
- * andre språkene får engelsk tekst, som kartmodusen (se map.ts).
+ * andre språkene får menyteksten fra menu/<kode>.ts og engelsk tekst på arket,
+ * som kartmodusen (se map.ts).
  *
  * Merkelappen («Spiller 2 av 3», «Duell for 2») står først i undertittelen på
  * arket og leses tilbake ved retting, så formen må holdes stabil.
  */
+import {fmt, list as menuList} from './menu/build';
+import type {MenuStrings} from './menu/types';
 import type {Language} from './types';
 
 export interface HotSeatTexts {
@@ -129,8 +132,43 @@ const en: HotSeatTexts = {
 
 const OWN: Record<string, HotSeatTexts> = {nb, en};
 
+function menuUi(m: MenuStrings): HotSeatTexts['ui'] {
+  const players = (ks: number[]) => menuList(m, ks.map(k => fmt(m.hsPlayer, {k})));
+  return {
+    players: m.hsPlayers,
+    solo: m.hsSolo,
+    howToPlay: m.hsHowToPlay,
+    pass: m.hsPass,
+    shared: m.hsShared,
+    passHint: m.hsPassHint,
+    sharedHint: (each, unit) => fmt(m.hsSharedHint, {each, unit}),
+    unitCountries: m.hsUnitCountries,
+    unitCities: m.hsUnitCities,
+    made: (n, pages) => fmt(m.hsMade, {players: n, pages}),
+    winner: k => fmt(m.hsWinner, {k}),
+    tie: ks => fmt(m.hsTie, {players: players(ks)}),
+    playerScore: (k, points, max, percent) => fmt(m.hsPlayerScore, {k, points, max, percent}),
+    missingPages: ks => fmt(m.hsMissingPages, {players: players(ks)}),
+  };
+}
+
+const cache = new Map<string, HotSeatTexts>();
+
+/** Egne tekster for nb og en; ellers engelsk på arket og oversatt meny. */
 export function hotSeatTexts(lang: Language): HotSeatTexts {
-  return OWN[lang.code] ?? en;
+  const own = OWN[lang.code];
+  if (own) {
+    return own;
+  }
+  if (!lang.menu) {
+    return en;
+  }
+  let t = cache.get(lang.code);
+  if (!t) {
+    t = {...en, ui: menuUi(lang.menu)};
+    cache.set(lang.code, t);
+  }
+  return t;
 }
 
 /** Alle variantene av teksten, så merkelappen kjennes igjen uansett språk. */

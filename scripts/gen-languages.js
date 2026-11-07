@@ -15,6 +15,8 @@
  *   Wikidata-etiketter i scripts/data/co-capitals-wikidata.json. De godtas som svar
  *   på språket selv og på engelsk. Tidligere hovedsteder står ikke der.
  * - Arktekstene i tabellen under er oversatt for hånd.
+ * - Menytekstene står i src/i18n/menu/<kode>.ts (oversatt fra menu/en.ts) og
+ *   skrives ikke av dette skriptet.
  *
  * Skriver src/i18n/countries/<kode>.ts og src/i18n/<kode>.ts. Hvilke språk som
  * bygges inn, styres fortsatt av LANGUAGES i src/i18n/index.ts.
@@ -189,13 +191,13 @@ function main() {
     fs.writeFileSync(
       path.join(I18N, `${code}.ts`),
       '// Generert av scripts/gen-languages.js – rediger tabellen der.\n' +
-        `import countries from './countries/${code}';\nimport {sheetLanguage} from './base';\n\n` +
+        `import countries from './countries/${code}';\nimport menu from './menu/${code}';\nimport {sheetLanguage} from './base';\n\n` +
         `const ${ident} = sheetLanguage({\n` +
         `  code: ${q(code)},\n  label: ${q(label)},\n  locales: [${locales.map(q).join(', ')}],\n  countries,\n` +
         `  continents: {EU: ${q(cont('EU'))}, AS: ${q(cont('AS'))}, AF: ${q(cont('AF'))}, NA: ${q(cont('NA'))}, SA: ${q(cont('SA'))}, OC: ${q(cont('OC'))}},\n` +
         `  world: ${q(cont('world'))},\n` +
         `  titlePrefix: ${q(title)},\n  subtitle: ${q(subtitle)},\n  colCountry: ${q(colCountry)},\n  colAnswer: ${q(colAnswer)},\n` +
-        `  colResult: ${q(colResult)},\n  scoreWord: ${q(score)},\n  readWord: ${q(read)},\n});\n\nexport default ${ident};\n`,
+        `  colResult: ${q(colResult)},\n  scoreWord: ${q(score)},\n  readWord: ${q(read)},\n  menu,\n});\n\nexport default ${ident};\n`,
     );
   }
   console.log(`Skrev ${TABLE.length} språk.`);

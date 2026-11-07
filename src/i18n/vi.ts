@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/vi';
+import menu from './menu/vi';
 import {sheetLanguage} from './base';
 
 const vi = sheetLanguage({
@@ -16,6 +17,7 @@ const vi = sheetLanguage({
   colResult: 'Kết quả',
   scoreWord: 'Điểm',
   readWord: 'đã đọc',
+  menu,
 });
 
 export default vi;

@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/lt';
+import menu from './menu/lt';
 import {sheetLanguage} from './base';
 
 const lt = sheetLanguage({
@@ -16,6 +17,7 @@ const lt = sheetLanguage({
   colResult: 'Rezultatas',
   scoreWord: 'Taškai',
   readWord: 'perskaityta',
+  menu,
 });
 
 export default lt;

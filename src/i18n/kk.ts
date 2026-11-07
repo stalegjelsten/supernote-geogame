@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/kk';
+import menu from './menu/kk';
 import {sheetLanguage} from './base';
 
 const kk = sheetLanguage({
@@ -16,6 +17,7 @@ const kk = sheetLanguage({
   colResult: 'Нәтиже',
   scoreWord: 'Ұпай',
   readWord: 'оқылды',
+  menu,
 });
 
 export default kk;

@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/el';
+import menu from './menu/el';
 import {sheetLanguage} from './base';
 
 const el = sheetLanguage({
@@ -16,6 +17,7 @@ const el = sheetLanguage({
   colResult: 'Αποτέλεσμα',
   scoreWord: 'Βαθμοί',
   readWord: 'διαβάστηκε',
+  menu,
 });
 
 export default el;

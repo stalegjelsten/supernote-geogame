@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/hu';
+import menu from './menu/hu';
 import {sheetLanguage} from './base';
 
 const hu = sheetLanguage({
@@ -16,6 +17,7 @@ const hu = sheetLanguage({
   colResult: 'Eredmény',
   scoreWord: 'Pontok',
   readWord: 'olvasva',
+  menu,
 });
 
 export default hu;

@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/sq';
+import menu from './menu/sq';
 import {sheetLanguage} from './base';
 
 const sq = sheetLanguage({
@@ -16,6 +17,7 @@ const sq = sheetLanguage({
   colResult: 'Rezultati',
   scoreWord: 'Pikë',
   readWord: 'lexuar',
+  menu,
 });
 
 export default sq;

@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/zh-Hans';
+import menu from './menu/zh-Hans';
 import {sheetLanguage} from './base';
 
 const zhHans = sheetLanguage({
@@ -16,6 +17,7 @@ const zhHans = sheetLanguage({
   colResult: '结果',
   scoreWord: '得分',
   readWord: '识别为',
+  menu,
 });
 
 export default zhHans;

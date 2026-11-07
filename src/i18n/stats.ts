@@ -1,8 +1,10 @@
 /**
  * Menytekst for statistikken. Norsk og engelsk er skrevet for hånd; de andre
- * språkene får engelsk (som kartmodusen i map.ts).
+ * språkene får teksten fra menu/<kode>.ts.
  */
 import type {Skill} from '../core/stats';
+import {fmt, plural} from './menu/build';
+import type {MenuStrings} from './menu/types';
 import type {Language} from './types';
 
 export interface StatsTexts {
@@ -79,6 +81,47 @@ const en: StatsTexts = {
 
 const OWN: Record<string, StatsTexts> = {nb, en};
 
+function fromMenu(m: MenuStrings): StatsTexts {
+  return {
+    section: m.statsSection,
+    show: m.statsShow,
+    hide: m.statsHide,
+    skill: {
+      capital: m.statsSkillCapital,
+      mapCapital: m.statsSkillMapCapital,
+      mapCountry: m.statsSkillMapCountry,
+    },
+    loading: m.statsLoading,
+    none: m.statsNone,
+    sheets: (sheets, answers, percent) =>
+      fmt(m.statsSheets, {sheets, sheetUnit: plural(m, 'statsSheetUnit', sheets), answers, percent}),
+    region: (name, known, learning, fresh) => fmt(m.statsRegion, {name, known, learning, fresh}),
+    due: n => fmt(plural(m, 'statsDue', n), {n}),
+    weakest: m.statsWeakest,
+    weakItem: (country, answer, percent, attempts) =>
+      fmt(m.statsWeakItem, {country, answer, percent, attempts, timeUnit: plural(m, 'statsTimeUnit', attempts)}),
+    reset: m.statsReset,
+    confirmReset: m.statsConfirmReset,
+    confirm: m.statsConfirm,
+    cancel: m.cancel,
+    resetDone: m.statsResetDone,
+  };
+}
+
+const cache = new Map<string, StatsTexts>();
+
 export function statsTexts(lang: Language): StatsTexts {
-  return OWN[lang.code] ?? en;
+  const own = OWN[lang.code];
+  if (own) {
+    return own;
+  }
+  if (!lang.menu) {
+    return en;
+  }
+  let t = cache.get(lang.code);
+  if (!t) {
+    t = fromMenu(lang.menu);
+    cache.set(lang.code, t);
+  }
+  return t;
 }

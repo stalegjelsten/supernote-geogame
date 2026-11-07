@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/mg';
+import menu from './menu/mg';
 import {sheetLanguage} from './base';
 
 const mg = sheetLanguage({
@@ -16,6 +17,7 @@ const mg = sheetLanguage({
   colResult: 'Vokatra',
   scoreWord: 'Isa',
   readWord: 'voavaky',
+  menu,
 });
 
 export default mg;

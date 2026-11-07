@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/sr-Latn';
+import menu from './menu/sr-Latn';
 import {sheetLanguage} from './base';
 
 const srLatn = sheetLanguage({
@@ -16,6 +17,7 @@ const srLatn = sheetLanguage({
   colResult: 'Rezultat',
   scoreWord: 'Bodovi',
   readWord: 'pročitano',
+  menu,
 });
 
 export default srLatn;

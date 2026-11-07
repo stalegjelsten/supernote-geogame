@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/sw';
+import menu from './menu/sw';
 import {sheetLanguage} from './base';
 
 const sw = sheetLanguage({
@@ -16,6 +17,7 @@ const sw = sheetLanguage({
   colResult: 'Matokeo',
   scoreWord: 'Alama',
   readWord: 'imesomwa',
+  menu,
 });
 
 export default sw;

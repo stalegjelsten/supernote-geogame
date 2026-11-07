@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/eu';
+import menu from './menu/eu';
 import {sheetLanguage} from './base';
 
 const eu = sheetLanguage({
@@ -16,6 +17,7 @@ const eu = sheetLanguage({
   colResult: 'Emaitza',
   scoreWord: 'Puntuak',
   readWord: 'irakurria',
+  menu,
 });
 
 export default eu;

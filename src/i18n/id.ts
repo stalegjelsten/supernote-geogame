@@ -1,5 +1,6 @@
 // Generert av scripts/gen-languages.js – rediger tabellen der.
 import countries from './countries/id';
+import menu from './menu/id';
 import {sheetLanguage} from './base';
 
 const id = sheetLanguage({
@@ -16,6 +17,7 @@ const id = sheetLanguage({
   colResult: 'Hasil',
   scoreWord: 'Skor',
   readWord: 'terbaca',
+  menu,
 });
 
 export default id;

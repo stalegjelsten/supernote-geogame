@@ -1,12 +1,15 @@
 /**
- * Byggekloss for språk der bare arket er oversatt. Menyen, fremdriften og
- * feilmeldingene hentes fra engelsk inntil de blir oversatt.
+ * Byggekloss for språkene som lages av scripts/gen-languages.js. Arkteksten
+ * står i tabellen der; menyen, fremdriften og feilmeldingene kommer fra
+ * menu/<kode>.ts, og fra engelsk hvis den mangler.
  *
  * Sidenummer skrives språknøytralt som « · 2/3», og poeng som «Punkte: 12/20».
  */
 import en from './en';
 import type {CountryNames, Language} from './types';
 import type {Continent} from '../data/countries';
+import {fmt, plural} from './menu/build';
+import type {MenuStrings} from './menu/types';
 
 export interface SheetLanguageDef {
   code: string;
@@ -24,6 +27,7 @@ export interface SheetLanguageDef {
   scoreWord: string;
   /** «leste», brukt som «(leste: “Oslo”)». */
   readWord: string;
+  menu?: MenuStrings;
   ui?: Partial<Language['ui']>;
   progress?: Partial<Language['progress']>;
   errors?: Partial<Language['errors']>;
@@ -31,12 +35,70 @@ export interface SheetLanguageDef {
 
 export const NEUTRAL_PART_PATTERN = /·\s*(\d+)\/(\d+)\s*$/;
 
+function menuUi(m: MenuStrings): Language['ui'] {
+  return {
+    title: en.ui.title,
+    newSheet: m.newSheet,
+    region: m.region,
+    count: m.count,
+    all: n => fmt(m.all, {n}),
+    spread: (n, pages) => fmt(m.spread, {n, pages}),
+    make: m.make,
+    pageHasContent: n => fmt(m.pageHasContent, {n}),
+    makeOnNewPage: m.makeOnNewPage,
+    putOnThisPage: m.putOnThisPage,
+    cancel: m.cancel,
+    doneWriting: m.doneWriting,
+    gradePage: m.gradePage,
+    gradeSet: m.gradeSet,
+    showSheet: m.showSheet,
+    somethingWrong: message => fmt(m.somethingWrong, {message}),
+    language: m.language,
+    automatic: label => fmt(m.automatic, {label}),
+    allLanguages: n => fmt(m.allLanguages, {n}),
+    fewerLanguages: m.fewerLanguages,
+    checkingPage: m.checkingPage,
+    startingGrading: m.startingGrading,
+    made: (n, pages) => fmt(m.made, {n, pages}),
+    result: (points, total, percent) => fmt(m.result, {points, total, percent}),
+    pageScore: (part, points, total) => fmt(m.pageScore, {part, points, total}),
+    gradedIn: seconds => fmt(m.gradedIn, {seconds: seconds.replace('.', m.decimalSep)}),
+  };
+}
+
+function menuProgress(m: MenuStrings): Language['progress'] {
+  return {
+    newPages: n => fmt(plural(m, 'newPages', n), {n}),
+    drawing: m.drawing,
+    drawingPage: (k, n) => fmt(m.drawingPage, {k, n}),
+    readingPage: m.readingPage,
+    pagePrefix: (k, n) => fmt(m.pagePrefix, {k, n}),
+    findingInk: m.findingInk,
+    readingInk: m.readingInk,
+    rereadingRow: row => fmt(m.rereadingRow, {row}),
+    writingResults: m.writingResults,
+  };
+}
+
+function menuErrors(m: MenuStrings): Language['errors'] {
+  return {
+    noSheet: m.noSheet,
+    noCountries: m.noCountries,
+    openNote: m.openNote,
+    failed: what => fmt(m.failed, {what}),
+    newPageTemplates: details => fmt(m.newPageTemplates, {details}),
+    newPageNoTemplates: m.newPageNoTemplates,
+    permission: m.permission,
+  };
+}
+
 export function sheetLanguage(d: SheetLanguageDef): Language {
   const scorePrefix = `${d.scoreWord}:`;
   return {
     code: d.code,
     label: d.label,
     locales: d.locales,
+    menu: d.menu,
     countries: d.countries,
     continents: d.continents,
     world: d.world,
@@ -52,8 +114,8 @@ export function sheetLanguage(d: SheetLanguageDef): Language {
       score: (points, total) => `${scorePrefix} ${points}/${total}`,
       read: text => `(${d.readWord}: “${text}”)`,
     },
-    ui: {...en.ui, ...d.ui},
-    progress: {...en.progress, ...d.progress},
-    errors: {...en.errors, ...d.errors},
+    ui: {...(d.menu ? menuUi(d.menu) : en.ui), ...d.ui},
+    progress: {...(d.menu ? menuProgress(d.menu) : en.progress), ...d.progress},
+    errors: {...(d.menu ? menuErrors(d.menu) : en.errors), ...d.errors},
   };
 }
