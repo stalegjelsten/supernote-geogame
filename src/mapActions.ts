@@ -199,7 +199,9 @@ async function createPassMapGame(
   const newPages = where === 'here' ? total - 1 : total;
   if (newPages > 0) {
     progress(ui.progress.newPages(newPages));
-    await insertBlankPages(ref, ref.page + 1, newPages);
+    await insertBlankPages(ref, ref.page + 1, newPages, (done, of) =>
+      progress(`${ui.progress.newPages(of)} ${done}/${of}`),
+    );
   }
   let drawn = 0;
   for (let p = 1; p <= players; p++) {

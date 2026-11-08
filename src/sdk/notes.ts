@@ -107,61 +107,111 @@ export async function pageTemplateName(ref: PageRef): Promise<string | null> {
 /** The template that worked last, so we don't have to try our way through for every page. */
 let workingTemplate: string | null = null;
 
+/** Marks a call to the device that never answered (see withTimeout). */
+const TIMED_OUT = Symbol('timedOut');
+
+/**
+ * Waits for a call to the device, but at most `ms` milliseconds. The SDK calls have no timeout of
+ * their own: if the device never answers, the promise never settles and the plugin hangs.
+ */
+async function withTimeout<T>(call: Promise<T>, ms: number): Promise<T | typeof TIMED_OUT> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<typeof TIMED_OUT>(resolve => {
+    timer = setTimeout(() => resolve(TIMED_OUT), ms);
+  });
+  try {
+    return await Promise.race([call, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+const INSERT_TIMEOUT_MS = 8000;
+const RELOAD_TIMEOUT_MS = 8000;
+
 /**
  * Inserts `count` new, empty pages starting at page index `at` in the note.
  * Does not go to the pages; use jumpToPage afterwards.
+ * `onPage(done, count)` is called after each new page, so the caller can show progress.
  */
-export async function insertBlankPages(ref: PageRef, at: number, count: number): Promise<void> {
+export async function insertBlankPages(
+  ref: PageRef,
+  at: number,
+  count: number,
+  onPage?: (done: number, count: number) => void,
+): Promise<void> {
   if (count <= 0) {
     return;
   }
-  const insertOne = async (template: string) =>
-    (await PluginFileAPI.insertNotePage({notePath: ref.notePath, page: at, template})) as Resp<boolean>;
+  /** The result of the insertion, or `null` if the device did not answer in time. */
+  const insertOne = async (template: string): Promise<Resp<boolean> | null> => {
+    const res = await withTimeout(
+      PluginFileAPI.insertNotePage({notePath: ref.notePath, page: at, template}) as Promise<unknown>,
+      INSERT_TIMEOUT_MS,
+    );
+    return res === TIMED_OUT ? null : (res as Resp<boolean>);
+  };
   const reload = async () => {
     try {
-      await PluginCommAPI.reloadFile();
+      await withTimeout(PluginCommAPI.reloadFile() as Promise<unknown>, RELOAD_TIMEOUT_MS);
     } catch {
       // Not all versions need this.
     }
   };
+  const countPages = async () => {
+    const n = await withTimeout(totalPages(ref.notePath), INSERT_TIMEOUT_MS);
+    return n === TIMED_OUT ? null : n;
+  };
 
   const before = await totalPages(ref.notePath);
   const target = before + count;
+  let have = before;
   // All the pages are inserted at the same index (`at`), so they are pushed back as we go.
-  // That index is always valid. After each insertion the note is reloaded, and we
-  // count the pages instead of trusting that the insertion actually produced a new page.
-  // Previously, page 3 of 3 went missing when insertions at increasing indices were ignored.
-  for (let attempt = 0; attempt < count * 2; attempt++) {
-    const have = await totalPages(ref.notePath);
-    if (have >= target) {
-      return;
+  // That index is always valid. We count the pages instead of trusting that the insertion
+  // actually produced a new page (page 3 of 3 once went missing when insertions were ignored).
+  // The note is reloaded only when the count did not go up, and once at the end: reloading after
+  // every page was slow, and a whole-world sheet (10 pages) hung on "Creating 10 new pages".
+  for (let attempt = 0; attempt < count * 2 && have < target; attempt++) {
+    // `null` = the device did not answer in time; the count below shows whether it worked anyway.
+    let res: Resp<boolean> | null | undefined;
+    if (workingTemplate) {
+      res = await insertOne(workingTemplate);
     }
-    if (workingTemplate && (await insertOne(workingTemplate))?.success) {
-      await reload();
-      continue;
-    }
-    const candidates = await templateCandidates(ref);
-    const errors: string[] = [];
-    let ok = false;
-    for (const template of candidates.slice(0, 6)) {
-      const res = await insertOne(template);
-      if (res?.success) {
-        workingTemplate = template;
-        ok = true;
-        break;
+    if (res !== null && !res?.success) {
+      const candidates = await templateCandidates(ref);
+      const errors: string[] = [];
+      for (const template of candidates.slice(0, 6)) {
+        res = await insertOne(template);
+        if (res === null) {
+          break;
+        }
+        if (res.success) {
+          workingTemplate = template;
+          break;
+        }
+        errors.push(`«${template}»: ${res.error?.code ?? '?'} ${res.error?.message ?? ''}`.trim());
       }
-      errors.push(`«${template}»: ${res?.error?.code ?? '?'} ${res?.error?.message ?? ''}`.trim());
+      if (res !== null && !res?.success) {
+        throw new Error(
+          candidates.length
+            ? currentLanguage().errors.newPageTemplates(errors.join('\n'))
+            : currentLanguage().errors.newPageNoTemplates,
+        );
+      }
     }
-    if (!ok) {
-      throw new Error(
-        candidates.length
-          ? currentLanguage().errors.newPageTemplates(errors.join('\n'))
-          : currentLanguage().errors.newPageNoTemplates,
-      );
+    let now = await countPages();
+    if (now === null || now <= have) {
+      await reload();
+      now = await countPages();
     }
-    await reload();
+    if (now !== null && now > have) {
+      have = now;
+      onPage?.(Math.min(have - before, count), count);
+    }
   }
-  const have = await totalPages(ref.notePath);
+  // Once at the end, so the device shows the new pages.
+  await reload();
+  have = await totalPages(ref.notePath);
   if (have < target) {
     throw new Error(`${currentLanguage().errors.failed('insertNotePage')} (${have - before}/${count})`);
   }
