@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala je največje mesto.',
   MA: 'Casablanca je največje mesto.',
   NG: 'Lagos je bil prestolnica do leta 1991 in je največje mesto.',
+  GQ: 'Malabo je bil prestolnica do leta 2026.',
   SZ: 'Lobamba je kraljeva in zakonodajna prestolnica.',
   ZA: 'Tri prestolnice: Pretoria, Cape Town in Bloemfontein.',
   TZ: 'Dar es Salaam je bil prestolnica do leta 1996 in je največje mesto.',

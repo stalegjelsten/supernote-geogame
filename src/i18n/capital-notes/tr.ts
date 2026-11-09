@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala en büyük şehirdir.',
   MA: 'Kazablanka en büyük şehirdir.',
   NG: "Lagos 1991'e kadar başkentti ve en büyük şehirdir.",
+  GQ: "Malabo 2026'ya kadar başkentti.",
   SZ: 'Lobamba kraliyet ve yasama başkentidir.',
   ZA: 'Üç başkent: Pretoria, Kap Şehri ve Bloemfontein.',
   TZ: "Darüsselam 1996'ya kadar başkentti ve en büyük şehirdir.",

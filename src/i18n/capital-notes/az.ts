@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Duala ən böyük şəhərdir.',
   MA: 'Kasablanka ən böyük şəhərdir.',
   NG: 'Laqos 1991-ci ilədək paytaxt olub və ən böyük şəhərdir.',
+  GQ: 'Malabo 2026-cı ilədək paytaxt olub.',
   SZ: 'Lobamba kral və qanunverici paytaxtdır.',
   ZA: 'Üç paytaxt: Pretoriya, Keyptaun və Blumfonteyn.',
   TZ: 'Dar-es-Salam 1996-cı ilədək paytaxt olub və ən böyük şəhərdir.',

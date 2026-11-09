@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Duala ir lielākā pilsēta.',
   MA: 'Kasablanka ir lielākā pilsēta.',
   NG: 'Lagosa ir lielākā pilsēta (galvaspilsēta līdz 1991. gadam).',
+  GQ: 'Malabo bija galvaspilsēta līdz 2026. gadam.',
   SZ: 'Lobamba ir karaliskā un likumdevēja galvaspilsēta.',
   ZA: 'Trīs galvaspilsētas: Pretorija, Keiptauna un Blumfonteina.',
   TZ: 'Dāresalāma ir lielākā pilsēta (galvaspilsēta līdz 1996. gadam).',

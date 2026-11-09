@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala je největší město.',
   MA: 'Casablanca je největší město.',
   NG: 'Lagos byl hlavním městem do roku 1991 a je největším městem.',
+  GQ: 'Malabo bylo hlavním městem do roku 2026.',
   SZ: 'Lobamba je královské a zákonodárné hlavní město.',
   ZA: 'Tři hlavní města: Pretorie, Kapské Město a Bloemfontein.',
   TZ: 'Dar es Salaam byl hlavním městem do roku 1996 a je největším městem.',

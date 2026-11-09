@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Duala je najveći grad.',
   MA: 'Kazablanka je najveći grad.',
   NG: 'Lagos je bio prestonica do 1991. i najveći je grad.',
+  GQ: 'Malabo je bio prestonica do 2026.',
   SZ: 'Lobamba je kraljevska i zakonodavna prestonica.',
   ZA: 'Tri prestonice: Pretorija, Kejptaun i Blumfontejn.',
   TZ: 'Dar es Salam je bio prestonica do 1996. i najveći je grad.',

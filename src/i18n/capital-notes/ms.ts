@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala ialah bandar terbesar.',
   MA: 'Casablanca ialah bandar terbesar.',
   NG: 'Lagos, bandar terbesar, menjadi ibu negara sehingga 1991.',
+  GQ: 'Malabo menjadi ibu negara sehingga 2026.',
   SZ: 'Lobamba ialah ibu negara diraja dan perundangan.',
   ZA: 'Tiga ibu negara: Pretoria, Cape Town dan Bloemfontein.',
   TZ: 'Dar es Salaam, bandar terbesar, menjadi ibu negara sehingga 1996.',

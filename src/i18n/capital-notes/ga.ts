@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Is í Douala an chathair is mó.',
   MA: 'Is í Casablanca an chathair is mó.',
   NG: 'Ba phríomhchathair í Lagos go 1991; is í an chathair is mó.',
+  GQ: 'Ba phríomhchathair í Malabo go 2026.',
   SZ: 'Is í Lobamba an phríomhchathair ríoga agus reachtach.',
   ZA: 'Trí phríomhchathair: Pretoria, Cape Town agus Bloemfontein.',
   TZ: 'Ba phríomhchathair í Dar es Salaam go 1996; is í an chathair is mó.',

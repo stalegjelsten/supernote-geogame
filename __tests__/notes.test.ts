@@ -97,7 +97,7 @@ describe('footnotes', () => {
   });
 });
 
-describe('de facto capitals are accepted, abolished capitals are not', () => {
+describe('official capitals are accepted, seats of government and former capitals are not', () => {
   const en = getLanguage('en')!;
   const nbLang = getLanguage('nb')!;
   const de = getLanguage('de')!;
@@ -109,6 +109,15 @@ describe('de facto capitals are accepted, abolished capitals are not', () => {
     ['KZ', 'Almaty'],
     ['MM', 'Yangon'],
     ['BR', 'Rio de Janeiro'],
+    ['GQ', 'Malabo'],
+    ['BO', 'La Paz'],
+    ['NL', 'The Hague'],
+    ['MY', 'Putrajaya'],
+    ['BJ', 'Cotonou'],
+    ['CI', 'Abidjan'],
+    ['BI', 'Bujumbura'],
+    ['PS', 'Ramallah'],
+    ['YE', 'Aden'],
   ])('%s: %s is wrong', (code, answer) => {
     for (const lang of [en, nbLang, de]) {
       expect(gradeAnswer(countryIn(lang, code as CountryCode), answer).verdict).toBe('wrong');
@@ -118,15 +127,8 @@ describe('de facto capitals are accepted, abolished capitals are not', () => {
   test.each([
     ['ZA', 'Cape Town'],
     ['ZA', 'Bloemfontein'],
-    ['BO', 'La Paz'],
     ['SZ', 'Lobamba'],
-    ['CI', 'Abidjan'],
-    ['BJ', 'Cotonou'],
-    ['BI', 'Bujumbura'],
-    ['MY', 'Putrajaya'],
     ['LK', 'Colombo'],
-    ['PS', 'Ramallah'],
-    ['NL', 'The Hague'],
     ['TZ', 'Dodoma'],
   ])('%s: %s is correct', (code, answer) => {
     for (const lang of [en, nbLang, de]) {
@@ -134,8 +136,8 @@ describe('de facto capitals are accepted, abolished capitals are not', () => {
     }
   });
 
-  test('in German, Kapstadt and Den Haag are accepted', () => {
+  test('in German, Kapstadt is accepted and Den Haag is not', () => {
     expect(gradeAnswer(countryIn(de, 'ZA'), 'Kapstadt').verdict).toBe('correct');
-    expect(gradeAnswer(countryIn(de, 'NL'), 'Den Haag').verdict).toBe('correct');
+    expect(gradeAnswer(countryIn(de, 'NL'), 'Den Haag').verdict).toBe('wrong');
   });
 });

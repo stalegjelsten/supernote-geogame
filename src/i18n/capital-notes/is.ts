@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala er stærsta borgin.',
   MA: 'Casablanca er stærsta borgin.',
   NG: 'Lagos var höfuðborg til 1991 og er stærsta borgin.',
+  GQ: 'Malabó var höfuðborg til 2026.',
   SZ: 'Lobamba er konungleg höfuðborg og höfuðborg löggjafans.',
   ZA: 'Þrjár höfuðborgir: Pretoría, Höfðaborg og Bloemfontein.',
   TZ: 'Dar es Salaam var höfuðborg til 1996 og er stærsta borgin.',

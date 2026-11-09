@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala no tanàna lehibe indrindra.',
   MA: 'Casablanca no tanàna lehibe indrindra.',
   NG: "Lagos no tanàna lehibe indrindra (renivohitra hatramin'ny 1991).",
+  GQ: "Malabo no renivohitra hatramin'ny 2026.",
   SZ: 'Lobamba no renivohitry ny mpanjaka sy ny fanaovan-dalàna.',
   ZA: 'Renivohitra telo: Pretoria, Cape Town ary Bloemfontein.',
   TZ: "Dar es Salaam no lehibe indrindra (renivohitra hatramin'ny 1996).",

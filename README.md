@@ -106,7 +106,7 @@ Install the build the same way as under [Installation](#installation). Publish v
 
 **197 countries:** the 193 UN member states ([UN list of member states](https://www.un.org/en/about-us/member-states)), the two observer states Vatican City and Palestine, and Kosovo and Taiwan, which are recognized by many countries but are not UN members. Other territories (for example Western Sahara, Greenland and the Cook Islands) are not included. The continent of each country is listed in `src/data/countries.ts`.
 
-**Capitals:** the answer key is the country's capital (P36) in [Wikidata](https://www.wikidata.org). If the country has several capitals, the key is the one usually given as the official capital. Cities that today also serve as capitals (seat of government, shared, economic or commercial capital, such as The Hague, La Paz and Bujumbura) are accepted as answers. Cities that are only former capitals (such as Dar es Salaam, Lagos and Almaty) are not. See `scripts/data/co-capitals-wikidata.json` and the notes in `src/i18n/notes.ts`.
+**Capitals:** the answer key is the country's capital (P36) in [Wikidata](https://www.wikidata.org). If the country has several official capitals (South Africa, Eswatini, Sri Lanka), all of them are accepted. Cities that are only the seat of government or an economic capital (such as The Hague, La Paz and Bujumbura) or former capitals (such as Dar es Salaam, Lagos and Malabo) are not accepted; they get a note on the graded sheet instead. See `scripts/data/co-capitals-wikidata.json` and the notes in `src/i18n/notes.ts`.
 
 ## License and data sources
 

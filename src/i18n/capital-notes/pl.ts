@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Duala jest największym miastem.',
   MA: 'Casablanca jest największym miastem.',
   NG: 'Lagos był stolicą do 1991 roku i jest największym miastem.',
+  GQ: 'Malabo było stolicą do 2026 roku.',
   SZ: 'Lobamba jest stolicą królewską i ustawodawczą.',
   ZA: 'Trzy stolice: Pretoria, Kapsztad i Bloemfontein.',
   TZ: 'Dar es Salaam był stolicą do 1996 roku i jest największym miastem.',

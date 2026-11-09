@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala este cel mai mare oraș.',
   MA: 'Casablanca este cel mai mare oraș.',
   NG: 'Lagos a fost capitală până în 1991 și este cel mai mare oraș.',
+  GQ: 'Malabo a fost capitală până în 2026.',
   SZ: 'Lobamba este capitala regală și legislativă.',
   ZA: 'Trei capitale: Pretoria, Cape Town și Bloemfontein.',
   TZ: 'Dar es Salaam a fost capitală până în 1996 și e cel mai mare oraș.',

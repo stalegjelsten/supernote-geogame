@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Ang Douala ang pinakadakong siyudad.',
   MA: 'Ang Casablanca ang pinakadakong siyudad.',
   NG: 'Ang Lagos kanhi kaulohan hangtod 1991 ug pinakadakong siyudad.',
+  GQ: 'Ang Malabo kanhi kaulohan hangtod 2026.',
   SZ: 'Ang Lobamba mao ang harianon ug lehislatibong kaulohan.',
   ZA: 'Tulo ka kaulohan: Pretoria, Cape Town ug Bloemfontein.',
   TZ: 'Ang Dar es Salaam ang pinakadakong siyudad (kaulohan hangtod 1996).',

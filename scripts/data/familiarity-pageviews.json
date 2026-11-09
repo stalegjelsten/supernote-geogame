@@ -1,7 +1,7 @@
 {
  "period": [
   "2026-09-08",
-  "2026-11-06"
+  "2026-11-08"
  ],
  "wikis": [
   "en",
@@ -7413,7 +7413,7 @@
   },
   "GQ": {
    "countryQ": "Q983",
-   "capitalQ": "Q3818",
+   "capitalQ": "Q1140136",
    "country": {
     "de": {
      "title": "Äquatorialguinea",
@@ -7470,56 +7470,56 @@
    },
    "capital": {
     "de": {
-     "title": "Malabo",
-     "views": 3731
+     "title": "Ciudad de la Paz",
+     "views": 4535
     },
     "en": {
-     "title": "Malabo",
-     "views": 19984
+     "title": "Ciudad de la Paz",
+     "views": 35661
     },
     "es": {
-     "title": "Malabo",
-     "views": 6197
+     "title": "Ciudad de la Paz",
+     "views": 7534
     },
     "fr": {
-     "title": "Malabo",
-     "views": 2697
+     "title": "Ciudad de la Paz",
+     "views": 3413
     },
     "it": {
-     "title": "Malabo",
-     "views": 1782
+     "title": "Ciudad de la Paz",
+     "views": 3017
     },
     "ja": {
-     "title": "マラボ",
-     "views": 1180
+     "title": "シウダ・デ・ラ・パス",
+     "views": 1498
     },
     "nl": {
-     "title": "Malabo",
-     "views": 690
+     "title": "Ciudad de la Paz",
+     "views": 1161
     },
     "no": {
-     "title": "Malabo",
-     "views": 323
+     "title": "Ciudad de la Paz",
+     "views": 338
     },
     "pl": {
-     "title": "Malabo",
-     "views": 1197
+     "title": "Ciudad de la Paz",
+     "views": 1871
     },
     "pt": {
-     "title": "Malabo",
-     "views": 842
+     "title": "Cidade da Paz",
+     "views": 976
     },
     "ru": {
-     "title": "Малабо",
-     "views": 3147
+     "title": "Сьюдад-де-ла-Пас",
+     "views": 3679
     },
     "sv": {
-     "title": "Malabo",
-     "views": 312
+     "title": "Ciudad de la Paz",
+     "views": 446
     },
     "zh": {
-     "title": "馬拉博",
-     "views": 522
+     "title": "和平城",
+     "views": 805
     }
    }
   },

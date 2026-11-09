@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Duala é a maior cidade.',
   MA: 'Casablanca é a maior cidade.',
   NG: 'Lagos foi capital até 1991 e é a maior cidade.',
+  GQ: 'Malabo foi capital até 2026.',
   SZ: 'Lobamba é a capital real e legislativa.',
   ZA: 'Três capitais: Pretória, Cidade do Cabo e Bloemfontein.',
   TZ: 'Dar es Salaam foi capital até 1996 e é a maior cidade.',

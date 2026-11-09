@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala is de grootste stad.',
   MA: 'Casablanca is de grootste stad.',
   NG: 'Lagos was hoofdstad tot 1991 en is de grootste stad.',
+  GQ: 'Malabo was hoofdstad tot 2026.',
   SZ: 'Lobamba is de koninklijke en wetgevende hoofdstad.',
   ZA: 'Drie hoofdsteden: Pretoria, Kaapstad en Bloemfontein.',
   TZ: 'Dar es Salaam was hoofdstad tot 1996 en is de grootste stad.',

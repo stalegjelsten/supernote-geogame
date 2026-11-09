@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Ang Douala ang pinakamalaking lungsod.',
   MA: 'Ang Casablanca ang pinakamalaking lungsod.',
   NG: 'Kabisera ang Lagos hanggang 1991; ito ang pinakamalaking lungsod.',
+  GQ: 'Kabisera ang Malabo hanggang 2026.',
   SZ: 'Ang Lobamba ang maharlika at lehislatibong kabisera.',
   ZA: 'Tatlong kabisera: Pretoria, Cape Town at Bloemfontein.',
   TZ: 'Kabisera ang Dar es Salaam hanggang 1996; ito ang pinakamalaki.',

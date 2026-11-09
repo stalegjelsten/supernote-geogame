@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala ni mji mkubwa zaidi.',
   MA: 'Casablanca ni mji mkubwa zaidi.',
   NG: 'Lagos ulikuwa mji mkuu hadi 1991 na ndio mji mkubwa zaidi.',
+  GQ: 'Malabo ulikuwa mji mkuu hadi 2026.',
   SZ: 'Lobamba ni mji mkuu wa kifalme na wa kutunga sheria.',
   ZA: 'Miji mikuu mitatu: Pretoria, Cape Town na Bloemfontein.',
   TZ: 'Dar es Salaam ulikuwa mji mkuu hadi 1996 na ndio mji mkubwa zaidi.',

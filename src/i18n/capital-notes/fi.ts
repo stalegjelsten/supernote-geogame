@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala on suurin kaupunki.',
   MA: 'Casablanca on suurin kaupunki.',
   NG: 'Lagos oli pääkaupunki vuoteen 1991 ja on suurin kaupunki.',
+  GQ: 'Malabo oli pääkaupunki vuoteen 2026.',
   SZ: 'Lobamba on kuninkaallinen ja lainsäädännöllinen pääkaupunki.',
   ZA: 'Kolme pääkaupunkia: Pretoria, Kapkaupunki ja Bloemfontein.',
   TZ: 'Dar es Salaam oli pääkaupunki vuoteen 1996 ja on suurin kaupunki.',

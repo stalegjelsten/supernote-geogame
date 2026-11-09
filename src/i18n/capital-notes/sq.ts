@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Duala është qyteti më i madh.',
   MA: 'Kazablanka është qyteti më i madh.',
   NG: 'Lagosi ishte kryeqytet deri në 1991 dhe është qyteti më i madh.',
+  GQ: 'Malabo ishte kryeqytet deri në 2026.',
   SZ: 'Lobamba është kryeqyteti mbretëror dhe legjislativ.',
   ZA: 'Tre kryeqytete: Pretoria, Kepi dhe Bloemfontein.',
   TZ: 'Dar es Salaami është qyteti më i madh (kryeqytet deri në 1996).',

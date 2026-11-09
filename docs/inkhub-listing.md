@@ -73,8 +73,8 @@ capitals and maps come from open data sources, not from AI.
 Countries and capitals
 197 countries: the 193 UN member states, the two UN observer states (Vatican
 City and Palestine), Kosovo and Taiwan. The answer is the capital listed in
-Wikidata. Cities that are de facto also capitals (seat of government, shared
-capitals) are accepted; former capitals are not.
+Wikidata. Where a country has several official capitals, all are accepted;
+seats of government and former capitals are not, but get a note.
 
 Data: country names from Unicode CLDR, capitals from Wikidata (CC0), maps from
 Natural Earth (public domain). Maps show de facto boundaries and take no

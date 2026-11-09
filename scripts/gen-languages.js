@@ -11,9 +11,10 @@
  * - Capitals: Wikidata labels, stored in scripts/data/capitals-wikidata.json
  *   (fetched with wbgetentities for the capital (P36) of each country).
  *   If a language lacks a label, the fallback languages in `wd` are tried, then 'mul' and 'en'.
- * - Cities that are de facto also capitals (seat of government, several official capitals):
- *   Wikidata labels in scripts/data/co-capitals-wikidata.json. They are accepted as answers
- *   in the language itself and in English. Former capitals are not listed there.
+ * - Countries with several official capitals (South Africa, Eswatini, Sri Lanka): the other
+ *   capitals' Wikidata labels in scripts/data/co-capitals-wikidata.json. They are accepted as
+ *   answers in the language itself and in English. Seats of government that are not
+ *   capitals (The Hague, La Paz …) and former capitals are not listed there; they get a note.
  * - Short forms without administrative affixes (東京 for 東京都, Тиран for Тиран хот) and
  *   some extra spellings: ADMIN_SUFFIXES and EXTRA_ALTERNATIVES below.
  * - The sheet texts in the table below are translated by hand.
@@ -223,8 +224,8 @@ function main() {
       }
       seen.set(name, cc);
       const capital = capitalFor(caps[cc].labels, wd);
-      // Also accepted: the English capital, and cities that are de facto capitals (seat of
-      // government etc.) in the language itself and in English.
+      // Also accepted: the English capital, and the country's other official capitals
+      // in the language itself and in English.
       const alts = [];
       for (const alt of [
         withoutAdminSuffix(code, capital),

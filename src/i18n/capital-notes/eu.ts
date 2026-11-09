@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala da hiririk handiena.',
   MA: 'Casablanca da hiririk handiena.',
   NG: 'Lagos 1991ra arte hiriburua izan zen; hiririk handiena da.',
+  GQ: 'Malabo 2026ra arte hiriburua izan zen.',
   SZ: 'Lobamba errege- eta lege-hiriburua da.',
   ZA: 'Hiru hiriburu: Pretoria, Lurmutur Hiria eta Bloemfontein.',
   TZ: 'Dar es Salaam 1996ra arte hiriburua izan zen; hiririk handiena da.',

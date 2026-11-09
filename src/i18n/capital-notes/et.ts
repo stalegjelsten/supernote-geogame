@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala on suurim linn.',
   MA: 'Casablanca on suurim linn.',
   NG: 'Lagos oli pealinn 1991. aastani ja on suurim linn.',
+  GQ: 'Malabo oli pealinn 2026. aastani.',
   SZ: 'Lobamba on kuninglik ja seadusandlik pealinn.',
   ZA: 'Kolm pealinna: Pretoria, Kaplinn ja Bloemfontein.',
   TZ: 'Dar es Salaam oli pealinn 1996. aastani ja on suurim linn.',

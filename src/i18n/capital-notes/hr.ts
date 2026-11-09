@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala je najveći grad.',
   MA: 'Casablanca je najveći grad.',
   NG: 'Lagos je bio glavni grad do 1991. i najveći je grad.',
+  GQ: 'Malabo je bio glavni grad do 2026.',
   SZ: 'Lobamba je kraljevski i zakonodavni glavni grad.',
   ZA: 'Tri glavna grada: Pretoria, Cape Town i Bloemfontein.',
   TZ: 'Dar es Salaam bio je glavni grad do 1996. i najveći je grad.',

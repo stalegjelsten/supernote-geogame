@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Duala – didžiausias miestas.',
   MA: 'Kasablanka – didžiausias miestas.',
   NG: 'Lagosas buvo sostinė iki 1991 m. ir yra didžiausias miestas.',
+  GQ: 'Malabas buvo sostinė iki 2026 m.',
   SZ: 'Lobamba – karališkoji ir įstatymų leidžiamoji sostinė.',
   ZA: 'Trys sostinės: Pretorija, Keiptaunas ir Blumfonteinas.',
   TZ: 'Dar es Salamas buvo sostinė iki 1996 m. ir yra didžiausias miestas.',

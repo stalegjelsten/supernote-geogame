@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala là thành phố lớn nhất.',
   MA: 'Casablanca là thành phố lớn nhất.',
   NG: 'Lagos là thủ đô đến năm 1991 và là thành phố lớn nhất.',
+  GQ: 'Malabo là thủ đô đến năm 2026.',
   SZ: 'Lobamba là thủ đô hoàng gia và lập pháp.',
   ZA: 'Ba thủ đô: Pretoria, Cape Town và Bloemfontein.',
   TZ: 'Dar es Salaam là thủ đô đến năm 1996 và là thành phố lớn nhất.',

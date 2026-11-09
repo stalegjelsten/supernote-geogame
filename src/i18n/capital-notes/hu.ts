@@ -33,6 +33,7 @@ const notes: CapitalNotes = {
   CM: 'Douala a legnagyobb város.',
   MA: 'Casablanca a legnagyobb város.',
   NG: 'Lagos 1991-ig volt főváros, és a legnagyobb város.',
+  GQ: 'Malabo 2026-ig volt főváros.',
   SZ: 'Lobamba a királyi és törvényhozási főváros.',
   ZA: 'Három főváros: Pretoria, Fokváros és Bloemfontein.',
   TZ: 'Dar es-Salaam 1996-ig volt főváros, és a legnagyobb város.',

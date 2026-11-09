@@ -109,7 +109,7 @@ export const CAPITAL_LONLAT: Record<CountryCode, readonly [lon: number, lat: num
   CD: [15.3119, -4.3219],
   DJ: [43.1481, 11.595],
   EG: [31.2358, 30.0444],
-  GQ: [8.7737, 3.7521],
+  GQ: [10.8222, 1.5917],
   CI: [-5.2742, 6.8161],
   ER: [38.9167, 15.3333],
   SZ: [31.1333, -26.3167],
