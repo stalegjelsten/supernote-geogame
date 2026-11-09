@@ -76,8 +76,8 @@ const svgOf = (d: Draft): string => {
       return `<image x="${left}" y="${top}" width="${right - left}" height="${bottom - top}" preserveAspectRatio="none" href="data:image/png;base64,${data}"/>`;
     }
     case 'text': {
-      const anchor = d.align === 2 ? 'end' : 'start';
-      const x = d.align === 2 ? d.rect.right : d.rect.left;
+      const anchor = d.align === 2 ? 'end' : d.align === 1 ? 'middle' : 'start';
+      const x = d.align === 2 ? d.rect.right : d.align === 1 ? (d.rect.left + d.rect.right) / 2 : d.rect.left;
       return d.text
         .split('\n')
         .map(

@@ -291,3 +291,18 @@ describe('lines on the map', () => {
     ).toBe(true);
   });
 });
+
+describe('text boxes on the device', () => {
+  it('are wide enough that two-digit numbers and "15." stay on one line', () => {
+    const codes = pickLabelCountries(nb, 'EU', 20, random).map(c => c.code);
+    const drafts = labelSheetDrafts(PAGES[0], nb, 'EU', codes, '/x/eu.png');
+    for (const d of drafts) {
+      if (d.kind === 'text' && /^\d+\.?$/.test(d.text)) {
+        // At least 2 em more than the digits need, for the device's inner padding.
+        expect(d.rect.right - d.rect.left).toBeGreaterThanOrEqual(
+          (d.text.length * 0.62 + 2) * d.fontSize,
+        );
+      }
+    }
+  });
+});

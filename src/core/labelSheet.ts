@@ -657,6 +657,8 @@ const LINE_WIDTH = 200;
 const MARK_WIDTH = 300;
 const COLOR_BLACK = 0;
 const COLOR_DARK_GRAY = 0x9d;
+/** Extra width on each side of a short text box, in em, so the device does not wrap it. */
+const TEXT_BOX_PAD_EM = 1.5;
 
 /** A small closed circle around `c`. */
 function circle(c: DraftPoint, radius: number, steps = 12): DraftPoint[] {
@@ -717,16 +719,31 @@ export function labelSheetDrafts(
         color: COLOR_DARK_GRAY,
         width: LINE_WIDTH,
       });
+      // Text boxes on the device have inner padding, so a box exactly as wide as the text
+      // wraps "16" onto two lines. The boxes are therefore made much wider than the text:
+      // the list number reaches in under the writing line (only strokes are read there),
+      // and the box of the number on the map reaches far to the right of the number. Left
+      // aligned like every other text box in the plugin, so the number starts where planned.
       const label = `${i + 1}.`;
+      const numberCell = {...s.number!, right: s.number!.right + L.fontSize * 2};
       drafts.push({
         kind: 'text',
         text: label,
-        rect: centeredTextRect(label, s.number!, L.fontSize),
+        rect: centeredTextRect(label, numberCell, L.fontSize),
         fontSize: L.fontSize,
         bold: true,
         locked: true,
       });
-      drafts.push({kind: 'text', text: String(i + 1), rect: s.tag!, fontSize: tagFont, bold: true, locked: true});
+      const tag = s.tag!;
+      const pad = r(tagFont * TEXT_BOX_PAD_EM);
+      drafts.push({
+        kind: 'text',
+        text: String(i + 1),
+        rect: {left: tag.left, top: tag.top, right: tag.right + 2 * pad, bottom: tag.bottom},
+        fontSize: tagFont,
+        bold: true,
+        locked: true,
+      });
     } else {
       drafts.push({kind: 'path', points: rectPath(s.box), color: COLOR_BLACK, width: LINE_WIDTH});
     }
