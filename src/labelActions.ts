@@ -15,6 +15,7 @@ import {
   labelLayout,
   labelResultDrafts,
   labelSeparation,
+  labelStyleFor,
   labelSheetDrafts,
   parseLabelKey,
   pickLabelCountries,
@@ -139,7 +140,9 @@ export async function gradeLabelSheet(progress: Progress): Promise<LabelGradeSum
     return null;
   }
   const {lang, region, codes} = info;
-  const L = labelLayout(ref.size, region, codes);
+  // The layout the sheet was drawn with, also for sheets made under older rules.
+  const style = labelStyleFor(ref.size, info.version);
+  const L = labelLayout(ref.size, region, codes, style);
 
   // The handwriting in each box: every stroke whose middle is in the box's band.
   progress(ui.progress.findingInk);
@@ -185,7 +188,7 @@ export async function gradeLabelSheet(progress: Progress): Promise<LabelGradeSum
   await deleteElements(ref, old);
 
   progress(ui.progress.writingResults);
-  await insertDrafts(ref, labelResultDrafts(ref.size, lang, region, codes, graded));
+  await insertDrafts(ref, labelResultDrafts(ref.size, lang, region, codes, graded, style));
   await saveNote();
   await recordResults(
     ref.notePath,

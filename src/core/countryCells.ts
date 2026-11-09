@@ -55,28 +55,6 @@ function decode(region: Region): Decoded {
   return d;
 }
 
-/**
- * How busy the map is under a rectangle (image pixels), for placing text on it:
- * 0 = all inside one country of the region (white, no borders), 1 = all sea or land outside
- * the region (no borders of the region's countries), 2 = mixed (borders or coast run through it).
- */
-export function busyness(region: Region, rect: {left: number; top: number; right: number; bottom: number}): 0 | 1 | 2 {
-  const d = decode(region);
-  const x0 = Math.max(0, Math.floor(rect.left / d.cell));
-  const x1 = Math.min(d.cols - 1, Math.floor(rect.right / d.cell));
-  const y0 = Math.max(0, Math.floor(rect.top / d.cell));
-  const y1 = Math.min(d.rows - 1, Math.floor(rect.bottom / d.cell));
-  const first = d.grid[y0 * d.cols + x0];
-  for (let y = y0; y <= y1; y++) {
-    for (let x = x0; x <= x1; x++) {
-      if (d.grid[y * d.cols + x] !== first) {
-        return 2;
-      }
-    }
-  }
-  return first ? 0 : 1;
-}
-
 /** The country (in the region) at a point in the map image, or null for sea and land outside the region. */
 export function countryAt(region: Region, p: XY): CountryCode | null {
   const d = decode(region);

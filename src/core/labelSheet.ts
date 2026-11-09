@@ -2,10 +2,15 @@
  * Label mode: "write the names on the map".
  *
  * Most countries are far too small on the map to write their name inside them, so each
- * country on the sheet gets a dot and a leader line out to a writing box in a column beside
- * the map (left or right). The boxes are placed as close to the height of their country as
- * possible, and the lines are kept from crossing each other. Grading reads box by box, as on
+ * country on the sheet gets a dot and a number on the map, and the names are written on a
+ * numbered list of lines below it. The map gets the whole width of the page. The numbers are
+ * placed where they cover no border or coast if there is such a place near the dot, with a
+ * short line back to the dot when they had to move away. Grading reads line by line, as on
  * the outline sheet, so no guessing is needed about which strokes belong to which name.
+ *
+ * The first test build put writing boxes beside the map with leader lines instead (the
+ * 'leader' style). That left the map too small on Manta; the code is kept so sheets made with
+ * it can still be graded (see labelStyleFor).
  *
  * Pure logic without the SDK. The layout depends only on page size, region and countries,
  * so grading can compute it again from the key at the bottom of the sheet.
@@ -15,7 +20,8 @@ import {MAPS} from '../data/maps';
 import {getLanguage, type Language} from '../i18n';
 import {labelTexts} from '../i18n/label';
 import {countriesIn, countryIn, type Country} from './countries';
-import {busyness, countryLabel} from './countryCells';
+import {countryLabel} from './countryCells';
+import {hasLines} from './mapLines';
 import type {Draft, DraftPoint} from './draft';
 import {familiarity, levelPool, type Level} from './fairDraw';
 import {MIN_ROW_PX, centeredTextRect, fitFontSize, titleFontSize, type Rect, type Size} from './layout';
@@ -35,24 +41,32 @@ export const LABEL_REGIONS: Region[] = [...CONTINENTS];
 const r = (v: number) => Math.round(v);
 
 /**
- * 'leader': leader lines from the countries to writing boxes beside the map (large pages).
- * 'numbered': numbers on the map and a numbered list of writing lines below it (small pages,
- * where boxes beside the map would leave both the map and the boxes too small).
+ * 'numbered': numbers on the map and a numbered list of writing lines below it.
+ * 'leader': leader lines from the countries to writing boxes beside the map. Only for grading
+ * sheets from the first test build (see labelStyleFor); new sheets are always numbered.
  */
 export type LabelStyle = 'leader' | 'numbered';
 
 /** Pages narrower than this (Nomad, A5X, A6X: 1404 px) get the numbered style. */
 const NUMBERED_BELOW_WIDTH = 1600;
 
-export const labelStyleFor = (page: Size): LabelStyle =>
-  page.width < NUMBERED_BELOW_WIDTH ? 'numbered' : 'leader';
+/**
+ * The style of a sheet. `keyVersion` is the version in the sheet's key:
+ * - 1: boxes on large pages, numbers only on small ones (the first test build). Between the
+ *   box columns the map was at most 75 mm wide on Manta, too small to see which small
+ *   country a dot was in (Asia was 75 × 48 mm).
+ * - 2: numbers on every page; the map gets the whole width (Asia about 133 × 85 mm on Manta).
+ * Old sheets are graded with the layout they were drawn with.
+ */
+export const labelStyleFor = (page: Size, keyVersion: 1 | 2 = LABEL_KEY_VERSION): LabelStyle =>
+  keyVersion >= 2 || page.width < NUMBERED_BELOW_WIDTH ? 'numbered' : 'leader';
 
 /**
  * The choices of number of countries for a page. On small pages the list below the map takes
  * so much room with 20 that the map gets too small, so they stop at 15.
  */
 export const labelCountsFor = (page: Size): number[] =>
-  labelStyleFor(page) === 'numbered' ? LABEL_COUNTS.filter(c => c <= 15) : [...LABEL_COUNTS];
+  page.width < NUMBERED_BELOW_WIDTH ? LABEL_COUNTS.filter(c => c <= 15) : [...LABEL_COUNTS];
 
 export interface LabelSlot {
   code: CountryCode;
@@ -329,7 +343,7 @@ export const numberedColumns = (count: number) => (count <= 10 ? 2 : 3);
 const overlapsRect = (a: Rect, b: Rect) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
 
 /** How many steps farther from its dot a number may go to get one level quieter background. */
-const BUSY_COST = 3;
+const BUSY_COST = 5;
 
 /** Does the segment a–b pass through the rectangle (checked at points a few pixels apart)? */
 function segmentHitsRect(a: DraftPoint, b: DraftPoint, rect: Rect): boolean {
@@ -386,7 +400,7 @@ export function placeTags(
           const cy = a.y + dy * (h / 2 + d);
           const t = {left: r(cx - w / 2), top: r(cy - h / 2), right: r(cx + w / 2), bottom: r(cy + h / 2)};
           // Gray sea behind black digits reads fine; borders and coasts through them do not.
-          const score = step + (busy(t) === 2 ? BUSY_COST : 0);
+          const score = step + BUSY_COST * busy(t);
           if (best && score >= best.score) {
             continue;
           }
@@ -478,16 +492,18 @@ function numberedLayout(page: Size, region: Region, codes: readonly CountryCode[
   });
   const tagFont = tagFontSize(page);
   const sizes = codes.map((_, i) => ({w: r(String(i + 1).length * tagFont * 0.62 + tagFont * 0.4), h: r(tagFont * 1.25)}));
-  // How busy the map is behind a number, in the map image's pixels, with a little margin.
+  // Does a border or coast run behind a number? In the map image's pixels, with a little margin.
   const sx = m.width / (map.right - map.left);
   const sy = m.height / (map.bottom - map.top);
   const busy = (t: Rect) =>
-    busyness(region, {
-      left: (t.left - map.left) * sx - 3,
-      top: (t.top - map.top) * sy - 3,
-      right: (t.right - map.left) * sx + 3,
-      bottom: (t.bottom - map.top) * sy + 3,
-    });
+    hasLines(region, {
+      left: (t.left - map.left) * sx - 2,
+      top: (t.top - map.top) * sy - 2,
+      right: (t.right - map.left) * sx + 2,
+      bottom: (t.bottom - map.top) * sy + 2,
+    })
+      ? 1
+      : 0;
   const tags = placeTags(anchors, sizes, map, dotRadius(page), busy);
 
   const cw = (right - left) / cols;
@@ -534,14 +550,21 @@ const tagFontSize = (page: Size) => r(Math.max(22, page.width * 0.017));
 // ---------------------------------------------------------------------------
 // The hidden key
 
-/** "ID l1.nb.EU.KFUDQ….<sheet id>": language, region and the countries in box order. */
-export const LABEL_KEY_PREFIX = 'ID l1.';
+/**
+ * "ID l2.nb.EU.KFUDQ….<sheet id>": language, region and the countries in box order.
+ * The number after "l" is the version of the layout rules (see labelStyleFor):
+ * 1 = boxes on large pages, numbers on small ones; 2 = numbers on every page.
+ */
+export const LABEL_KEY_VERSION = 2;
+const LABEL_KEY_RE = /^ID l([12])\.([A-Za-z-]+)\.([A-Z]{2,3})\.([A-Z]+)(?:\.([0-9a-z]+))?$/;
 
 export function labelKey(lang: Language, region: Region, codes: readonly CountryCode[], sheetId?: string): string {
-  return `${LABEL_KEY_PREFIX}${lang.code}.${region}.${encodeCountryCodes(codes)}` + (sheetId ? `.${sheetId}` : '');
+  return `ID l${LABEL_KEY_VERSION}.${lang.code}.${region}.${encodeCountryCodes(codes)}` + (sheetId ? `.${sheetId}` : '');
 }
 
 export interface LabelSheetInfo {
+  /** The version of the layout rules the sheet was made with. */
+  version: 1 | 2;
   lang: Language;
   region: Region;
   codes: CountryCode[];
@@ -549,18 +572,15 @@ export interface LabelSheetInfo {
 }
 
 export function parseLabelKey(text: string): LabelSheetInfo | null {
-  const t = text.trim();
-  if (!t.startsWith(LABEL_KEY_PREFIX)) {
-    return null;
-  }
-  const m = t.slice(LABEL_KEY_PREFIX.length).match(/^([A-Za-z-]+)\.([A-Z]{2,3})\.([A-Z]+)(?:\.([0-9a-z]+))?$/);
-  const lang = m ? getLanguage(m[1]) : undefined;
-  const region = m?.[2] as Region | undefined;
-  const codes = m ? decodeCountryCodes(m[3]) : null;
+  const m = text.trim().match(LABEL_KEY_RE);
+  const lang = m ? getLanguage(m[2]) : undefined;
+  const region = m?.[3] as Region | undefined;
+  const codes = m ? decodeCountryCodes(m[4]) : null;
   if (!m || !lang || !region || !LABEL_REGIONS.includes(region) || !codes) {
     return null;
   }
-  return m[4] && isSheetId(m[4]) ? {lang, region, codes, sheetId: m[4]} : {lang, region, codes};
+  const info: LabelSheetInfo = {version: m[1] === '1' ? 1 : 2, lang, region, codes};
+  return m[5] && isSheetId(m[5]) ? {...info, sheetId: m[5]} : info;
 }
 
 export function labelTitle(lang: Language, region: Region, count: number): string {
@@ -574,7 +594,8 @@ export function labelTitle(lang: Language, region: Region, count: number): strin
  * How far apart the dots must be (share of the map width). The numbered style has a smaller
  * map and numbers that need room next to the dots, so it needs more space between them.
  */
-export const labelSeparation = (page: Size) => (labelStyleFor(page) === 'numbered' ? 0.05 : 0.035);
+export const labelSeparation = (page: Size) =>
+  labelStyleFor(page) === 'numbered' ? 0.05 : 0.035;
 
 /**
  * Draws `count` countries from the region that have a point on the map, at the chosen level,
@@ -748,8 +769,9 @@ export function labelResultDrafts(
   region: Region,
   codes: readonly CountryCode[],
   graded: GradedLabel[],
+  style: LabelStyle = labelStyleFor(page),
 ): Draft[] {
-  const L = labelLayout(page, region, codes);
+  const L = labelLayout(page, region, codes, style);
   const drafts: Draft[] = [];
   for (const g of graded) {
     const cell = L.slots[g.index].result;
