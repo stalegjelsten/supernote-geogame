@@ -6,6 +6,7 @@ import {
   LABEL_REGIONS,
   gradeLabel,
   labelCapacity,
+  labelColumns,
   labelCountsFor,
   labelKey,
   labelLayout,
@@ -21,6 +22,8 @@ import {
 import {parseOutlineKey} from '../src/core/outlineSheet';
 import {countryLabel} from '../src/core/countryCells';
 import {hasLines} from '../src/core/mapLines';
+import {textWidthEm} from '../src/core/layout';
+import {labelTexts} from '../src/i18n/label';
 
 const nb = getLanguage('nb')!;
 const PAGES = [
@@ -302,6 +305,67 @@ describe('text boxes on the device', () => {
         expect(d.rect.right - d.rect.left).toBeGreaterThanOrEqual(
           (d.text.length * 0.62 + 2) * d.fontSize,
         );
+      }
+    }
+  });
+});
+
+describe('texts in every language', () => {
+  it('the instructions fit on two lines above the map on the smallest page', () => {
+    for (const lang of LANGUAGES) {
+      const t = labelTexts(lang);
+      expect([lang.code, t.subtitle.split('\n').length]).toEqual([
+        lang.code,
+        2,
+      ]);
+      const codes = pickLabelCountries(lang, 'EU', 10, random).map(c => c.code);
+      const sub = labelSheetDrafts(
+        PAGES[1],
+        lang,
+        'EU',
+        codes,
+        '/x/eu.png',
+      ).find(d => d.kind === 'text' && d.text === t.subtitle);
+      expect(sub && sub.kind === 'text').toBe(true);
+      if (sub && sub.kind === 'text') {
+        const widest = Math.max(...t.subtitle.split('\n').map(textWidthEm));
+        expect([
+          lang.code,
+          // fitFontSize rounds to the nearest pixel, so allow one pixel.
+          widest * (sub.fontSize - 1) <= sub.rect.right - sub.rect.left,
+        ]).toEqual([lang.code, true]);
+      }
+    }
+  });
+});
+
+describe('reading the lines', () => {
+  it('groups the lines in columns from top to bottom, every line once', () => {
+    for (const page of PAGES) {
+      for (const n of labelCountsFor(page)) {
+        const codes = pickLabelCountries(nb, 'AF', n, random).map(c => c.code);
+        for (const L of [
+          labelLayout(page, 'AF', codes),
+          labelLayout(page, 'AF', codes, labelStyleFor(page, 1)),
+        ]) {
+          const cols = labelColumns(L);
+          expect(cols.flat().sort((a, b) => a - b)).toEqual(
+            codes.map((_, k) => k),
+          );
+          for (const col of cols) {
+            expect(new Set(col.map(k => L.slots[k].box.left)).size).toBe(1);
+            col
+              .slice(1)
+              .forEach((k, i) =>
+                expect(L.slots[k].box.top).toBeGreaterThan(
+                  L.slots[col[i]].box.top,
+                ),
+              );
+          }
+          if (L.style === 'numbered') {
+            expect(cols).toHaveLength(n <= 10 ? 2 : 3);
+          }
+        }
       }
     }
   });

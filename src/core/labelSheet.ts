@@ -481,7 +481,10 @@ function numberedLayout(page: Size, region: Region, codes: readonly CountryCode[
     w = h * aspect;
   }
   const mapLeft = left + (maxW - w) / 2;
-  const map = {left: r(mapLeft), top: r(top), right: r(mapLeft + w), bottom: r(top + h)};
+  // A wide map (Asia) does not fill the height: it is centered in the room above the list.
+  // Grading reads only the list, so the map can move without old sheets being misread.
+  const mapTop = top + (maxH - h) / 2;
+  const map = {left: r(mapLeft), top: r(mapTop), right: r(mapLeft + w), bottom: r(mapTop + h)};
 
   const anchors = codes.map(c => {
     const a = anchorOf(region, map, c);
@@ -546,6 +549,19 @@ function numberedLayout(page: Size, region: Region, codes: readonly CountryCode[
 /** Radius of the dots, and font size of the numbers on the map. */
 const dotRadius = (page: Size) => Math.max(5, page.width * 0.0035);
 const tagFontSize = (page: Size) => r(Math.max(22, page.width * 0.017));
+
+/**
+ * The writing lines (or boxes) grouped in columns, each from top to bottom, as indices into
+ * `slots`. Grading reads a whole column in one call, which is much faster on the device than
+ * one call per line (the same as the answer column on the table sheet).
+ */
+export function labelColumns(L: LabelLayout): number[][] {
+  const byLeft = new Map<number, number[]>();
+  L.slots.forEach((s, k) => byLeft.set(s.box.left, [...(byLeft.get(s.box.left) ?? []), k]));
+  return [...byLeft.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([, ks]) => ks.sort((a, b) => L.slots[a].box.top - L.slots[b].box.top));
+}
 
 // ---------------------------------------------------------------------------
 // The hidden key
@@ -701,9 +717,10 @@ export function labelSheetDrafts(
     },
     {
       kind: 'text',
-      text: L.style === 'numbered' ? t.subtitleNumbered : t.subtitle,
+      text: t.subtitle,
       rect: L.subtitle,
-      fontSize: L.smallFontSize,
+      // Smaller in languages with a long instruction, so it stays on two lines above the map.
+      fontSize: fitFontSize(t.subtitle, L.subtitle, L.smallFontSize),
       locked: true,
     },
   ];
