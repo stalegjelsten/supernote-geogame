@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: '任意角度',
   outlineMade: '已建立含{count}個國家的輪廓練習頁。',
   outlineResult: '你認出了{total}個國家中的{correct}個（{percent}%）。',
+  labelMode: '地圖填國名',
+  labelHint: '寫出地圖上標出的國家名稱。',
+  labelTitle: '在地圖上填國名',
+  labelSubtitle: '在編號相同的橫線上寫出每個編號國家的名稱。\n從 World Capitals Quiz 選單批改此頁。',
+  labelMade: '已建立含{count}個國家的地圖。',
 
   sourcesTitle: '資料來源',
   sourcesIntro: '本外掛程式使用開放資料。所有資料都隨外掛程式提供，不會傳送到任何地方。',

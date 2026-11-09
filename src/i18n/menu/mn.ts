@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Дурын өнцөг',
   outlineMade: 'Хэлбэрийн хуудас үүсгэлээ: {count} улс.',
   outlineResult: 'Танисан улс: {correct} / {total} ({percent}%).',
+  labelMode: 'Газрын зурагт нэр',
+  labelHint: 'Газрын зураг дээр тэмдэглэсэн улсуудын нэрийг бичнэ үү.',
+  labelTitle: 'Газрын зураг дээрх нэрс',
+  labelSubtitle: 'Дугаартай улс бүрийн нэрийг ижил дугаартай зураас дээр бичнэ үү.\nWorld Capitals Quiz цэснээс хуудсыг шалгана уу.',
+  labelMade: 'Газрын зураг үүсгэлээ: {count} улс.',
 
   sourcesTitle: 'Эх сурвалж',
   sourcesIntro: 'Плагин нээлттэй өгөгдөл ашигладаг. Бүгд плагин дотор багтсан бөгөөд юу ч хаашаа ч илгээгддэггүй.',

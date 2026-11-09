@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Ľubovoľný uhol',
   outlineMade: 'List s obrysmi je vytvorený. Počet krajín: {count}.',
   outlineResult: 'Rozpoznané krajiny: {correct} z {total} ({percent} %).',
+  labelMode: 'Názvy na mape',
+  labelHint: 'Napíšte názvy krajín vyznačených na mape.',
+  labelTitle: 'Názvy na mape',
+  labelSubtitle: 'Názov každej očíslovanej krajiny napíšte na čiaru s rovnakým číslom.\nOpravte stranu z ponuky World Capitals Quiz.',
+  labelMade: 'Mapa je vytvorená. Počet krajín: {count}.',
 
   sourcesTitle: 'Zdroje',
   sourcesIntro: 'Doplnok používa otvorené dáta. Všetko je súčasťou doplnku a nič sa nikam neodosiela.',

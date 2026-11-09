@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Pembe yoyote',
   outlineMade: 'Imetengeneza karatasi ya maumbo yenye nchi {count}.',
   outlineResult: 'Umetambua nchi {correct} kati ya {total} ({percent}%).',
+  labelMode: 'Majina kwenye ramani',
+  labelHint: 'Andika majina ya nchi zilizowekwa alama kwenye ramani.',
+  labelTitle: 'Majina kwenye ramani',
+  labelSubtitle: 'Andika jina la kila nchi yenye namba kwenye mstari wenye namba ileile.\nSahihisha ukurasa kutoka kwenye menyu ya World Capitals Quiz.',
+  labelMade: 'Imetengeneza ramani yenye nchi {count}.',
 
   sourcesTitle: 'Vyanzo',
   sourcesIntro: 'Programu-jalizi hii hutumia data huria. Kila kitu kimejumuishwa kwenye programu-jalizi na hakuna kinachotumwa popote.',

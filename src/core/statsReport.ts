@@ -65,7 +65,7 @@ export function statsReport(
       return {
         code: s.code,
         name: c.name,
-        answer: skill === 'mapCountry' || skill === 'outline' ? c.name : c.capital,
+        answer: skill === 'capital' || skill === 'mapCapital' ? c.capital : c.name,
         percent: Math.round(100 * s.mastery),
         attempts: s.attempts,
       };

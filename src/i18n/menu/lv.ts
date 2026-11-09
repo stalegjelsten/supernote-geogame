@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Jebkurš leņķis',
   outlineMade: 'Izveidota kontūru lapa (valstis: {count}).',
   outlineResult: 'Atpazītas valstis: {correct} no {total} ({percent}%).',
+  labelMode: 'Nosaukumi kartē',
+  labelHint: 'Uzraksti kartē atzīmēto valstu nosaukumus.',
+  labelTitle: 'Nosaukumi kartē',
+  labelSubtitle: 'Katras numurētās valsts nosaukumu uzraksti uz līnijas ar to pašu numuru.\nPārbaudi lapu World Capitals Quiz izvēlnē.',
+  labelMade: 'Izveidota karte (valstis: {count}).',
 
   sourcesTitle: 'Avoti',
   sourcesIntro: 'Spraudnis izmanto atvērtos datus. Viss ir iekļauts spraudnī, un nekas netiek nekur sūtīts.',

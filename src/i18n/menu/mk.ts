@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Кој било агол',
   outlineMade: 'Направен е лист со контури и {count} држави.',
   outlineResult: 'Препознавте {correct} од {total} држави ({percent} %).',
+  labelMode: 'Имиња на карта',
+  labelHint: 'Напишете ги имињата на државите означени на картата.',
+  labelTitle: 'Имиња на картата',
+  labelSubtitle: 'Напишете го името на секоја нумерирана држава на линијата со истиот број.\nПроверете ја страницата од менито на World Capitals Quiz.',
+  labelMade: 'Направена е карта со {count} држави.',
 
   sourcesTitle: 'Извори',
   sourcesIntro: 'Приклучокот користи отворени податоци. Сè е вклучено во приклучокот и ништо не се испраќа никаде.',

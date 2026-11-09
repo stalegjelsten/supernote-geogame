@@ -19,13 +19,14 @@ import type {Verdict} from './match';
  * - mapCapital: find the capital on the map
  * - mapCountry: find the country on the map
  * - outline: name the country from its outline
+ * - label: name the country from where it is on the map
  */
-export type Skill = 'capital' | 'mapCapital' | 'mapCountry' | 'outline';
+export type Skill = 'capital' | 'mapCapital' | 'mapCountry' | 'outline' | 'label';
 
-export const SKILLS: Skill[] = ['capital', 'mapCapital', 'mapCountry', 'outline'];
+export const SKILLS: Skill[] = ['capital', 'mapCapital', 'mapCountry', 'outline', 'label'];
 
-const SKILL_CHAR: Record<Skill, string> = {capital: 't', mapCapital: 'm', mapCountry: 'c', outline: 'o'};
-const CHAR_SKILL: Record<string, Skill> = {t: 'capital', m: 'mapCapital', c: 'mapCountry', o: 'outline'};
+const SKILL_CHAR: Record<Skill, string> = {capital: 't', mapCapital: 'm', mapCountry: 'c', outline: 'o', label: 'l'};
+const CHAR_SKILL: Record<string, Skill> = {t: 'capital', m: 'mapCapital', c: 'mapCountry', o: 'outline', l: 'label'};
 
 /** One answer for one country. `score` is from 0 (wrong/don't know) to 1 (fully correct). */
 export interface Attempt {

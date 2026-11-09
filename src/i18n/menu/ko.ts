@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: '모든 각도',
   outlineMade: '나라 {count}개가 있는 윤곽 학습지를 만들었습니다.',
   outlineResult: '{total}개 나라 중 {correct}개를 알아맞혔습니다({percent}%).',
+  labelMode: '지도에 이름 쓰기',
+  labelHint: '지도에 표시된 나라의 이름을 쓰세요.',
+  labelTitle: '지도에 이름 쓰기',
+  labelSubtitle: '번호가 붙은 각 나라의 이름을 같은 번호의 줄에 쓰세요.\nWorld Capitals Quiz 메뉴에서 페이지를 채점하세요.',
+  labelMade: '나라 {count}개가 있는 지도를 만들었습니다.',
 
   sourcesTitle: '출처',
   sourcesIntro: '이 플러그인은 공개 데이터를 사용합니다. 모든 데이터가 플러그인에 포함되어 있으며 어디에도 전송되지 않습니다.',

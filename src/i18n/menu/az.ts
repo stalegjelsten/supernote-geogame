@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'İstənilən bucaq',
   outlineMade: 'Kontur vərəqi yaradıldı: {count} ölkə.',
   outlineResult: 'Tanınan ölkələr: {correct} / {total} ({percent}%).',
+  labelMode: 'Xəritədə adlar',
+  labelHint: 'Xəritədə işarələnmiş ölkələrin adlarını yazın.',
+  labelTitle: 'Xəritədə adlar',
+  labelSubtitle: 'Hər nömrəli ölkənin adını eyni nömrəli xəttə yazın.\nSəhifəni World Capitals Quiz menyusundan yoxlayın.',
+  labelMade: 'Xəritə yaradıldı: {count} ölkə.',
 
   sourcesTitle: 'Mənbələr',
   sourcesIntro: 'Plagin açıq məlumatlardan istifadə edir. Hər şey plaginin içindədir və heç yerə heç nə göndərilmir.',

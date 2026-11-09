@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Hvaða horn sem er',
   outlineMade: 'Bjó til útlínublað með {count} löndum.',
   outlineResult: 'Þú þekktir {correct} af {total} löndum ({percent}%).',
+  labelMode: 'Nöfn á korti',
+  labelHint: 'Skrifaðu nöfn landanna sem eru merkt á kortið.',
+  labelTitle: 'Nöfn á kortinu',
+  labelSubtitle: 'Skrifaðu nafn hvers númeraðs lands á línuna með sama númeri.\nFarðu yfir síðuna í World Capitals Quiz-valmyndinni.',
+  labelMade: 'Bjó til kort með {count} löndum.',
 
   sourcesTitle: 'Heimildir',
   sourcesIntro: 'Viðbótin notar opin gögn. Allt fylgir viðbótinni og ekkert er sent neitt.',

@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Qualsevol angle',
   outlineMade: 'S’ha creat una fitxa de siluetes amb {count} països.',
   outlineResult: 'Has reconegut {correct} de {total} països ({percent} %).',
+  labelMode: 'Noms al mapa',
+  labelHint: 'Escriu el nom dels països marcats al mapa.',
+  labelTitle: 'Noms al mapa',
+  labelSubtitle: 'Escriu el nom de cada país numerat a la línia amb el mateix número.\nCorregeix la pàgina des del menú del World Capitals Quiz.',
+  labelMade: 'S’ha creat un mapa amb {count} països.',
 
   sourcesTitle: 'Fonts',
   sourcesIntro: 'El connector fa servir dades obertes. Tot ve inclòs amb el connector i no s’envia res enlloc.',

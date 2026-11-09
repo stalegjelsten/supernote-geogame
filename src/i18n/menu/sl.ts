@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Poljuben kot',
   outlineMade: 'List z obrisi je ustvarjen. Število držav: {count}.',
   outlineResult: 'Prepoznane države: {correct} od {total} ({percent} %).',
+  labelMode: 'Imena na zemljevidu',
+  labelHint: 'Napišite imena držav, označenih na zemljevidu.',
+  labelTitle: 'Imena na zemljevidu',
+  labelSubtitle: 'Ime vsake oštevilčene države napišite na črto z isto številko.\nStran ocenite v meniju World Capitals Quiz.',
+  labelMade: 'Zemljevid je ustvarjen. Število držav: {count}.',
 
   sourcesTitle: 'Viri',
   sourcesIntro: 'Vtičnik uporablja odprte podatke. Vse je vključeno v vtičnik in nič se ne pošilja nikamor.',

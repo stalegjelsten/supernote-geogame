@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Bilo koji ugao',
   outlineMade: 'Napravljen je list sa obrisima. Broj država: {count}.',
   outlineResult: 'Prepoznate države: {correct} od {total} ({percent} %).',
+  labelMode: 'Imena na mapi',
+  labelHint: 'Napišite imena država označenih na mapi.',
+  labelTitle: 'Imena na mapi',
+  labelSubtitle: 'Napišite ime svake numerisane države na liniju sa istim brojem.\nOcenite stranicu iz menija World Capitals Quiz.',
+  labelMade: 'Napravljena je mapa. Broj država: {count}.',
 
   sourcesTitle: 'Izvori',
   sourcesIntro: 'Dodatak koristi otvorene podatke. Sve je uključeno u dodatak i ništa se nigde ne šalje.',

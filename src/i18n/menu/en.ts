@@ -157,6 +157,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Any angle',
   outlineMade: 'Made an outline sheet with {count} countries.',
   outlineResult: 'You recognized {correct} of {total} countries ({percent} %).',
+  labelMode: 'Names on map',
+  labelHint: 'Write the names of the countries marked on the map.',
+  labelTitle: 'Names on the map',
+  labelSubtitle: 'Write the name of each numbered country on the line with the same number.\nGrade the page from the World Capitals Quiz menu.',
+  labelMade: 'Made a map with {count} countries.',
 
   sourcesTitle: 'Sources',
   sourcesIntro: 'The plugin uses open data. Everything is bundled with the plugin and nothing is sent anywhere.',

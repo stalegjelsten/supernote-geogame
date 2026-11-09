@@ -174,6 +174,15 @@ export interface MenuStrings {
   outlineMade: string; // {count}
   outlineResult: string; // {correct} {total} {percent}
 
+  // Label mode (label.ts): numbers on the map, names on a list below. Recognized by the key
+  // at the bottom, so all of it can be translated. The result uses outlineResult, and the
+  // statistics use labelTitle as the name of the skill.
+  labelMode: string;
+  labelHint: string;
+  labelTitle: string;
+  labelSubtitle: string;
+  labelMade: string; // {count}
+
   // Sources (sources.ts), in the language tab. Dataset and license names stay in English.
   sourcesTitle: string;
   sourcesIntro: string;

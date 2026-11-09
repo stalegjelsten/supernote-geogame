@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Beliebiger Winkel',
   outlineMade: 'Umrissblatt mit {count} Ländern erstellt.',
   outlineResult: 'Du hast {correct} von {total} Ländern erkannt ({percent} %).',
+  labelMode: 'Namen auf Karte',
+  labelHint: 'Schreibe die Namen der auf der Karte markierten Länder.',
+  labelTitle: 'Namen auf der Karte',
+  labelSubtitle: 'Schreibe den Namen jedes nummerierten Landes auf die Linie mit derselben Nummer.\nKorrigiere die Seite über das World-Capitals-Quiz-Menü.',
+  labelMade: 'Karte mit {count} Ländern erstellt.',
 
   sourcesTitle: 'Quellen',
   sourcesIntro: 'Das Plugin verwendet offene Daten. Alles ist im Plugin enthalten, und nichts wird irgendwohin gesendet.',

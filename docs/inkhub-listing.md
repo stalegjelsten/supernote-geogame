@@ -25,6 +25,8 @@ all code was written by AI (see below).
 Features
 - Capitals worksheets: write the capital of each country, then tap Grade. Each answer gets a hand-drawn check, "almost" or cross mark, the recognised text and a total score.
 - Map quizzes: mark capitals or countries with a cross on a high-contrast map made for e-ink. Capitals are scored by how many kilometres you were off.
+- Outline quiz: name countries from their outlines, drawn in a grid with optional scale bars and rotation.
+- Names on the map: countries are marked with numbers on a large map, and you write their names on a numbered list below it.
 - Europe, Asia, Africa, North America, South America, Oceania or the whole world.
 - Choose 10, 15, 20 or all countries. Long sheets are spread over several pages.
 - Footnotes on tricky capitals: countries with several capitals or a capital that is often mixed up (Tanzania, South Africa, Bolivia, Nigeria and more) get a short note at the bottom of the graded sheet.
@@ -33,7 +35,7 @@ Features
   - Pass around: each player gets their own pages with the same countries, with a hand-over page in between. Grade the whole set to see who won.
   - Take turns: one shared sheet where players answer in turn, each with their own countries. Points per player are shown at the bottom.
 - Fix your answers and grade again as many times as you like.
-- Statistics: every graded single-player sheet is remembered per country. The menu shows how many countries you know, are learning or have not tried yet for each continent, how many are due for review, and which countries to practise more. Writing capitals, capitals on the map and countries on the map are tracked separately. Grading the same sheet again replaces the earlier result, and the statistics can be reset from the menu.
+- Statistics: every graded single-player sheet is remembered per country. The menu shows how many countries you know, are learning or have not tried yet for each continent, how many are due for review, and which countries to practise more. Writing capitals, capitals on the map, countries on the map, countries by outline and names on the map are tracked separately. Grading the same sheet again replaces the earlier result, and the statistics can be reset from the menu.
 - Sheets in 55 languages, following the device language or chosen in the menu.
 - Works fully offline. No data leaves the device.
 
@@ -88,6 +90,7 @@ position on disputed territories. Open source under the MIT License.
 4. Graded sheet with marks and score. This is the most important image, so use it as the thumbnail.
 5. Map quiz before grading, with crosses on the map.
 6. Map quiz after grading, with distance in km.
-7. Multiplayer: a graded set with the winner, or a shared sheet with points per player.
-8. Statistics in the menu: countries known per continent and countries to practise more.
-9. (Optional) a sheet in another language, e.g. Japanese or German.
+7. Names on the map after grading (Europe, 15 countries).
+8. Multiplayer: a graded set with the winner, or a shared sheet with points per player.
+9. Statistics in the menu: countries known per continent and countries to practise more.
+10. (Optional) a sheet in another language, e.g. Japanese or German.

@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Calquera ángulo',
   outlineMade: 'Creouse unha ficha de siluetas con {count} países.',
   outlineResult: 'Recoñeciches {correct} de {total} países ({percent} %).',
+  labelMode: 'Nomes no mapa',
+  labelHint: 'Escribe os nomes dos países marcados no mapa.',
+  labelTitle: 'Nomes no mapa',
+  labelSubtitle: 'Escribe o nome de cada país numerado na liña co mesmo número.\nCorrixe a páxina desde o menú de World Capitals Quiz.',
+  labelMade: 'Creouse un mapa con {count} países.',
 
   sourcesTitle: 'Fontes',
   sourcesIntro: 'O complemento usa datos abertos. Todo vén incluído no complemento e non se envía nada a ningures.',

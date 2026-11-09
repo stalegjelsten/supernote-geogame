@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Sudut apa saja',
   outlineMade: 'Lembar siluet dengan {count} negara telah dibuat.',
   outlineResult: 'Anda mengenali {correct} dari {total} negara ({percent}%).',
+  labelMode: 'Nama di peta',
+  labelHint: 'Tulis nama negara yang ditandai di peta.',
+  labelTitle: 'Nama di peta',
+  labelSubtitle: 'Tulis nama setiap negara bernomor pada garis dengan nomor yang sama.\nNilai halaman dari menu World Capitals Quiz.',
+  labelMade: 'Peta dengan {count} negara telah dibuat.',
 
   sourcesTitle: 'Sumber',
   sourcesIntro: 'Plugin ini menggunakan data terbuka. Semuanya sudah disertakan dalam plugin dan tidak ada yang dikirim ke mana pun.',

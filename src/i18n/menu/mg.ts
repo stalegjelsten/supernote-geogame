@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Zoro rehetra',
   outlineMade: 'Vita ny takelaka endrika misy firenena {count}.',
   outlineResult: "Fantatrao ny firenena {correct} amin'ny {total} ({percent}%).",
+  labelMode: "Anarana amin'ny sarintany",
+  labelHint: "Soraty ny anaran'ireo firenena voamarika eo amin'ny sarintany.",
+  labelTitle: "Anarana eo amin'ny sarintany",
+  labelSubtitle: "Soraty eo amin'ny tsipika mitondra laharana mitovy ny anaran'ny firenena tsirairay misy laharana.\nHamarino ny pejy avy ao amin'ny menu World Capitals Quiz.",
+  labelMade: 'Vita ny sarintany misy firenena {count}.',
 
   sourcesTitle: 'Loharano',
   sourcesIntro: "Mampiasa angona misokatra ny plugin. Tafiditra ao anatin'ny plugin avokoa ny zava-drehetra ary tsy misy alefa na aiza na aiza.",

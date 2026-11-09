@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Çdo kënd',
   outlineMade: 'U krijua një fletë konturesh me {count} vende.',
   outlineResult: 'Njohe {correct} nga {total} vende ({percent}%).',
+  labelMode: 'Emrat në hartë',
+  labelHint: 'Shkruaj emrat e vendeve të shënuara në hartë.',
+  labelTitle: 'Emrat në hartë',
+  labelSubtitle: 'Shkruaj emrin e çdo vendi të numëruar në vijën me të njëjtin numër.\nKorrigjo faqen nga menyja e World Capitals Quiz.',
+  labelMade: 'U krijua një hartë me {count} vende.',
 
   sourcesTitle: 'Burimet',
   sourcesIntro: 'Shtojca përdor të dhëna të hapura. Gjithçka është e përfshirë në shtojcë dhe asgjë nuk dërgohet askund.',

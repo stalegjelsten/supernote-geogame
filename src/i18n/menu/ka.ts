@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'ნებისმიერი კუთხე',
   outlineMade: 'შეიქმნა კონტურების ფურცელი {count} ქვეყნით.',
   outlineResult: 'ამოცნობილი ქვეყნები: {correct} / {total} ({percent}%).',
+  labelMode: 'სახელები რუკაზე',
+  labelHint: 'დაწერეთ რუკაზე მონიშნული ქვეყნების სახელები.',
+  labelTitle: 'სახელები რუკაზე',
+  labelSubtitle: 'თითოეული დანომრილი ქვეყნის სახელი დაწერეთ იმავე ნომრის ხაზზე.\nშეამოწმეთ გვერდი World Capitals Quiz-ის მენიუდან.',
+  labelMade: 'შეიქმნა რუკა {count} ქვეყნით.',
 
   sourcesTitle: 'წყაროები',
   sourcesIntro: 'პლაგინი იყენებს ღია მონაცემებს. ყველაფერი პლაგინშია და არაფერი არსად იგზავნება.',

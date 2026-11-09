@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Vilkårlig vinkel',
   outlineMade: 'Lavede et omridsark med {count} lande.',
   outlineResult: 'Du genkendte {correct} af {total} lande ({percent} %).',
+  labelMode: 'Navne på kort',
+  labelHint: 'Skriv navnene på landene, der er markeret på kortet.',
+  labelTitle: 'Navne på kortet',
+  labelSubtitle: 'Skriv navnet på hvert nummereret land på linjen med samme nummer.\nRet siden fra World Capitals Quiz-menuen.',
+  labelMade: 'Lavede et kort med {count} lande.',
 
   sourcesTitle: 'Kilder',
   sourcesIntro: 'Pluginet bruger åbne data. Alt følger med pluginet, og intet sendes nogen steder hen.',

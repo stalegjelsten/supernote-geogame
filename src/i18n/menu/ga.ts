@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Uillinn ar bith',
   outlineMade: 'Rinneadh bileog imlínte (tíortha: {count}).',
   outlineResult: 'Tíortha aitheanta: {correct} as {total} ({percent}%).',
+  labelMode: 'Ainmneacha ar léarscáil',
+  labelHint: 'Scríobh ainmneacha na dtíortha atá marcáilte ar an léarscáil.',
+  labelTitle: 'Ainmneacha ar an léarscáil',
+  labelSubtitle: 'Scríobh ainm gach tíre uimhrithe ar an líne leis an uimhir chéanna.\nCeartaigh an leathanach ó roghchlár World Capitals Quiz.',
+  labelMade: 'Rinneadh léarscáil (tíortha: {count}).',
 
   sourcesTitle: 'Foinsí',
   sourcesIntro: 'Úsáideann an breiseán sonraí oscailte. Tá gach rud san áireamh sa bhreiseán agus ní sheoltar aon rud áit ar bith.',

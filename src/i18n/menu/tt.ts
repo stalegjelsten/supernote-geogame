@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Теләсә нинди почмак',
   outlineMade: 'Контур бите ясалды: {count} ил.',
   outlineResult: 'Танылган илләр: {correct} / {total} ({percent}%).',
+  labelMode: 'Картадагы исемнәр',
+  labelHint: 'Картада билгеләнгән илләрнең исемнәрен языгыз.',
+  labelTitle: 'Картадагы исемнәр',
+  labelSubtitle: 'Һәр номерлы илнең исемен шул ук номерлы сызыкка языгыз.\nБитне World Capitals Quiz менюсыннан тикшерегез.',
+  labelMade: 'Карта ясалды: {count} ил.',
 
   sourcesTitle: 'Чыганаклар',
   sourcesIntro: 'Плагин ачык мәгълүматлар куллана. Барысы да плагинга кертелгән, һәм бернәрсә дә беркая да җибәрелми.',

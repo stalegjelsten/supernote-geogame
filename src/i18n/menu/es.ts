@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Cualquier ángulo',
   outlineMade: 'Hoja de siluetas creada con {count} países.',
   outlineResult: 'Has reconocido {correct} de {total} países ({percent} %).',
+  labelMode: 'Nombres en el mapa',
+  labelHint: 'Escribe el nombre de los países marcados en el mapa.',
+  labelTitle: 'Nombres en el mapa',
+  labelSubtitle: 'Escribe el nombre de cada país numerado en la línea con el mismo número.\nCorrige la página desde el menú de World Capitals Quiz.',
+  labelMade: 'Mapa creado con {count} países.',
 
   sourcesTitle: 'Fuentes',
   sourcesIntro: 'El plugin usa datos abiertos. Todo viene incluido en el plugin y no se envía nada a ningún sitio.',

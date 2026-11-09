@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Libovolný úhel',
   outlineMade: 'List s obrysy byl vytvořen (země: {count}).',
   outlineResult: 'Poznané země: {correct} z {total} ({percent} %).',
+  labelMode: 'Názvy na mapě',
+  labelHint: 'Napište názvy zemí vyznačených na mapě.',
+  labelTitle: 'Názvy na mapě',
+  labelSubtitle: 'Název každé očíslované země napište na čáru se stejným číslem.\nOpravte stránku z nabídky World Capitals Quiz.',
+  labelMade: 'Mapa byla vytvořena (země: {count}).',
 
   sourcesTitle: 'Zdroje',
   sourcesIntro: 'Plugin používá otevřená data. Vše je součástí pluginu a nic se nikam neodesílá.',

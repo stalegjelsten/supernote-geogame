@@ -221,7 +221,7 @@ function App(): React.JSX.Element {
       : mode === 'outline'
       ? 'outline'
       : mode === 'label'
-      ? 'mapCountry'
+      ? 'label'
       : skillOfTarget(mapTarget);
   const [chosenSkill, setChosenSkill] = useState<Skill | null>(null);
   useEffect(() => setChosenSkill(null), [gameSkill]);

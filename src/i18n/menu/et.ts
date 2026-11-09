@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Mis tahes nurk',
   outlineMade: 'Loodi kontuurileht {count} riigiga.',
   outlineResult: 'Äratuntud riike: {correct}/{total} ({percent}%).',
+  labelMode: 'Nimed kaardil',
+  labelHint: 'Kirjuta kaardil märgitud riikide nimed.',
+  labelTitle: 'Nimed kaardil',
+  labelSubtitle: 'Kirjuta iga nummerdatud riigi nimi sama numbriga joonele.\nKontrolli lehte World Capitals Quizi menüüst.',
+  labelMade: 'Loodi kaart {count} riigiga.',
 
   sourcesTitle: 'Allikad',
   sourcesIntro: 'Pistikprogramm kasutab avatud andmeid. Kõik on pistikprogrammiga kaasas ja midagi ei saadeta kuhugi.',

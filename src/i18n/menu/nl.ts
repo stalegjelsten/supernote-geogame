@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Elke hoek',
   outlineMade: 'Contourblad gemaakt met {count} landen.',
   outlineResult: 'Je hebt {correct} van de {total} landen herkend ({percent}%).',
+  labelMode: 'Namen op kaart',
+  labelHint: 'Schrijf de namen van de landen die op de kaart zijn aangegeven.',
+  labelTitle: 'Namen op de kaart',
+  labelSubtitle: 'Schrijf de naam van elk genummerd land op de lijn met hetzelfde nummer.\nKijk de pagina na via het World Capitals Quiz-menu.',
+  labelMade: 'Kaart gemaakt met {count} landen.',
 
   sourcesTitle: 'Bronnen',
   sourcesIntro: 'De plugin gebruikt open data. Alles zit in de plugin en er wordt niets verstuurd.',

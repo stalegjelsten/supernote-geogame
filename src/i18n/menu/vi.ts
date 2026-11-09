@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Góc bất kỳ',
   outlineMade: 'Đã tạo phiếu đường viền gồm {count} quốc gia.',
   outlineResult: 'Bạn nhận ra {correct}/{total} quốc gia ({percent}%).',
+  labelMode: 'Tên trên bản đồ',
+  labelHint: 'Viết tên các quốc gia được đánh dấu trên bản đồ.',
+  labelTitle: 'Tên trên bản đồ',
+  labelSubtitle: 'Viết tên của mỗi quốc gia được đánh số lên dòng có cùng số.\nChấm trang từ menu World Capitals Quiz.',
+  labelMade: 'Đã tạo bản đồ gồm {count} quốc gia.',
 
   sourcesTitle: 'Nguồn dữ liệu',
   sourcesIntro: 'Plugin sử dụng dữ liệu mở. Mọi thứ đều có sẵn trong plugin và không có gì được gửi đi đâu cả.',

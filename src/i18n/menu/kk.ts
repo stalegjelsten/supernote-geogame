@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Кез келген бұрыш',
   outlineMade: 'Контур парағы жасалды: {count} ел.',
   outlineResult: 'Танылған елдер: {correct} / {total} ({percent}%).',
+  labelMode: 'Картадағы атаулар',
+  labelHint: 'Картада белгіленген елдердің атауларын жазыңыз.',
+  labelTitle: 'Картадағы атаулар',
+  labelSubtitle: 'Әр нөмірленген елдің атауын сол нөмірлі сызыққа жазыңыз.\nБетті World Capitals Quiz мәзірінен тексеріңіз.',
+  labelMade: 'Карта жасалды: {count} ел.',
 
   sourcesTitle: 'Дереккөздер',
   sourcesIntro: 'Плагин ашық деректерді пайдаланады. Барлығы плагинге енгізілген, ешнәрсе ешқайда жіберілмейді.',

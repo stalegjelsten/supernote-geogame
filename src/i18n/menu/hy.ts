@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Ցանկացած անկյուն',
   outlineMade: 'Ստեղծվեց ուրվագծերի թերթ՝ {count} երկրով։',
   outlineResult: 'Ճանաչված երկրներ՝ {correct} / {total} ({percent}%)։',
+  labelMode: 'Անուններ քարտեզին',
+  labelHint: 'Գրեք քարտեզի վրա նշված երկրների անունները։',
+  labelTitle: 'Անունները քարտեզի վրա',
+  labelSubtitle: 'Յուրաքանչյուր համարակալված երկրի անունը գրեք նույն համարով գծի վրա։\nՍտուգեք էջը World Capitals Quiz-ի ընտրացանկից։',
+  labelMade: 'Ստեղծվեց քարտեզ՝ {count} երկրով։',
 
   sourcesTitle: 'Աղբյուրներ',
   sourcesIntro: 'Պլագինն օգտագործում է բաց տվյալներ։ Ամեն ինչ ներառված է պլագինում, և ոչինչ ոչ մի տեղ չի ուղարկվում։',

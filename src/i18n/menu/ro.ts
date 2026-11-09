@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Orice unghi',
   outlineMade: 'S-a creat o fișă cu contururi (țări: {count}).',
   outlineResult: 'Țări recunoscute: {correct} din {total} ({percent}%).',
+  labelMode: 'Nume pe hartă',
+  labelHint: 'Scrie numele țărilor marcate pe hartă.',
+  labelTitle: 'Nume pe hartă',
+  labelSubtitle: 'Scrie numele fiecărei țări numerotate pe linia cu același număr.\nCorectează pagina din meniul World Capitals Quiz.',
+  labelMade: 'S-a creat o hartă (țări: {count}).',
 
   sourcesTitle: 'Surse',
   sourcesIntro: 'Pluginul folosește date deschise. Totul este inclus în plugin și nimic nu este trimis nicăieri.',

@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Bármilyen szög',
   outlineMade: 'Elkészült egy körvonalas lap {count} országgal.',
   outlineResult: '{correct}/{total} országot ismertél fel ({percent}%).',
+  labelMode: 'Nevek a térképen',
+  labelHint: 'Írd le a térképen megjelölt országok nevét.',
+  labelTitle: 'Nevek a térképen',
+  labelSubtitle: 'Minden számozott ország nevét írd az azonos számú vonalra.\nJavítsd az oldalt a World Capitals Quiz menüjéből.',
+  labelMade: 'Elkészült egy térkép {count} országgal.',
 
   sourcesTitle: 'Források',
   sourcesIntro: 'A bővítmény nyílt adatokat használ. Minden a bővítmény része, és semmit sem küld el sehová.',

@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Enige hoek',
   outlineMade: '’n Buitelynblad met {count} lande is gemaak.',
   outlineResult: 'Jy het {correct} uit {total} lande herken ({percent}%).',
+  labelMode: 'Name op kaart',
+  labelHint: 'Skryf die name van die lande wat op die kaart gemerk is.',
+  labelTitle: 'Name op die kaart',
+  labelSubtitle: 'Skryf die naam van elke genommerde land op die lyn met dieselfde nommer.\nMerk die bladsy in die World Capitals Quiz-kieslys.',
+  labelMade: '’n Kaart met {count} lande is gemaak.',
 
   sourcesTitle: 'Bronne',
   sourcesIntro: 'Die inprop gebruik oop data. Alles is by die inprop ingesluit en niks word iewers heen gestuur nie.',

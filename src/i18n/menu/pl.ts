@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Dowolny kąt',
   outlineMade: 'Utworzono arkusz z konturami (kraje: {count}).',
   outlineResult: 'Rozpoznane kraje: {correct} z {total} ({percent}%).',
+  labelMode: 'Nazwy na mapie',
+  labelHint: 'Wpisz nazwy krajów zaznaczonych na mapie.',
+  labelTitle: 'Nazwy na mapie',
+  labelSubtitle: 'Wpisz nazwę każdego ponumerowanego kraju na linii z tym samym numerem.\nSprawdź stronę z menu World Capitals Quiz.',
+  labelMade: 'Utworzono mapę (kraje: {count}).',
 
   sourcesTitle: 'Źródła',
   sourcesIntro: 'Wtyczka korzysta z otwartych danych. Wszystko jest zawarte we wtyczce i nic nie jest nigdzie wysyłane.',

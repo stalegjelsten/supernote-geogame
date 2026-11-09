@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Kahit anong anggulo',
   outlineMade: 'Gumawa ng sheet ng hugis na may {count} bansa.',
   outlineResult: 'Nakilala mo ang {correct} sa {total} bansa ({percent}%).',
+  labelMode: 'Pangalan sa mapa',
+  labelHint: 'Isulat ang mga pangalan ng mga bansang may marka sa mapa.',
+  labelTitle: 'Mga pangalan sa mapa',
+  labelSubtitle: 'Isulat ang pangalan ng bawat may-numerong bansa sa linyang may parehong numero.\nMarkahan ang pahina mula sa menu ng World Capitals Quiz.',
+  labelMade: 'Gumawa ng mapa na may {count} bansa.',
 
   sourcesTitle: 'Mga pinagkunan',
   sourcesIntro: 'Gumagamit ang plugin ng bukas na datos. Kasama na ang lahat sa plugin at walang ipinapadala kahit saan.',

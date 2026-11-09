@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Произволен ъгъл',
   outlineMade: 'Създаден е лист с контури и {count} държави.',
   outlineResult: 'Разпознахте {correct} от {total} държави ({percent} %).',
+  labelMode: 'Имена на картата',
+  labelHint: 'Напишете имената на държавите, отбелязани на картата.',
+  labelTitle: 'Имена на картата',
+  labelSubtitle: 'Напишете името на всяка номерирана държава на линията със същия номер.\nПроверете страницата от менюто на World Capitals Quiz.',
+  labelMade: 'Създадена е карта с {count} държави.',
 
   sourcesTitle: 'Източници',
   sourcesIntro: 'Плъгинът използва отворени данни. Всичко е включено в плъгина и нищо не се изпраща никъде.',

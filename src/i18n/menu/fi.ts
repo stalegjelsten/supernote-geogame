@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Mikä tahansa kulma',
   outlineMade: 'Luotiin ääriviiva-arkki, jossa on {count} maata.',
   outlineResult: 'Tunnistit {correct}/{total} maata ({percent} %).',
+  labelMode: 'Nimet kartalle',
+  labelHint: 'Kirjoita kartalle merkittyjen maiden nimet.',
+  labelTitle: 'Nimet kartalle',
+  labelSubtitle: 'Kirjoita kunkin numeroidun maan nimi samalla numerolla merkitylle viivalle.\nTarkista sivu World Capitals Quiz -valikosta.',
+  labelMade: 'Luotiin kartta, jossa on {count} maata.',
 
   sourcesTitle: 'Lähteet',
   sourcesIntro: 'Laajennus käyttää avointa dataa. Kaikki sisältyy laajennukseen, eikä mitään lähetetä minnekään.',

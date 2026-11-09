@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Herhangi bir açı',
   outlineMade: 'Siluet kâğıdı oluşturuldu: {count} ülke.',
   outlineResult: '{total} ülkeden {correct} tanesini bildiniz (%{percent}).',
+  labelMode: 'Haritada adlar',
+  labelHint: 'Haritada işaretli ülkelerin adlarını yazın.',
+  labelTitle: 'Haritada adlar',
+  labelSubtitle: 'Numaralı her ülkenin adını aynı numaralı çizgiye yazın.\nSayfayı World Capitals Quiz menüsünden kontrol edin.',
+  labelMade: 'Harita oluşturuldu: {count} ülke.',
 
   sourcesTitle: 'Kaynaklar',
   sourcesIntro: 'Eklenti açık veri kullanır. Her şey eklentiyle birlikte gelir ve hiçbir yere bir şey gönderilmez.',

@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: '任意角度',
   outlineMade: '已生成含{count}个国家的轮廓练习页。',
   outlineResult: '你认出了{total}个国家中的{correct}个（{percent}%）。',
+  labelMode: '地图填国名',
+  labelHint: '写出地图上标出的国家名称。',
+  labelTitle: '在地图上填国名',
+  labelSubtitle: '在编号相同的横线上写出每个编号国家的名称。\n从 World Capitals Quiz 菜单批改此页。',
+  labelMade: '已生成含{count}个国家的地图。',
 
   sourcesTitle: '数据来源',
   sourcesIntro: '本插件使用开放数据。所有数据都随插件提供，不会发送到任何地方。',

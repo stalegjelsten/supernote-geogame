@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: '自由な角度',
   outlineMade: '{count}か国の輪郭シートを作成しました。',
   outlineResult: '{total}か国中{correct}か国を当てました（{percent}%）。',
+  labelMode: '地図に国名',
+  labelHint: '地図に印のある国の名前を書いてください。',
+  labelTitle: '地図に国名を書く',
+  labelSubtitle: '番号の付いた国の名前を、同じ番号の線の上に書いてください。\nWorld Capitals Quizのメニューからページを採点してください。',
+  labelMade: '{count}か国の地図を作成しました。',
 
   sourcesTitle: '出典',
   sourcesIntro: 'このプラグインはオープンデータを使用しています。すべてプラグインに含まれており、どこにも送信されません。',

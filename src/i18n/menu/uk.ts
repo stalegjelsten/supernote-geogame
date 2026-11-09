@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Будь-який кут',
   outlineMade: 'Створено аркуш із контурами. Країн: {count}.',
   outlineResult: 'Впізнано {correct} з {total} країн ({percent} %).',
+  labelMode: 'Назви на карті',
+  labelHint: 'Напишіть назви країн, позначених на карті.',
+  labelTitle: 'Назви на карті',
+  labelSubtitle: 'Напишіть назву кожної пронумерованої країни на лінії з тим самим номером.\nПеревірте сторінку через меню World Capitals Quiz.',
+  labelMade: 'Створено карту. Країн: {count}.',
 
   sourcesTitle: 'Джерела',
   sourcesIntro: 'Плагін використовує відкриті дані. Усе входить до плагіна, і нічого нікуди не надсилається.',

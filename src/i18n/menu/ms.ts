@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Sebarang sudut',
   outlineMade: 'Lembaran bentuk dengan {count} negara telah dibuat.',
   outlineResult: 'Anda mengecam {correct} daripada {total} negara ({percent}%).',
+  labelMode: 'Nama pada peta',
+  labelHint: 'Tulis nama negara yang ditanda pada peta.',
+  labelTitle: 'Nama pada peta',
+  labelSubtitle: 'Tulis nama setiap negara bernombor pada garisan dengan nombor yang sama.\nSemak halaman daripada menu World Capitals Quiz.',
+  labelMade: 'Peta dengan {count} negara telah dibuat.',
 
   sourcesTitle: 'Sumber',
   sourcesIntro: 'Pemalam ini menggunakan data terbuka. Semuanya disertakan dalam pemalam dan tiada apa-apa dihantar ke mana-mana.',

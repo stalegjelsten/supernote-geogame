@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Bisan unsang anggulo',
   outlineMade: 'Nakahimo og worksheet sa porma nga may {count} ka nasod.',
   outlineResult: 'Nailhan nimo ang {correct} sa {total} ka nasod ({percent}%).',
+  labelMode: 'Ngalan sa mapa',
+  labelHint: 'Isulat ang mga ngalan sa mga nasod nga gimarkahan sa mapa.',
+  labelTitle: 'Mga ngalan sa mapa',
+  labelSubtitle: 'Isulat ang ngalan sa matag numerado nga nasod sa linya nga may parehas nga numero.\nSusiha ang panid gikan sa menu sa World Capitals Quiz.',
+  labelMade: 'Nakahimo og mapa nga may {count} ka nasod.',
 
   sourcesTitle: 'Mga tinubdan',
   sourcesIntro: 'Ang plugin naggamit og bukas nga datos. Ang tanan kauban na sa plugin ug walay ipadala bisan asa.',

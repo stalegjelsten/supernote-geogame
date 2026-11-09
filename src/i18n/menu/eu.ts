@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Edozein angelu',
   outlineMade: 'Silueta-fitxa sortu da: {count} herrialde.',
   outlineResult: 'Ezagututako herrialdeak: {correct} / {total} (%{percent}).',
+  labelMode: 'Izenak mapan',
+  labelHint: 'Idatzi mapan markatutako herrialdeen izenak.',
+  labelTitle: 'Izenak mapan',
+  labelSubtitle: 'Idatzi zenbakidun herrialde bakoitzaren izena zenbaki bera duen lerroan.\nZuzendu orrialdea World Capitals Quiz menutik.',
+  labelMade: 'Mapa sortu da: {count} herrialde.',
 
   sourcesTitle: 'Iturriak',
   sourcesIntro: 'Pluginak datu irekiak erabiltzen ditu. Dena pluginarekin dator eta ez da ezer inora bidaltzen.',

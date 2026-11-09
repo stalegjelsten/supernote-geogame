@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Valfri vinkel',
   outlineMade: 'Skapade ett konturblad med {count} länder.',
   outlineResult: 'Du kände igen {correct} av {total} länder ({percent} %).',
+  labelMode: 'Namn på karta',
+  labelHint: 'Skriv namnen på länderna som är markerade på kartan.',
+  labelTitle: 'Namn på kartan',
+  labelSubtitle: 'Skriv namnet på varje numrerat land på linjen med samma nummer.\nRätta sidan från World Capitals Quiz-menyn.',
+  labelMade: 'Skapade en karta med {count} länder.',
 
   sourcesTitle: 'Källor',
   sourcesIntro: 'Pluginet använder öppna data. Allt följer med pluginet och inget skickas någonstans.',

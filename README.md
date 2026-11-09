@@ -36,6 +36,18 @@ Choose **Game: Outline** to get the outlines of 6, 9, 12, 16 or 20 countries in 
 
 The outlines come from Natural Earth 1:10m (public domain), and for 30 small countries, where Natural Earth is too coarse to show the shape, from geoBoundaries (open licenses per country, mostly OpenStreetMap under ODbL; see THIRD_PARTY_NOTICES.md). Each country is projected on its own (Lambert azimuthal equal-area centred on the country), overseas parts far from the main part (such as French Guiana) and very small islands are left out, and the shapes are simplified to at most 420 points (`node --no-warnings --import ./scripts/ts-resolve.mjs scripts/gen-outlines.ts`). Which country is in which box is stored in a short code at the bottom of the sheet ("ID o1.nb.…"), so the names don't show. Outline sheets are for one player, and the results are saved in the statistics as **Countries by outline**. Preview a sheet without a device with `scripts/preview-outline-sheet.ts`.
 
+## Names on the map
+
+Choose **Game: Names on map** to get a map of the continent with 10, 15 or 20 countries marked with a dot and a number, and a numbered list of lines below it. Write the name of each country on the line with its number. Grade with **Grade this page**; the names are accepted the same way as on the outline sheet (the sheet's language, English and common other names, with a few typos allowed). The results are saved in the statistics as **Names on the map**.
+
+- **Continents:** Europe, Asia, Africa, North America, South America and Oceania. The world map is too wide for the list below it, so it is not offered. Oceania has 14 countries with a point on the map, so a sheet there has at most 14.
+- **Small screens** (Nomad, A5X): at most 15 countries, since a longer list leaves too little room for the map.
+- **The map** gets the whole width of the page (Europe is about 113 mm wide on Manta with 15 countries). Most countries are far too small to write in, which is why the names go on the list.
+- **The numbers** are put next to the dots, where no border or coast runs behind them if there is such a place nearby; otherwise a bit farther out with a short line back to the dot. Lines never cross. Where the lines are on the map is read from the map images themselves (`src/data/mapLines.ts`, made with `node --no-warnings --import ./scripts/ts-resolve.mjs scripts/gen-map-lines.ts`; run it again if the maps are remade). Countries whose dots would lie on top of each other (the small islands in the Caribbean) are avoided.
+- **The key** at the bottom ("ID l2.nb.EU.…") gives the language, the continent and the countries in order, so the names don't show. "l1" sheets from the first test build, with writing boxes and leader lines beside the map, are still graded with that layout.
+
+Preview a sheet without a device with `node --no-warnings --import ./scripts/ts-resolve.mjs scripts/preview-label-sheet.ts EU nb 15 manta answers` (region, language, count, manta or nomad, and "answers" for a graded sheet with made-up answers).
+
 ## Languages
 
 The sheets and the menu are available in 55 languages. By default the plugin follows the device language; another language can be chosen in the **Language** tab. Answers are read with Supernote's handwriting recognition, which uses the recognition language set on the device, so set it to the language you write in.
@@ -61,7 +73,7 @@ Which game a page belongs to is stated first in the subtitle ("Player 2 of 3 · 
 
 ## Statistics
 
-Every grading of a single-player sheet is saved: which countries, which skill (writing the capital, capital on the map, country on the map), how well it went and when. Multiplayer sheets are not saved, since their answers belong to several players.
+Every grading of a single-player sheet is saved: which countries, which skill (writing the capital, capital on the map, country on the map, country by outline, names on the map), how well it went and when. Multiplayer sheets are not saved, since their answers belong to several players.
 
 - **Score per country:** correct = 1, almost = 0.8, wrong or blank = 0. On the map, capitals score points/1000 and countries right/wrong; cities you skip count as 0, and cities without a mark are left out.
 - **Grading the same sheet again** replaces the previous result. The sheet is recognized by the note and the countries on the page, so it survives pages being moved.
@@ -99,6 +111,7 @@ Install the build the same way as under [Installation](#installation). Publish v
 - `src/sdk/statsStore.ts` – stores the history as empty folders in `<plugin folder>/stats/` (the SDK cannot write files)
 - `src/actions.ts` – creating and grading table sheets, and saving statistics
 - `src/mapActions.ts` – creating and grading map sheets; `src/sdk/mapAssets.ts` – the bundled maps
+- `src/labelActions.ts` – creating and grading name-on-the-map sheets; `src/core/labelSheet.ts` – layout, placing the numbers, the hidden key and grading; `src/core/mapLines.ts` and `src/data/mapLines.ts` – where the map images have lines (generated)
 - `src/outlineActions.ts` – creating and grading outline sheets; `src/core/outlineSheet.ts` – layout, scaling, rotation, the hidden key and grading; `src/data/outlines.ts` – the outlines (generated)
 - `App.tsx` – the menu opened from the toolbar, with the tabs New worksheet, Statistics and Language
 

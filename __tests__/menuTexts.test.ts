@@ -1,5 +1,6 @@
 import {LANGUAGES} from '../src/i18n';
 import {hotSeatTexts} from '../src/i18n/hotseat';
+import {labelTexts} from '../src/i18n/label';
 import {levelTexts} from '../src/i18n/level';
 import {mapTexts} from '../src/i18n/map';
 import enMenu from '../src/i18n/menu/en';
@@ -56,6 +57,9 @@ test('finished menu texts have no placeholders left', () => {
       hs.ui.playerScore(1, '12', '20', 60),
       hs.ui.made(2, 4),
       levelTexts(lang).hint,
+      labelTexts(lang).ui.made(15),
+      labelTexts(lang).ui.result(12, 15, 80),
+      labelTexts(lang).subtitle,
       st.sheets(1, 20, 75),
       st.sheets(4, 80, 75),
       st.due(1),

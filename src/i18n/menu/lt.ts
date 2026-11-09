@@ -152,6 +152,11 @@ const menu: MenuStrings = {
   outlineRotationAny: 'Bet koks kampas',
   outlineMade: 'Sukurtas kontūrų lapas (šalių: {count}).',
   outlineResult: 'Atpažintos šalys: {correct} iš {total} ({percent} %).',
+  labelMode: 'Pavadinimai žemėlapyje',
+  labelHint: 'Parašykite žemėlapyje pažymėtų šalių pavadinimus.',
+  labelTitle: 'Pavadinimai žemėlapyje',
+  labelSubtitle: 'Kiekvienos sunumeruotos šalies pavadinimą parašykite ant linijos su tuo pačiu numeriu.\nPatikrinkite puslapį per World Capitals Quiz meniu.',
+  labelMade: 'Sukurtas žemėlapis (šalių: {count}).',
 
   sourcesTitle: 'Šaltiniai',
   sourcesIntro: 'Papildinys naudoja atviruosius duomenis. Viskas įtraukta į papildinį ir niekas niekur nesiunčiama.',
