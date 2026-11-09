@@ -9,6 +9,9 @@ import {PluginManager} from 'sn-plugin-lib';
 import {createSheet, gradeSheet, rowsPerPageNow, sheetTarget} from './src/actions';
 import {createMapSheet, gradeMapSheet, skillOfTarget} from './src/mapActions';
 import {createOutlineSheet, gradeOutlineSheet} from './src/outlineActions';
+import {createLabelSheet, gradeLabelSheet, labelCountsNow} from './src/labelActions';
+import {LABEL_COUNTS, LABEL_DEFAULT_COUNT, LABEL_REGIONS} from './src/core/labelSheet';
+import {labelTexts} from './src/i18n/label';
 import {
   OUTLINE_COUNTS,
   OUTLINE_DEFAULT_COUNT,
@@ -82,8 +85,11 @@ type Count = number | 'ALL';
 const thousands = (n: number) =>
   String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
-/** Table: write the capital. Map: mark the capital on the map. Outline: name the country from its outline. */
-type Mode = 'table' | 'map' | 'outline';
+/**
+ * Table: write the capital. Map: mark the capital on the map. Outline: name the country from
+ * its outline. Label: write the names of the countries on the map (prototype).
+ */
+type Mode = 'table' | 'map' | 'outline' | 'label';
 
 type Status =
   | {kind: 'idle'}
@@ -146,6 +152,7 @@ function App(): React.JSX.Element {
   const hs = hotSeatTexts(t);
   const lt = levelTexts(t);
   const ot = outlineTexts(t);
+  const lbt = labelTexts(t);
   const [level, setLevel] = useState<Level>('mixed');
   const tt = trainingTexts(t);
   // Smart by default: with no statistics yet it draws like random.
@@ -153,8 +160,9 @@ function App(): React.JSX.Element {
   const [players, setPlayers] = useState<number>(1);
   const [playMode, setPlayMode] = useState<PlayMode>('pass');
   const [mode, setMode] = useState<Mode>('table');
-  // Outline sheets are for one player.
-  const game = players > 1 && mode !== 'outline' ? {mode: playMode, players} : undefined;
+  // Outline and label sheets are for one player.
+  const singleOnly = mode === 'outline' || mode === 'label';
+  const game = players > 1 && !singleOnly ? {mode: playMode, players} : undefined;
   // The statistics belong to one player, so multiplayer sheets are always drawn at random.
   const usedStrategy: Strategy = game ? 'random' : strategy;
   const [region, setRegion] = useState<Region>('EU');
@@ -163,6 +171,15 @@ function App(): React.JSX.Element {
   const [mapStyle, setMapStyle] = useState<MapEntryStyle>('both');
   const [mapTarget, setMapTarget] = useState<MapTarget>('capital');
   const [outlineCount, setOutlineCount] = useState<number>(OUTLINE_DEFAULT_COUNT);
+  const [labelCount, setLabelCount] = useState<number>(LABEL_DEFAULT_COUNT);
+  // Small pages (Nomad, A5X) stop at 15 countries; see labelCountsFor.
+  const [labelCounts, setLabelCounts] = useState<number[]>([...LABEL_COUNTS]);
+  useEffect(() => {
+    labelCountsNow().then(cs => {
+      setLabelCounts(cs);
+      setLabelCount(c => (cs.includes(c) ? c : Math.max(...cs)));
+    });
+  }, []);
   const [outlineSize, setOutlineSize] = useState<OutlineSize>('large');
   const [outlineScale, setOutlineScale] = useState<OutlineScale>('fit');
   const [outlineRotation, setOutlineRotation] = useState<OutlineRotation>('none');
@@ -199,7 +216,13 @@ function App(): React.JSX.Element {
   const [statsMessage, setStatsMessage] = useState<string | null>(null);
   // The statistics follow the selected game until a skill is chosen in the statistics tab.
   const gameSkill: Skill =
-    mode === 'table' ? 'capital' : mode === 'outline' ? 'outline' : skillOfTarget(mapTarget);
+    mode === 'table'
+      ? 'capital'
+      : mode === 'outline'
+      ? 'outline'
+      : mode === 'label'
+      ? 'mapCountry'
+      : skillOfTarget(mapTarget);
   const [chosenSkill, setChosenSkill] = useState<Skill | null>(null);
   useEffect(() => setChosenSkill(null), [gameSkill]);
   const skill = chosenSkill ?? gameSkill;
@@ -276,6 +299,10 @@ function App(): React.JSX.Element {
     }
     const progress = (message: string) => setStatus({kind: 'busy', message});
     await run(async () => {
+      if (mode === 'label') {
+        const r = await createLabelSheet(t, region, target, progress, {count: labelCount, level}, usedStrategy);
+        return {message: lbt.ui.made(r.count)};
+      }
       if (mode === 'outline') {
         const r = await createOutlineSheet(t, region, target, progress, {
           count: outlineCount,
@@ -358,6 +385,15 @@ function App(): React.JSX.Element {
         return {
           message: ot.ui.result(o.correct, o.total, outlinePercent),
           detail: ui.gradedIn(outlineSeconds),
+        };
+      }
+      const lb = await gradeLabelSheet(progress);
+      if (lb) {
+        const labelSeconds = ((Date.now() - started) / 1000).toFixed(1);
+        const labelPercent = lb.total ? Math.round((100 * lb.correct) / lb.total) : 0;
+        return {
+          message: lbt.ui.result(lb.correct, lb.total, labelPercent),
+          detail: ui.gradedIn(labelSeconds),
         };
       }
       // Map sheets are always graded page by page; other sheets go on to table grading.
@@ -477,10 +513,22 @@ function App(): React.JSX.Element {
                 onPress={() => setMode('outline')}
                 disabled={busy}
               />
+              <Button
+                label={lbt.ui.mode}
+                selected={mode === 'label'}
+                onPress={() => {
+                  setMode('label');
+                  // The world map has no room for the boxes.
+                  if (!LABEL_REGIONS.includes(region)) {
+                    setRegion('EU');
+                  }
+                }}
+                disabled={busy}
+              />
             </View>
             <Text style={styles.label}>{ui.region}</Text>
             <View style={styles.grid}>
-              {REGIONS.map(r => (
+              {(mode === 'label' ? LABEL_REGIONS : REGIONS).map(r => (
                 <Button
                   key={r}
                   label={regionName(r, t)}
@@ -490,7 +538,23 @@ function App(): React.JSX.Element {
                 />
               ))}
             </View>
-            {mode === 'outline' ? (
+            {mode === 'label' ? (
+              <>
+                <Text style={styles.label}>{mt.ui.mapCount}</Text>
+                <View style={styles.grid}>
+                  {labelCounts.map(c => (
+                    <Button
+                      key={c}
+                      label={String(c)}
+                      selected={c === labelCount}
+                      onPress={() => setLabelCount(c)}
+                      disabled={busy}
+                    />
+                  ))}
+                </View>
+                <Text style={styles.hint}>{lbt.ui.hint}</Text>
+              </>
+            ) : mode === 'outline' ? (
               <>
                 <Text style={styles.label}>{mt.ui.mapCount}</Text>
                 <View style={styles.grid}>
@@ -646,7 +710,7 @@ function App(): React.JSX.Element {
                 )}
               </>
             )}
-            {mode !== 'outline' && (
+            {!singleOnly && (
               <>
                 <Text style={styles.label}>{hs.ui.players}</Text>
                 <View style={styles.grid}>

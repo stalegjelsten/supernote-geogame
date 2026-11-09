@@ -72,7 +72,7 @@ export const skillOfTarget = (target: MapTarget): Skill =>
 
 export type Progress = (message: string) => void;
 
-async function mapPicturePath(region: Region): Promise<string> {
+export async function mapPicturePath(region: Region): Promise<string> {
   // MAP_ASSETS makes sure the images are included in the bundle (see mapAssets.ts).
   const file = mapMeta(region).file as keyof typeof MAP_ASSETS;
   try {

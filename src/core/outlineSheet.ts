@@ -166,9 +166,29 @@ const A = 'A'.charCodeAt(0);
 
 const shift = (ch: string, by: number) => String.fromCharCode(A + ((((ch.charCodeAt(0) - A + by) % 26) + 26) % 26));
 
+/** The country codes shifted by position (see above); also used by the label sheet's key. */
+export function encodeCountryCodes(codes: readonly CountryCode[]): string {
+  return codes.map((code, i) => shift(code[0], 5 + i * 3) + shift(code[1], 11 + i * 7)).join('');
+}
+
+/** The reverse of encodeCountryCodes, or null if the body is not valid country codes. */
+export function decodeCountryCodes(body: string): CountryCode[] | null {
+  if (!body.length || body.length % 2) {
+    return null;
+  }
+  const codes: CountryCode[] = [];
+  for (let i = 0; i < body.length / 2; i++) {
+    const code = shift(body[2 * i], -(5 + i * 3)) + shift(body[2 * i + 1], -(11 + i * 7));
+    if (!(COUNTRY_CODES as readonly string[]).includes(code)) {
+      return null;
+    }
+    codes.push(code as CountryCode);
+  }
+  return codes;
+}
+
 export function outlineKey(lang: Language, codes: readonly CountryCode[], sheetId?: string): string {
-  const body = codes.map((code, i) => shift(code[0], 5 + i * 3) + shift(code[1], 11 + i * 7)).join('');
-  return `${KEY_PREFIX}${lang.code}.${body}` + (sheetId ? `.${sheetId}` : '');
+  return `${KEY_PREFIX}${lang.code}.${encodeCountryCodes(codes)}` + (sheetId ? `.${sheetId}` : '');
 }
 
 export interface OutlineSheetInfo {
@@ -185,18 +205,8 @@ export function parseOutlineKey(text: string): OutlineSheetInfo | null {
   }
   const m = t.slice(KEY_PREFIX.length).match(/^([A-Za-z-]+)\.([A-Z]+)(?:\.([0-9a-z]+))?$/);
   const lang = m ? getLanguage(m[1]) : undefined;
-  if (!m || !lang || m[2].length % 2) {
-    return null;
-  }
-  const codes: CountryCode[] = [];
-  for (let i = 0; i < m[2].length / 2; i++) {
-    const code = shift(m[2][2 * i], -(5 + i * 3)) + shift(m[2][2 * i + 1], -(11 + i * 7));
-    if (!(COUNTRY_CODES as readonly string[]).includes(code)) {
-      return null;
-    }
-    codes.push(code as CountryCode);
-  }
-  if (!codes.length) {
+  const codes = m && lang ? decodeCountryCodes(m[2]) : null;
+  if (!m || !lang || !codes) {
     return null;
   }
   return m[3] && isSheetId(m[3]) ? {lang, codes, sheetId: m[3]} : {lang, codes};
