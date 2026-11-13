@@ -12,6 +12,7 @@
  */
 import {I18nManager} from 'react-native';
 import {FileUtils, PluginManager} from 'sn-plugin-lib';
+import {pluginDirPath} from '../sdk/pluginDir';
 import {
   LANGUAGES,
   languageChoice,
@@ -41,7 +42,7 @@ const markerName = (code: string) => `lang-${code}`;
 
 async function pluginDir(): Promise<string | null> {
   try {
-    return (await PluginManager.getPluginDirPath()) ?? null;
+    return (await pluginDirPath()) ?? null;
   } catch {
     return null;
   }

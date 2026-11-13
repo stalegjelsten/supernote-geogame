@@ -6,6 +6,7 @@ import type {Language} from './i18n';
 import {currentLanguage} from './i18n';
 import {countryIn} from './core/countries';
 import {boxOf} from './core/grouping';
+import {splitByRows} from './core/lines';
 import {inside} from './core/marks';
 import {isResultText} from './core/sheet';
 import {newSheetId} from './core/sheetId';
@@ -127,12 +128,41 @@ export async function gradeOutlineSheet(progress: Progress): Promise<OutlineGrad
     }
   });
 
+  // As on the label sheet: each recognition call costs a lot of time on the device, so each
+  // column of cells is read in one call and split on the line breaks. A cell is read on its
+  // own only if the column could not be split, or if its answer came out wrong.
   progress(ui.progress.readingInk);
+  const cols = L.columnX.length - 1;
+  const combined = new Map<number, string>();
+  for (let c = 0; c < cols; c++) {
+    const withInk = codes.map((_, k) => k).filter(k => k % cols === c && byCell[k].length);
+    if (!withInk.length) {
+      continue;
+    }
+    const lines = splitByRows(
+      await recognize(
+        withInk.flatMap(k => byCell[k]),
+        ref.size,
+      ),
+      withInk,
+    );
+    lines?.forEach((text, k) => combined.set(k, text));
+  }
   const graded: GradedCell[] = [];
   for (const [k, code] of codes.entries()) {
     const country = countryIn(lang, code);
-    const recognized = byCell[k].length ? await recognize(byCell[k], ref.size) : '';
-    graded.push({index: k, country, recognized, result: gradeCountryName(country, recognized, lang)});
+    let recognized = combined.get(k) ?? '';
+    let result = gradeCountryName(country, recognized, lang);
+    if (byCell[k].length && (!combined.has(k) || result.verdict === 'wrong')) {
+      progress(ui.progress.rereadingRow(k + 1));
+      const own = await recognize(byCell[k], ref.size);
+      const ownResult = gradeCountryName(country, own, lang);
+      if (!combined.has(k) || ownResult.distance < result.distance) {
+        recognized = own;
+        result = ownResult;
+      }
+    }
+    graded.push({index: k, country, recognized, result});
   }
 
   // Remove results from an earlier grading: marks and text in the result strips, and the score.

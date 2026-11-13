@@ -310,13 +310,14 @@ export async function gradeMapSheet(
   }
   const tag = gameTagOf(elements);
   if (tag?.mode === 'pass' && scope === 'set') {
-    return gradePassMapGame(ref, info, tag, progress);
+    return gradePassMapGame(ref, elements, info, tag, progress);
   }
   return gradeMapPage(ref, elements, info, tag, progress);
 }
 
 async function gradePassMapGame(
   ref: PageRef,
+  currentElements: PageElement[],
   info: MapSheetInfo,
   tag: GameTag,
   progress: Progress,
@@ -336,8 +337,8 @@ async function gradePassMapGame(
         missing.push(p);
         continue;
       }
-      pref = pageIndex === ref.page ? ref : await pageRefAt(ref, pageIndex);
-      elements = await getPageElements(pref);
+      pref = pageIndex === ref.page ? ref : pageRefAt(ref, pageIndex);
+      elements = pageIndex === ref.page ? currentElements : await getPageElements(pref);
     } catch {
       missing.push(p);
       continue;

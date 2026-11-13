@@ -10,7 +10,8 @@
  * Saving is a convenience: if something fails, we lose the statistics for that
  * sheet, but the grading proceeds as before.
  */
-import {FileUtils, PluginManager} from 'sn-plugin-lib';
+import {FileUtils} from 'sn-plugin-lib';
+import {pluginDirPath} from './pluginDir';
 import {
   decodeRecord,
   encodeRecord,
@@ -46,7 +47,7 @@ export function forgetCache(): void {
 }
 
 async function guestPath(): Promise<string | null> {
-  const plugin = await PluginManager.getPluginDirPath();
+  const plugin = await pluginDirPath();
   return plugin ? `${plugin}/${GUEST_DIR}` : null;
 }
 
@@ -86,7 +87,7 @@ async function statsDir(): Promise<string | null> {
   if (dirPath) {
     return dirPath;
   }
-  const plugin = await PluginManager.getPluginDirPath();
+  const plugin = await pluginDirPath();
   if (!plugin) {
     return null;
   }

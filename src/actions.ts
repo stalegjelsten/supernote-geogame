@@ -449,7 +449,7 @@ export async function gradeSheet(scope: 'page' | 'set', progress: Progress): Pro
   const lang = sheetLanguageOf(elements, info);
   const tag = gameTagOf(elements);
   if (tag?.mode === 'pass' && scope === 'set') {
-    return gradePassGame(ref, info, tag, lang, progress);
+    return gradePassGame(ref, elements, info, tag, lang, progress);
   }
   if (scope === 'page' || info.parts === 1) {
     const score = await gradePage(ref, elements, lang, progress, tag);
@@ -474,7 +474,7 @@ export async function gradeSheet(scope: 'page' | 'set', progress: Progress): Pro
     let pref: PageRef;
     let els: PageElement[];
     try {
-      pref = pageIndex === ref.page ? ref : await pageRefAt(ref, pageIndex);
+      pref = pageIndex === ref.page ? ref : pageRefAt(ref, pageIndex);
       els = pageIndex === ref.page ? elements : await getPageElements(pref);
     } catch {
       // Past the end of the note (pages deleted): skip it, as below.
@@ -497,6 +497,7 @@ export async function gradeSheet(scope: 'page' | 'set', progress: Progress): Pro
 /** Pass around: grades all the players' pages and sums per player. */
 async function gradePassGame(
   ref: PageRef,
+  elements: PageElement[],
   info: SheetInfo,
   tag: GameTag,
   lang: Language,
@@ -517,8 +518,8 @@ async function gradePassGame(
       let pref: PageRef;
       let els: PageElement[];
       try {
-        pref = pageIndex === ref.page ? ref : await pageRefAt(ref, pageIndex);
-        els = await getPageElements(pref);
+        pref = pageIndex === ref.page ? ref : pageRefAt(ref, pageIndex);
+        els = pageIndex === ref.page ? elements : await getPageElements(pref);
       } catch {
         continue;
       }
