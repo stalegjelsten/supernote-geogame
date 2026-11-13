@@ -24,6 +24,7 @@ import {
 } from './src/core/outlineSheet';
 import {outlineTexts} from './src/i18n/outline';
 import {sourcesTexts} from './src/i18n/sources';
+import {helpTexts} from './src/i18n/help';
 import {SKILLS, type SheetRecord, type Skill} from './src/core/stats';
 import type {StatsReport} from './src/core/statsReport';
 import {statsReport} from './src/core/statsReport';
@@ -493,7 +494,7 @@ function App(): React.JSX.Element {
           [
             ['game', ui.newSheet],
             ['stats', stx.section],
-            ['settings', ui.language],
+            ['settings', helpTexts(t).tab],
           ] as Array<[Tab, string]>
         ).map(([k, label]) => (
           <Pressable
@@ -912,11 +913,28 @@ function App(): React.JSX.Element {
             </View>
 
             <View style={styles.divider} />
+            <HelpView t={t} />
+            <View style={styles.divider} />
             <SourcesView t={t} />
           </>
         )}
       </ScrollView>
     </View>
+  );
+}
+
+/** How to use the plugin, in short. */
+function HelpView({t}: {t: ReturnType<typeof currentLanguage>}) {
+  const help = helpTexts(t);
+  return (
+    <>
+      <Text style={styles.section}>{help.title}</Text>
+      {help.paragraphs.map(p => (
+        <Text key={p} style={styles.hint}>
+          {p}
+        </Text>
+      ))}
+    </>
   );
 }
 

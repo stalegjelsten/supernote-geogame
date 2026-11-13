@@ -74,7 +74,9 @@ Preview a sheet without a device with `node --no-warnings --import ./scripts/ts-
 
 ## Languages
 
-The sheets and the menu are available in 55 languages. By default the plugin follows the device language; another language can be chosen in the **Language** tab. Answers are read with Supernote's handwriting recognition, which uses the recognition language set on the device, so set it to the language you write in.
+The sheets and the menu are available in 55 languages. By default the plugin follows the device language; another language can be chosen in the **Settings** tab. Answers are read with Supernote's handwriting recognition, which uses the recognition language set on the device, so choose the same language in the plugin as the recognition language.
+
+The **Settings** tab also has a short **How to use** guide in every language (`src/i18n/help.ts`; the texts are in `src/i18n/menu/<code>.ts`) and the list of sources.
 
 Everything runs on the device; the maps and data are bundled with the plugin and nothing is sent anywhere.
 
@@ -199,7 +201,7 @@ Install the build the same way as under [Installation](#installation). Publish v
 - `src/mapActions.ts` – creating and grading map sheets; `src/sdk/mapAssets.ts` – the bundled maps
 - `src/labelActions.ts` – creating and grading name-on-the-map sheets; `src/core/labelSheet.ts` – layout, placing the numbers, the hidden key and grading; `src/core/mapLines.ts` and `src/data/mapLines.ts` – where the map images have lines (generated)
 - `src/outlineActions.ts` – creating and grading outline sheets; `src/core/outlineSheet.ts` – layout, scaling, rotation, the hidden key and grading; `src/data/outlines.ts` – the outlines (generated)
-- `App.tsx` – the menu opened from the toolbar, with the tabs New worksheet, Statistics and Language
+- `App.tsx` – the menu opened from the toolbar, with the tabs New worksheet, Statistics and Settings (language, how to use, sources)
 
 ## Which countries and capitals are included
 
@@ -209,7 +211,7 @@ Install the build the same way as under [Installation](#installation). Publish v
 
 ## License and data sources
 
-The code is licensed under [MIT](LICENSE). The outlines of small countries derived from OpenStreetMap are under ODbL 1.0 (see THIRD_PARTY_NOTICES.md). The menu lists the sources under **Language → Sources**, and an outline sheet with such a country gets a credit line at the bottom. The plugin uses this data (details and license texts in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)):
+The code is licensed under [MIT](LICENSE). The outlines of small countries derived from OpenStreetMap are under ODbL 1.0 (see THIRD_PARTY_NOTICES.md). The menu lists the sources under **Settings → Sources**, and an outline sheet with such a country gets a credit line at the bottom. The plugin uses this data (details and license texts in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)):
 
 - **Country names**: Unicode CLDR (Unicode License v3)
 - **Capitals and coordinates**: Wikidata (CC0)

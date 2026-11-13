@@ -1,4 +1,5 @@
 import {LANGUAGES} from '../src/i18n';
+import {helpTexts} from '../src/i18n/help';
 import {hotSeatTexts} from '../src/i18n/hotseat';
 import {labelTexts} from '../src/i18n/label';
 import {levelTexts} from '../src/i18n/level';
@@ -86,6 +87,19 @@ test('the table sheet tells a single player to draw a dash, and says how many we
     expect([lang.code, lang.sheet.unanswered(7)]).toEqual([lang.code, expect.stringContaining('7')]);
     expect([lang.code, lang.sheet.unanswered(7)]).toEqual([lang.code, expect.not.stringMatching(/\{\w+\}/)]);
   }
+});
+
+test('every language has a settings tab with a finished how-to guide', () => {
+  for (const lang of LANGUAGES) {
+    const h = helpTexts(lang);
+    expect([lang.code, h.paragraphs.length]).toEqual([lang.code, 12]);
+    for (const t of [h.tab, h.title, ...h.paragraphs]) {
+      expect([lang.code, t.trim().length > 0, /\{\w+\}/.test(t)]).toEqual([lang.code, true, false]);
+    }
+    expect([lang.code, h.paragraphs[11]]).toEqual([lang.code, expect.stringContaining('github.com/stalegjelsten/supernote-geogame')]);
+  }
+  expect(helpTexts(LANGUAGES.find(l => l.code === 'nb')!).tab).toBe('Innstillinger');
+  expect(helpTexts(LANGUAGES.find(l => l.code === 'en')!).tab).toBe('Settings');
 });
 
 test('sheet text stays English for multiplayer and map, so it is recognized', () => {

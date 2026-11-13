@@ -169,6 +169,22 @@ export interface MenuStrings {
   /** After the score on a single-player table sheet: how many boxes were left empty. */
   sheetUnanswered: string;
 
+  // The settings tab: its name and the "How to use" section (help.ts).
+  settingsTab: string;
+  helpTitle: string;
+  helpMake: string;
+  helpTable: string;
+  helpMap: string;
+  helpOutline: string;
+  helpLabel: string;
+  helpGrade: string;
+  helpBlank: string;
+  helpStats: string;
+  helpPlayers: string;
+  helpRecognition: string;
+  helpNotebook: string;
+  helpMore: string;
+
   // Outline mode (outline.ts). Outline sheets are recognized by the key at the bottom,
   // not by the title, so the title and instructions on the sheet can be translated here.
   outlineMode: string;
@@ -200,7 +216,7 @@ export interface MenuStrings {
   labelSubtitle: string;
   labelMade: string; // {count}
 
-  // Sources (sources.ts), in the language tab. Dataset and license names stay in English.
+  // Sources (sources.ts), in the settings tab. Dataset and license names stay in English.
   sourcesTitle: string;
   sourcesIntro: string;
   sourcesNames: string;

@@ -1,5 +1,5 @@
 /**
- * The "Sources" section in the language tab: the open data the plugin uses, with the credits
+ * The "Sources" section in the settings tab: the open data the plugin uses, with the credits
  * their licenses require. Norwegian is written by hand; the other languages get the labels from
  * menu/<code>.ts. Dataset and license names are the same in every language.
  */
