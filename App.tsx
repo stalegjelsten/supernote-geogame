@@ -178,6 +178,9 @@ function App(): React.JSX.Element {
   // are always drawn at random.
   const usedStrategy: Strategy = game || guest ? 'random' : strategy;
   const [region, setRegion] = useState<Region>('EU');
+  // The region can also be chosen on the statistics tab (World included), but the world map
+  // has no room for the label boxes.
+  const labelRegion: Region = LABEL_REGIONS.includes(region) ? region : 'EU';
   const [count, setCount] = useState<Count>(20);
   const [mapCount, setMapCount] = useState<number>(MAP_SHEET_COUNT);
   const [mapStyle, setMapStyle] = useState<MapEntryStyle>('both');
@@ -340,7 +343,7 @@ function App(): React.JSX.Element {
     const progress = (message: string) => setStatus({kind: 'busy', message});
     await run(async () => {
       if (mode === 'label') {
-        const r = await createLabelSheet(t, region, target, progress, {count: labelCount, level}, usedStrategy);
+        const r = await createLabelSheet(t, labelRegion, target, progress, {count: labelCount, level}, usedStrategy);
         return {message: lbt.ui.made(r.count)};
       }
       if (mode === 'outline') {
@@ -578,7 +581,7 @@ function App(): React.JSX.Element {
                 <Button
                   key={r}
                   label={regionName(r, t)}
-                  selected={r === region}
+                  selected={r === (mode === 'label' ? labelRegion : region)}
                   onPress={() => setRegion(r)}
                   disabled={busy}
                 />

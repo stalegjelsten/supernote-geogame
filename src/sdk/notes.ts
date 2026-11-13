@@ -305,7 +305,28 @@ export async function getPageElements(ref: PageRef): Promise<PageElement[]> {
  * waiting for the reply for each stroke before asking the next, which saves a lot of time.
  */
 export async function strokePointsAll(els: PageElement[]): Promise<Array<Array<{x: number; y: number}>>> {
-  return Promise.all(els.map(el => strokePoints(el).catch(() => [])));
+  const FAILED = null;
+  const first = await Promise.all(els.map(el => strokePoints(el).catch(() => FAILED)));
+  // Try the ones that failed once more, one at a time. A stroke that still cannot be read
+  // stops the grading: skipping it would silently count a mark as missing.
+  let lost = 0;
+  const out: Array<Array<{x: number; y: number}>> = [];
+  for (const [i, pts] of first.entries()) {
+    if (pts !== FAILED) {
+      out.push(pts);
+      continue;
+    }
+    const again = await strokePoints(els[i]).catch(() => FAILED);
+    if (again === FAILED) {
+      lost++;
+    } else {
+      out.push(again);
+    }
+  }
+  if (lost) {
+    throw new Error(`${currentLanguage().errors.failed('getStrokePoints')} (${lost}/${els.length})`);
+  }
+  return out;
 }
 
 export async function strokePoints(el: PageElement): Promise<Array<{x: number; y: number}>> {
@@ -363,7 +384,18 @@ function geometryOf(d: Extract<Draft, {kind: 'line'} | {kind: 'path'}>) {
  * This is much faster than one insertText/insertGeometry call per element.
  * If batch insertion fails, we fall back to one element at a time.
  */
-export async function insertDrafts(ref: PageRef, drafts: Draft[]): Promise<void> {
+export async function insertDrafts(
+  ref: PageRef,
+  drafts: Draft[],
+  options: {
+    /**
+     * Other drafts are placed relative to the picture (the dots on a label sheet), so it must
+     * land exactly at its rect. One at a time the device places the picture itself, so then
+     * the insertion fails instead.
+     */
+    exactPictures?: boolean;
+  } = {},
+): Promise<void> {
   if (!drafts.length) {
     return;
   }
@@ -391,6 +423,9 @@ export async function insertDrafts(ref: PageRef, drafts: Draft[]): Promise<void>
     }
     unwrap(await PluginCommAPI.insertPageElements(elements, ref.page, 0), 'insertPageElements');
   } catch (e) {
+    if (options.exactPictures && drafts.some(d => d.kind === 'picture')) {
+      throw e;
+    }
     console.warn('Batch insertion failed, trying one element at a time', e);
     // insertText/insertGeometry only work on the page that is shown.
     await jumpToPage(ref.page);
@@ -474,7 +509,12 @@ export async function bundledImagePath(fileName: string): Promise<string> {
     const current = queue.shift()!;
     let files: string[] = [];
     try {
-      files = (await FileUtils.listFiles(current)) ?? [];
+      // The types say strings, but the device returns objects {path, type} (see statsStore).
+      const entries = ((await FileUtils.listFiles(current)) ?? []) as unknown[];
+      files = entries.flatMap(e => {
+        const p = typeof e === 'string' ? e : (e as {path?: unknown} | null)?.path;
+        return typeof p === 'string' ? [p] : [];
+      });
     } catch {
       continue;
     }

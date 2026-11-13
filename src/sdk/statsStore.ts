@@ -76,9 +76,9 @@ export async function setGuestMode(on: boolean): Promise<void> {
   }
   const exists = await FileUtils.exists(path);
   if (on && !exists) {
-    await FileUtils.makeDir(path);
+    await ensureDir(path);
   } else if (!on && exists) {
-    await FileUtils.deleteDir(path);
+    await removeDir(path);
   }
   guest = on;
 }
@@ -100,6 +100,23 @@ async function statsDir(): Promise<string | null> {
 }
 
 const baseName = (path: string) => path.replace(/\/+$/, '').split('/').pop() ?? path;
+
+/**
+ * makeDir and deleteDir report failure by returning false, not by throwing. These throw
+ * instead, so that a failed write is not cached as done. A folder that already
+ * exists (or is already gone) counts as success.
+ */
+async function ensureDir(path: string): Promise<void> {
+  if (!(await FileUtils.makeDir(path)) && !(await FileUtils.exists(path))) {
+    throw new Error(`makeDir ${path}`);
+  }
+}
+
+async function removeDir(path: string): Promise<void> {
+  if (!(await FileUtils.deleteDir(path)) && (await FileUtils.exists(path))) {
+    throw new Error(`deleteDir ${path}`);
+  }
+}
 
 /**
  * The names in a folder. The types in sn-plugin-lib say that listFiles returns strings,
@@ -175,14 +192,14 @@ async function saveRecordNow(record: SheetRecord): Promise<boolean> {
     const fresh: Stored[] = [];
     for (const part of parts) {
       const name = encodeRecord(part);
-      await FileUtils.makeDir(`${dir}/${name}`);
+      await ensureDir(`${dir}/${name}`);
       fresh.push({name, record: part});
     }
     const newNames = new Set(fresh.map(f => f.name));
     const keep: Stored[] = [];
     for (const s of stored) {
       if (s.record.skill === record.skill && sameSheet(s.record.key, record.key) && !newNames.has(s.name)) {
-        await FileUtils.deleteDir(`${dir}/${s.name}`);
+        await removeDir(`${dir}/${s.name}`);
       } else if (!newNames.has(s.name)) {
         keep.push(s);
       }
@@ -192,7 +209,7 @@ async function saveRecordNow(record: SheetRecord): Promise<boolean> {
       all.sort((a, b) => a.record.time - b.record.time);
       const drop = all.slice(0, all.length - MAX_RECORDS);
       for (const s of drop) {
-        await FileUtils.deleteDir(`${dir}/${s.name}`);
+        await removeDir(`${dir}/${s.name}`);
       }
       all = all.slice(drop.length);
     }
@@ -223,7 +240,7 @@ async function removeSheetNow(skill: SheetRecord['skill'], id: string): Promise<
   try {
     for (const s of stored) {
       if (s.record.skill === skill && sameSheet(s.record.key, id)) {
-        await FileUtils.deleteDir(`${dir}/${s.name}`);
+        await removeDir(`${dir}/${s.name}`);
       } else {
         keep.push(s);
       }

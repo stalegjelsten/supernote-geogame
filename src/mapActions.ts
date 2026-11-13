@@ -436,6 +436,7 @@ async function gradeMapPage(
     mapStrokes,
     skipped,
     target,
+    count,
   );
 
   // Remove results from an earlier grading: geometry and text on the map,

@@ -189,3 +189,18 @@ test('every language has a sources section with the link filled in', () => {
     expect(s.lines.some(([, credit]) => credit.includes('OpenStreetMap'))).toBe(true);
   }
 });
+
+describe('another country in English is never "almost"', () => {
+  const nb = getLanguage('nb')!;
+  test.each([
+    ['IR', 'Iraq'],
+    ['AU', 'Austria'],
+    ['KP', 'South Korea'],
+    ['NG', 'Algeria'],
+  ])('%s written as %s', (code, written) => {
+    expect(gradeCountryName(countryIn(nb, code as never), written, nb).verdict).toBe('wrong');
+  });
+  test('own English name is still right', () => {
+    expect(gradeCountryName(countryIn(nb, 'IR' as never), 'Iran', nb).verdict).toBe('correct');
+  });
+});

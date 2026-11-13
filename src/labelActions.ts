@@ -100,6 +100,8 @@ export async function createLabelSheet(
       path,
       newSheetId(),
     ),
+    // The dots and numbers are drawn where the map should be.
+    {exactPictures: true},
   );
   if (page.page !== ref.page) {
     await jumpToPage(page.page);
@@ -221,7 +223,8 @@ export async function gradeLabelSheet(
       }
       if (e.type === TYPE_GEO && e.geometry?.points?.length) {
         const pts = e.geometry.points;
-        return L.slots.some(slot => pts.every(p => inside(p, slot.result)));
+        // The writing line lies on the top edge of the result strip (box.bottom) and stays.
+        return L.slots.some(slot => pts.every(p => p.y > slot.result.top && inside(p, slot.result)));
       }
       return false;
     })

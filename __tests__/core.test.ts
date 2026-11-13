@@ -583,3 +583,12 @@ describe('Nomad and other small pages', () => {
     expect(guessLayoutVersion(nomad, n, lefts)).toBe(3);
   });
 });
+
+describe('matchAnswer with spellings of different lengths', () => {
+  test('a typo close to a longer spelling is "close" even if a short spelling is as near', () => {
+    expect(matchAnswer('Roe', ['Rom', 'Roma', 'Rome']).verdict).toBe('close');
+  });
+  test('一 after katakana is read as ー', () => {
+    expect(normalize('ロ一マ')).toBe(normalize('ローマ'));
+  });
+});
