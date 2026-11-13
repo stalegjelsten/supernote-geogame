@@ -20,14 +20,33 @@ Handwritten quiz on world capitals and countries: worksheets, map quizzes and 2�
 For the store listing where a shorter text fits better than the full description below.
 
 Learn the world's capitals and countries with your pen. World Capitals Quiz
-makes a worksheet on your note page, you answer by hand, and it grades the
-sheet with Supernote's handwriting recognition.
+makes a worksheet on your note page, you answer by hand, and the plugin grades
+the sheet with Supernote's own handwriting recognition. You can fix your
+answers and grade again as often as you like.
 
-- Four games: write capitals, mark them on a map, name countries from their outlines, or label numbered countries on a map.
-- Smart practice: statistics per country bring back the ones you struggle with and the ones due for review.
-- Play alone, or with 2–4 players on one device.
-- All 197 countries, every continent, 55 languages.
-- Works fully offline. Nothing leaves your device.
+There are four games: write the capital of each country in a table, mark
+capitals or countries on a map, name countries from their outlines, or write
+the names of numbered countries on a map. All 197 countries are included, on
+every continent, and the sheets come in 55 languages. Play alone, or with 2–4
+players on one device.
+
+The plugin remembers how you do on each country and uses that to choose the
+next sheet, so the countries you struggle with and those due for review come
+back until you know them. Everything runs on the device: nothing is sent
+anywhere, and the plugin only writes to the note you are working in and to
+its own folder.
+
+The whole plugin was written by AI (Claude by Anthropic, using Claude Code),
+including the texts and translations. I designed the features, directed
+the work and tested it on my Supernote Manta. Country names, capitals and maps
+come from open data sources, not from AI.
+
+Two tips before you start: make a separate notebook for the quiz with a blank
+template, so your other notes stay untouched. And choose the same language in
+the plugin as the handwriting recognition language set on the device, or your
+answers will be misread. For more about the games, the statistics and
+the data sources, read the documentation on GitHub:
+https://github.com/stalegjelsten/supernote-geogame
 
 ## Description
 
@@ -91,8 +110,8 @@ and nothing is sent anywhere. Reset statistics in the menu deletes the history.
 
 Built with AI
 All the code in this plugin was written by AI (Claude by Anthropic, using
-Claude Code), and so were the texts and translations. A human designed the
-features, directed the work and tested it on a Supernote Manta. Country names,
+Claude Code), and so were the texts and translations. I designed the
+features, directed the work and tested it on my Supernote Manta. Country names,
 capitals and maps come from open data sources, not from AI.
 
 Countries and capitals
