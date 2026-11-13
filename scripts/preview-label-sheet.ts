@@ -16,6 +16,7 @@ import {MAPS} from '../src/data/maps.ts';
 import {getLanguage} from '../src/i18n/index.ts';
 import {countryIn} from '../src/core/countries.ts';
 import {
+  arrangeLabels,
   gradeLabel,
   labelLayout,
   labelResultDrafts,
@@ -41,10 +42,12 @@ const random = () => {
   return (seed - 1) / 2147483646;
 };
 
-const codes = pickLabelCountries(lang, region, count, random, undefined, 'mixed', labelSeparation(PAGE)).map(c => c.code);
+const chosen = pickLabelCountries(lang, region, count, random, undefined, 'mixed', labelSeparation(PAGE)).map(c => c.code);
 const file = path.join(ROOT, `assets/maps/${MAPS[region].file}.png`);
-const sheet = labelSheetDrafts(PAGE, lang, region, codes, file, 'abc123');
-const L = labelLayout(PAGE, region, codes);
+const sheet = labelSheetDrafts(PAGE, lang, region, chosen, file, 'abc123');
+// The sheet puts long names last, on wider lines (as in the key).
+const {codes, wide} = arrangeLabels(PAGE, lang, chosen);
+const L = labelLayout(PAGE, region, codes, 'numbered', wide);
 
 // Made-up answers: most right, one misspelt, one wrong, one empty.
 const answers = codes.map((c, i) => {
@@ -64,7 +67,7 @@ const graded: GradedLabel[] = codes.map((c, i) => {
   const country = countryIn(lang, c);
   return {index: i, country, recognized: answers[i], result: gradeLabel(country, answers[i], lang)};
 });
-const results = withAnswers ? labelResultDrafts(PAGE, lang, region, codes, graded) : [];
+const results = withAnswers ? labelResultDrafts(PAGE, lang, region, codes, graded, 'numbered', wide) : [];
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const GRAY = (c: number) => (c === 0 ? '#000' : '#7a7a7a');
