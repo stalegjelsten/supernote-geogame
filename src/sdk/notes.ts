@@ -6,6 +6,7 @@ import {FileUtils, PluginCommAPI, PluginFileAPI, PluginManager, PluginNoteAPI} f
 import type {Draft} from '../core/draft';
 import type {Rect, Size} from '../core/layout';
 import {currentLanguage} from '../i18n';
+import {pluginDirPath} from './pluginDir';
 
 interface Resp<T> {
   success: boolean;
@@ -28,13 +29,31 @@ export interface PageRef {
   size: Size;
 }
 
+/**
+ * The page size per note. Every page in a note has the same size, and it never changes, so it is
+ * asked for once per note instead of on every call (each call to the device takes time).
+ */
+const sizeByNote = new Map<string, Size>();
+
+async function noteSize(notePath: string, page: number): Promise<Size> {
+  const known = sizeByNote.get(notePath);
+  if (known) {
+    return known;
+  }
+  const size = unwrap<Size>(await PluginFileAPI.getPageSize(notePath, page), 'getPageSize');
+  sizeByNote.set(notePath, size);
+  return size;
+}
+
 export async function currentPage(): Promise<PageRef> {
-  const notePath = unwrap<string>(await PluginCommAPI.getCurrentFilePath(), 'getCurrentFilePath');
+  // Both are asked for at once; the page number is only used if the file is a note.
+  const [pathRes, pageRes] = await Promise.all([PluginCommAPI.getCurrentFilePath(), PluginCommAPI.getCurrentPageNum()]);
+  const notePath = unwrap<string>(pathRes, 'getCurrentFilePath');
   if (!notePath || !notePath.toLowerCase().endsWith('.note')) {
     throw new Error(currentLanguage().errors.openNote);
   }
-  const page = unwrap<number>(await PluginCommAPI.getCurrentPageNum(), 'getCurrentPageNum');
-  const size = unwrap<Size>(await PluginFileAPI.getPageSize(notePath, page), 'getPageSize');
+  const page = unwrap<number>(pageRes, 'getCurrentPageNum');
+  const size = await noteSize(notePath, page);
   return {notePath, page, size};
 }
 
@@ -225,10 +244,15 @@ export async function totalPages(notePath: string): Promise<number> {
   return unwrap<number>(await PluginFileAPI.getNoteTotalPageNum(notePath), 'getNoteTotalPageNum');
 }
 
-/** Same note, a different page. */
-export async function pageRefAt(ref: PageRef, page: number): Promise<PageRef> {
-  const size = unwrap<Size>(await PluginFileAPI.getPageSize(ref.notePath, page), 'getPageSize');
-  return {notePath: ref.notePath, page, size};
+/**
+ * Same note, a different page. All the pages in a note have the same size, so the device is not
+ * asked. A page past the end of the note is noticed when its elements are read.
+ */
+export function pageRefAt(ref: PageRef, page: number): PageRef {
+  if (page < 0) {
+    throw new Error(`${currentLanguage().errors.failed('getPageSize')} (${page})`);
+  }
+  return {notePath: ref.notePath, page, size: ref.size};
 }
 
 const PERMISSIONS = ['plugin.permission.FILE:READ', 'plugin.permission.FILE:WRITE'];
@@ -344,10 +368,16 @@ export async function insertDrafts(ref: PageRef, drafts: Draft[]): Promise<void>
     return;
   }
   try {
+    // Each element needs its own createElement call (it gets its own uuid), but the calls are
+    // sent all at once instead of waiting for the reply to one before asking for the next.
+    const created = await Promise.all(
+      drafts.map(d =>
+        PluginCommAPI.createElement(d.kind === 'text' ? TYPE_TEXT : d.kind === 'picture' ? TYPE_PICTURE : TYPE_GEO),
+      ),
+    );
     const elements: object[] = [];
-    for (const d of drafts) {
-      const type = d.kind === 'text' ? TYPE_TEXT : d.kind === 'picture' ? TYPE_PICTURE : TYPE_GEO;
-      const el = unwrap<Record<string, unknown>>(await PluginCommAPI.createElement(type), 'createElement');
+    for (const [i, d] of drafts.entries()) {
+      const el = unwrap<Record<string, unknown>>(created[i], 'createElement');
       el.pageNum = ref.page;
       el.layerNum = 0;
       if (d.kind === 'text') {
@@ -430,7 +460,7 @@ async function fileExists(path: string): Promise<boolean> {
  * If it is not found there, the plugin folder and its subfolders are searched.
  */
 export async function bundledImagePath(fileName: string): Promise<string> {
-  const dir = (await PluginManager.getPluginDirPath())?.replace(/\/+$/, '');
+  const dir = (await pluginDirPath())?.replace(/\/+$/, '');
   if (!dir) {
     throw new Error('getPluginDirPath');
   }
