@@ -30,9 +30,19 @@ The plugin runs on devices with plugin support: Manta (A5 X2) and Nomad (A6 X2),
 ## Usage
 
 1. Open a note. The sheet is created on the current page if it is empty and has a white template or none; otherwise it is created on a new page after it.
-2. Tap **Plugins** (🧩) in the toolbar, then **World Capitals Quiz**, choose a continent and a number of countries, and tap **Make sheet**.
-3. Write the capitals in the middle column. You don't have to answer all of them: boxes you leave empty are not counted in the [statistics](#statistics). If you don't know an answer and want that to count, draw a dash in the box.
-4. Tap **Plugins → World Capitals Quiz → Grade this page**. The result is written in the right column. You can grade again after changing answers.
+2. Tap **Plugins** (🧩) in the toolbar, then **World Capitals Quiz**. Choose a game (see the sections below), a continent and the other options, and tap **Make sheet**.
+3. Answer by hand on the sheet.
+4. Tap **Plugins → World Capitals Quiz → Grade this page**. The result is written on the sheet. You can grade again after changing answers.
+
+## Capitals table
+
+**Game: Table** (the default) makes a table with the countries in the left column. Write the capital of each country in the middle column, and the result is written in the right column when you grade: a check, a half check for "almost" (right, but misspelled) or a cross, the recognised text and a total score.
+
+- **Number of countries:** 10, 15, 20 or all the countries of the continent. Smaller pages hold fewer rows (20 on Manta, fewer on Nomad, A5 X and A6 X), so long sheets are spread over several pages. Tap **Grade the whole set** on any of the pages to grade them all.
+- **Answers:** the capital is accepted in the sheet's language and in English, with common other spellings (`src/i18n/countries/<code>.ts`).
+- **Skipping:** you don't have to answer all of them: boxes you leave empty are not counted in the [statistics](#statistics). If you don't know an answer and want that to count, draw a dash in the box.
+- **Footnotes** explain capitals that are often confused (see [Footnotes](#footnotes)).
+- **Players:** alone or 2–4 players (see [Multiple players](#multiple-players-hot-seat)). The results are saved in the statistics as **Writing capitals**.
 
 ## Map quiz
 
