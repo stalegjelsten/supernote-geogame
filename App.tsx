@@ -172,7 +172,7 @@ function App(): React.JSX.Element {
   const [mapTarget, setMapTarget] = useState<MapTarget>('capital');
   const [outlineCount, setOutlineCount] = useState<number>(OUTLINE_DEFAULT_COUNT);
   const [labelCount, setLabelCount] = useState<number>(LABEL_DEFAULT_COUNT);
-  // Small pages (Nomad, A5X) stop at 15 countries; see labelCountsFor.
+  // Small pages (Nomad, A5X) only get 10 countries, so there is no choice; see labelCountsFor.
   const [labelCounts, setLabelCounts] = useState<number[]>([...LABEL_COUNTS]);
   useEffect(() => {
     labelCountsNow().then(cs => {
@@ -540,18 +540,22 @@ function App(): React.JSX.Element {
             </View>
             {mode === 'label' ? (
               <>
-                <Text style={styles.label}>{mt.ui.mapCount}</Text>
-                <View style={styles.grid}>
-                  {labelCounts.map(c => (
-                    <Button
-                      key={c}
-                      label={String(c)}
-                      selected={c === labelCount}
-                      onPress={() => setLabelCount(c)}
-                      disabled={busy}
-                    />
-                  ))}
-                </View>
+                {labelCounts.length > 1 ? (
+                  <>
+                    <Text style={styles.label}>{mt.ui.mapCount}</Text>
+                    <View style={styles.grid}>
+                      {labelCounts.map(c => (
+                        <Button
+                          key={c}
+                          label={String(c)}
+                          selected={c === labelCount}
+                          onPress={() => setLabelCount(c)}
+                          disabled={busy}
+                        />
+                      ))}
+                    </View>
+                  </>
+                ) : null}
                 <Text style={styles.hint}>{lbt.ui.hint}</Text>
               </>
             ) : mode === 'outline' ? (
