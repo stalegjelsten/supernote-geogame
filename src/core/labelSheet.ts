@@ -24,7 +24,7 @@ import {countryLabel} from './countryCells';
 import {hasLines} from './mapLines';
 import type {Draft, DraftPoint} from './draft';
 import {familiarity, levelPool, type Level} from './fairDraw';
-import {MIN_ROW_PX, centeredTextRect, fitFontSize, titleFontSize, type Rect, type Size} from './layout';
+import {MIN_ROW_PX, centeredTextRect, fitFontSize, textWidthEm, titleFontSize, type Rect, type Size} from './layout';
 import {markColor, markLayout, markStrokes, strokeAsPolygon} from './marks';
 import type {MatchResult} from './match';
 import {decodeCountryCodes, encodeCountryCodes, gradeCountryName, verdictMark} from './outlineSheet';
@@ -56,9 +56,11 @@ const NUMBERED_BELOW_WIDTH = 1600;
  *   box columns the map was at most 75 mm wide on Manta, too small to see which small
  *   country a dot was in (Asia was 75 × 48 mm).
  * - 2: numbers on every page; the map gets the whole width (Asia about 133 × 85 mm on Manta).
+ * - 3: as 2, but names too long for a line in the list get a wider line at the end of it
+ *   (see arrangeLabels). The key says how many, so the layout can be computed again.
  * Old sheets are graded with the layout they were drawn with.
  */
-export const labelStyleFor = (page: Size, keyVersion: 1 | 2 = LABEL_KEY_VERSION): LabelStyle =>
+export const labelStyleFor = (page: Size, keyVersion: LabelKeyVersion = LABEL_KEY_VERSION): LabelStyle =>
   keyVersion >= 2 || page.width < NUMBERED_BELOW_WIDTH ? 'numbered' : 'leader';
 
 /**
@@ -86,6 +88,8 @@ export interface LabelSlot {
   tag?: Rect;
   /** 'numbered': the number before the writing line. */
   number?: Rect;
+  /** 'numbered': writing lines in the box, 2 for the longest names (1 if left out). */
+  lines?: number;
 }
 
 export interface LabelLayout {
@@ -254,9 +258,10 @@ export function labelLayout(
   region: Region,
   codes: readonly CountryCode[],
   style: LabelStyle = labelStyleFor(page),
+  wide: LabelWide = NO_WIDE,
 ): LabelLayout {
   return style === 'numbered'
-    ? numberedLayout(page, region, codes)
+    ? numberedLayout(page, region, codes, wide)
     : leaderLayout(page, region, codes);
 }
 
@@ -447,29 +452,94 @@ export function placeTags(
   return out;
 }
 
-function numberedLayout(page: Size, region: Region, codes: readonly CountryCode[]): LabelLayout {
+/**
+ * The lines at the end of the list that are wider than the columns, for names too long for a
+ * column line: `half` lines two to a row, then `full` lines across the whole width, then
+ * `double`: two lines across the whole width for one name, for names too long even for that.
+ */
+export interface LabelWide {
+  half: number;
+  full: number;
+  double: number;
+}
+export const NO_WIDE: LabelWide = {half: 0, full: 0, double: 0};
+
+/** Rows, columns and widths of the numbered list for `n` countries on this page. */
+function listFrame(page: Size, n: number) {
   const {width: W, height: H} = page;
   const margin = Math.max(W * 0.09, 150);
   const left = margin;
   const right = W - margin;
+  // Every pixel the list takes is taken from the map, so the rows are as tight as writing
+  // allows: the same height as a table row (MIN_ROW_PX, about 7 mm), and a strip just tall
+  // enough for the result in the small font.
+  const rowH = Math.max(H * 0.036, MIN_ROW_PX);
+  const fontSize = r(Math.max(Math.min(rowH * 0.38, W * 0.022), 24));
+  const numW = fontSize * 2.2;
+  const pad = Math.max(8, W * 0.008);
+  const cols = numberedColumns(n);
+  /** The writing room on a line when `perRow` lines share a row. */
+  const lineWidth = (perRow: number) => (right - left) / perRow - numW - pad * 2;
+  return {W, H, left, right, rowH, fontSize, numW, pad, cols, lineWidth};
+}
+
+/**
+ * How wide handwriting is, in pixels per em of textWidthEm (about 0.55 em per Latin letter).
+ * Measured on Manta in the table mode: "Monrovia" takes 30–45 % of the 764 px wide answer
+ * column. The middle, 38 %, is about 36 px (3.1 mm) per letter: the largest handwriting would
+ * leave the map too small on sheets with many long names. Both Manta and Nomad have 300 ppi,
+ * and people write about as large on both, so the same number is used on every page.
+ */
+export const HANDWRITING_PX_PER_EM = (0.38 * 764) / textWidthEm('Monrovia');
+
+/** About how wide `name` is when written by hand, in pixels. */
+export const handwrittenWidth = (name: string) => textWidthEm(name) * HANDWRITING_PX_PER_EM;
+
+/**
+ * The order of the countries on a new sheet, and how many get a wide line. A name that will
+ * not fit on a column line in the sheet language ("Den sentralafrikanske republikk") goes to
+ * the end of the list, on a line half the width of the list if it fits there, else on a line
+ * across all of it, else on two such lines. The other countries keep their order.
+ */
+export function arrangeLabels(
+  page: Size,
+  lang: Language,
+  codes: readonly CountryCode[],
+): {codes: CountryCode[]; wide: LabelWide} {
+  const f = listFrame(page, codes.length);
+  const width = (code: CountryCode) => handwrittenWidth(countryIn(lang, code).name);
+  const fits = (code: CountryCode, perRow: number) => width(code) <= f.lineWidth(perRow);
+  const narrow = codes.filter(c => fits(c, f.cols));
+  // With two columns a half line is no wider than a column line.
+  const half = f.cols > 2 ? codes.filter(c => !fits(c, f.cols) && fits(c, 2)) : [];
+  const rest = codes.filter(c => !narrow.includes(c) && !half.includes(c));
+  const full = rest.filter(c => fits(c, 1));
+  const double = rest.filter(c => !fits(c, 1));
+  return {
+    codes: [...narrow, ...half, ...full, ...double],
+    wide: {half: half.length, full: full.length, double: double.length},
+  };
+}
+
+function numberedLayout(page: Size, region: Region, codes: readonly CountryCode[], wide: LabelWide): LabelLayout {
+  const n = codes.length;
+  const {H, left, right, rowH, fontSize, numW, pad, cols} = listFrame(page, n);
   const titleTop = Math.max(H * 0.065, 150);
   const titleH = H * 0.035;
   const subtitleH = H * 0.04;
   const top = titleTop + titleH + subtitleH + H * 0.012;
   const scoreH = H * 0.03;
   const bottom = H * 0.95 - scoreH;
-  // Every pixel the list takes is taken from the map, so the rows are as tight as writing
-  // allows: the same height as a table row (MIN_ROW_PX, about 7 mm), and a strip just tall
-  // enough for the result in the small font.
-  const rowH = Math.max(H * 0.036, MIN_ROW_PX);
-  const fontSize = r(Math.max(Math.min(rowH * 0.38, W * 0.022), 24));
   const smallFontSize = r(Math.max(fontSize * 0.8, 20));
   const resultH = smallFontSize * 1.25;
   const cellH = rowH + resultH;
-  const n = codes.length;
-  const cols = numberedColumns(n);
-  const rows = Math.ceil(n / cols);
-  const listTop = bottom - rows * cellH;
+  // The column lines first, then the wide lines in rows of their own below them.
+  const nNarrow = n - wide.half - wide.full - wide.double;
+  const narrowRows = Math.ceil(nNarrow / cols);
+  const halfRows = Math.ceil(wide.half / 2);
+  const singleRows = narrowRows + halfRows + wide.full;
+  const doubleH = 2 * rowH + resultH;
+  const listTop = bottom - singleRows * cellH - wide.double * doubleH;
   const gap = H * 0.008;
 
   const m = MAPS[region];
@@ -511,27 +581,41 @@ function numberedLayout(page: Size, region: Region, codes: readonly CountryCode[
       : 0;
   const tags = placeTags(anchors, sizes, map, dotRadius(page), busy);
 
-  const cw = (right - left) / cols;
-  const numW = fontSize * 2.2;
-  const pad = Math.max(8, W * 0.008);
+  const cell = (k: number) => {
+    if (k < nNarrow) {
+      // Down the columns: 1–5 in the first, 6–10 in the second …
+      return {row: k % narrowRows, perRow: cols, col: Math.floor(k / narrowRows), lines: 1};
+    }
+    const j = k - nNarrow;
+    if (j < wide.half) {
+      // Two to a row, left then right.
+      return {row: narrowRows + Math.floor(j / 2), perRow: 2, col: j % 2, lines: 1};
+    }
+    if (j < wide.half + wide.full) {
+      return {row: narrowRows + halfRows + (j - wide.half), perRow: 1, col: 0, lines: 1};
+    }
+    return {row: singleRows, perRow: 1, col: 0, lines: 2, nth: j - wide.half - wide.full};
+  };
   const slots: LabelSlot[] = codes.map((code, k) => {
-    // Down the columns: 1–5 in the first, 6–10 in the second …
-    const col = Math.floor(k / rows);
-    const row = k % rows;
+    const {row, perRow, col, lines, nth = 0} = cell(k);
+    const cw = (right - left) / perRow;
     const x0 = left + col * cw;
     const x1 = x0 + cw;
-    const y0 = listTop + row * cellH;
-    const box = {left: r(x0 + numW), top: r(y0), right: r(x1 - pad * 2), bottom: r(y0 + rowH)};
+    const y0 = listTop + row * cellH + nth * doubleH;
+    const lineH = lines * rowH;
+    const box = {left: r(x0 + numW), top: r(y0), right: r(x1 - pad * 2), bottom: r(y0 + lineH)};
     const {tag, far} = tags[k];
     return {
       code,
       box,
-      result: {left: box.left, top: box.bottom, right: box.right, bottom: r(y0 + cellH)},
-      band: {left: r(x0), top: r(y0), right: r(x1), bottom: r(y0 + cellH)},
+      result: {left: box.left, top: box.bottom, right: box.right, bottom: r(y0 + lineH + resultH)},
+      band: {left: r(x0), top: r(y0), right: r(x1), bottom: r(y0 + lineH + resultH)},
       anchor: anchors[k],
       line: far ? [anchors[k], nearestOn(tag, anchors[k])] : null,
       tag,
-      number: {left: r(x0), top: box.top, right: box.left, bottom: box.bottom},
+      // Next to the first line.
+      number: {left: r(x0), top: box.top, right: box.left, bottom: r(y0 + rowH)},
+      ...(lines > 1 ? {lines} : {}),
     };
   });
   const scoreTop = bottom + H * 0.01;
@@ -558,47 +642,72 @@ const tagFontSize = (page: Size) => r(Math.max(22, page.width * 0.017));
  * one call per line (the same as the answer column on the table sheet).
  */
 export function labelColumns(L: LabelLayout): number[][] {
-  const byLeft = new Map<number, number[]>();
-  L.slots.forEach((s, k) => byLeft.set(s.box.left, [...(byLeft.get(s.box.left) ?? []), k]));
-  return [...byLeft.entries()]
-    .sort((a, b) => a[0] - b[0])
-    .map(([, ks]) => ks.sort((a, b) => L.slots[a].box.top - L.slots[b].box.top));
+  // Lines of the same width under each other: a wide line at the end of the list starts where
+  // the first column does, but is read with the other lines as wide as itself. A name on two
+  // lines is in a group of its own kind, which grading reads one name at a time.
+  const byColumn = new Map<string, number[]>();
+  L.slots.forEach((s, k) => {
+    const id = `${s.box.left}:${s.box.right}:${s.lines ?? 1}`;
+    byColumn.set(id, [...(byColumn.get(id) ?? []), k]);
+  });
+  const box = (ks: number[]) => L.slots[ks[0]].box;
+  return [...byColumn.values()]
+    .sort((a, b) => box(a).left - box(b).left || box(a).right - box(b).right)
+    .map(ks => ks.sort((a, b) => L.slots[a].box.top - L.slots[b].box.top));
 }
 
 // ---------------------------------------------------------------------------
 // The hidden key
 
 /**
- * "ID l2.nb.EU.KFUDQ….<sheet id>": language, region and the countries in box order.
+ * "ID l3h1f1.nb.EU.KFUDQ….<sheet id>": language, region and the countries in box order.
  * The number after "l" is the version of the layout rules (see labelStyleFor):
- * 1 = boxes on large pages, numbers on small ones; 2 = numbers on every page.
+ * 1 = boxes on large pages, numbers on small ones; 2 = numbers on every page; 3 = as 2, with
+ * wide lines for long names. After it, "h", "f" and "d" give the number of half width, full
+ * width and double full width lines at the end of the list (left out when there are none).
  */
-export const LABEL_KEY_VERSION = 2;
-const LABEL_KEY_RE = /^ID l([12])\.([A-Za-z-]+)\.([A-Z]{2,3})\.([A-Z]+)(?:\.([0-9a-z]+))?$/;
+export type LabelKeyVersion = 1 | 2 | 3;
+export const LABEL_KEY_VERSION: LabelKeyVersion = 3;
+const LABEL_KEY_RE =
+  /^ID l([123])(?:h(\d+))?(?:f(\d+))?(?:d(\d+))?\.([A-Za-z-]+)\.([A-Z]{2,3})\.([A-Z]+)(?:\.([0-9a-z]+))?$/;
 
-export function labelKey(lang: Language, region: Region, codes: readonly CountryCode[], sheetId?: string): string {
-  return `ID l${LABEL_KEY_VERSION}.${lang.code}.${region}.${encodeCountryCodes(codes)}` + (sheetId ? `.${sheetId}` : '');
+export function labelKey(
+  lang: Language,
+  region: Region,
+  codes: readonly CountryCode[],
+  sheetId?: string,
+  wide: LabelWide = NO_WIDE,
+): string {
+  const w = (wide.half ? `h${wide.half}` : '') + (wide.full ? `f${wide.full}` : '') + (wide.double ? `d${wide.double}` : '');
+  return `ID l${LABEL_KEY_VERSION}${w}.${lang.code}.${region}.${encodeCountryCodes(codes)}` + (sheetId ? `.${sheetId}` : '');
 }
 
 export interface LabelSheetInfo {
   /** The version of the layout rules the sheet was made with. */
-  version: 1 | 2;
+  version: LabelKeyVersion;
   lang: Language;
   region: Region;
   codes: CountryCode[];
+  /** The wide lines at the end of the list (none before version 3). */
+  wide: LabelWide;
   sheetId?: string;
 }
 
 export function parseLabelKey(text: string): LabelSheetInfo | null {
   const m = text.trim().match(LABEL_KEY_RE);
-  const lang = m ? getLanguage(m[2]) : undefined;
-  const region = m?.[3] as Region | undefined;
-  const codes = m ? decodeCountryCodes(m[4]) : null;
+  const lang = m ? getLanguage(m[5]) : undefined;
+  const region = m?.[6] as Region | undefined;
+  const codes = m ? decodeCountryCodes(m[7]) : null;
   if (!m || !lang || !region || !LABEL_REGIONS.includes(region) || !codes) {
     return null;
   }
-  const info: LabelSheetInfo = {version: m[1] === '1' ? 1 : 2, lang, region, codes};
-  return m[5] && isSheetId(m[5]) ? {...info, sheetId: m[5]} : info;
+  const version = Number(m[1]) as LabelKeyVersion;
+  const wide = version >= 3 ? {half: Number(m[2] ?? 0), full: Number(m[3] ?? 0), double: Number(m[4] ?? 0)} : NO_WIDE;
+  if (wide.half + wide.full + wide.double > codes.length) {
+    return null;
+  }
+  const info: LabelSheetInfo = {version, lang, region, codes, wide};
+  return m[8] && isSheetId(m[8]) ? {...info, sheetId: m[8]} : info;
 }
 
 export function labelTitle(lang: Language, region: Region, count: number): string {
@@ -695,16 +804,21 @@ const rectPath = (b: Rect): DraftPoint[] => [
   {x: b.left, y: b.top},
 ];
 
-/** Everything drawn when a label sheet is created. */
+/**
+ * Everything drawn when a label sheet is created. The countries are put in the order of
+ * arrangeLabels (long names last), which the key keeps.
+ */
 export function labelSheetDrafts(
   page: Size,
   lang: Language,
   region: Region,
-  codes: readonly CountryCode[],
+  chosen: readonly CountryCode[],
   picturePath: string,
   sheetId?: string,
 ): Draft[] {
-  const L = labelLayout(page, region, codes);
+  const style = labelStyleFor(page);
+  const {codes, wide} = style === 'numbered' ? arrangeLabels(page, lang, chosen) : {codes: [...chosen], wide: NO_WIDE};
+  const L = labelLayout(page, region, codes, style, wide);
   const t = labelTexts(lang);
   const title = labelTitle(lang, region, codes.length);
   const drafts: Draft[] = [
@@ -730,14 +844,19 @@ export function labelSheetDrafts(
   const tagFont = tagFontSize(page);
   L.slots.forEach((s, i) => {
     if (L.style === 'numbered') {
-      // The writing line, the number before it and the number on the map.
-      drafts.push({
-        kind: 'line',
-        a: {x: s.box.left, y: s.box.bottom},
-        b: {x: s.box.right, y: s.box.bottom},
-        color: COLOR_DARK_GRAY,
-        width: LINE_WIDTH,
-      });
+      // The writing line (two for the longest names), the number before it and the number
+      // on the map.
+      const lines = s.lines ?? 1;
+      for (let l = 1; l <= lines; l++) {
+        const y = r(s.box.top + ((s.box.bottom - s.box.top) * l) / lines);
+        drafts.push({
+          kind: 'line',
+          a: {x: s.box.left, y},
+          b: {x: s.box.right, y},
+          color: COLOR_DARK_GRAY,
+          width: LINE_WIDTH,
+        });
+      }
       // Text boxes on the device have inner padding, so a box exactly as wide as the text
       // wraps "16" onto two lines. The boxes are therefore made much wider than the text:
       // the list number reaches in under the writing line (only strokes are read there),
@@ -775,7 +894,7 @@ export function labelSheetDrafts(
   });
   drafts.push({
     kind: 'text',
-    text: labelKey(lang, region, codes, sheetId),
+    text: labelKey(lang, region, codes, sheetId, wide),
     rect: L.key,
     fontSize: Math.max(16, Math.round(L.smallFontSize * 0.7)),
     align: 0,
@@ -806,8 +925,9 @@ export function labelResultDrafts(
   codes: readonly CountryCode[],
   graded: GradedLabel[],
   style: LabelStyle = labelStyleFor(page),
+  wide: LabelWide = NO_WIDE,
 ): Draft[] {
-  const L = labelLayout(page, region, codes, style);
+  const L = labelLayout(page, region, codes, style, wide);
   const drafts: Draft[] = [];
   for (const g of graded) {
     const cell = L.slots[g.index].result;

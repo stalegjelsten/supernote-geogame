@@ -149,7 +149,7 @@ export async function gradeLabelSheet(
   const {lang, region, codes} = info;
   // The layout the sheet was drawn with, also for sheets made under older rules.
   const style = labelStyleFor(ref.size, info.version);
-  const L = labelLayout(ref.size, region, codes, style);
+  const L = labelLayout(ref.size, region, codes, style, info.wide);
 
   // The handwriting in each box: every stroke whose middle is in the box's band.
   progress(ui.progress.findingInk);
@@ -169,11 +169,12 @@ export async function gradeLabelSheet(
 
   // As on the table sheet: each recognition call costs a lot of time on the device, so each
   // column of lines is read in one call and split on the line breaks. A line is read on its
-  // own only if the column could not be split, or if its answer came out wrong.
+  // own only if the column could not be split, or if its answer came out wrong. A name written
+  // on two lines is always read on its own, since its line break is not between two names.
   progress(ui.progress.readingInk);
   const combined = new Map<number, string>();
   for (const column of labelColumns(L)) {
-    const withInk = column.filter(k => bySlot[k].length);
+    const withInk = column.filter(k => bySlot[k].length && (L.slots[k].lines ?? 1) === 1);
     if (!withInk.length) {
       continue;
     }
@@ -193,7 +194,8 @@ export async function gradeLabelSheet(
     let result = gradeLabel(country, recognized, lang);
     if (bySlot[k].length && (!combined.has(k) || result.verdict === 'wrong')) {
       progress(ui.progress.rereadingRow(k + 1));
-      const own = await recognize(bySlot[k], ref.size);
+      // The two lines of a long name are one name.
+      const own = (await recognize(bySlot[k], ref.size)).replace(/\s+/g, ' ').trim();
       const ownResult = gradeLabel(country, own, lang);
       if (!combined.has(k) || ownResult.distance < result.distance) {
         recognized = own;
@@ -229,7 +231,7 @@ export async function gradeLabelSheet(
   progress(ui.progress.writingResults);
   await insertDrafts(
     ref,
-    labelResultDrafts(ref.size, lang, region, codes, graded, style),
+    labelResultDrafts(ref.size, lang, region, codes, graded, style, info.wide),
   );
   await saveNote();
   await recordResults(

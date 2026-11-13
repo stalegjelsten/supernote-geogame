@@ -1,9 +1,12 @@
 import {getLanguage, LANGUAGES} from '../src/i18n';
-import {countryIn} from '../src/core/countries';
+import {countriesIn, countryIn} from '../src/core/countries';
 import type {Rect} from '../src/core/layout';
 import {
   LABEL_COUNTS,
   LABEL_REGIONS,
+  NO_WIDE,
+  arrangeLabels,
+  handwrittenWidth,
   gradeLabel,
   labelCapacity,
   labelColumns,
@@ -162,22 +165,36 @@ describe('label key', () => {
     const codes = pickLabelCountries(nb, 'AF', 20, random).map(c => c.code);
     for (const lang of LANGUAGES) {
       expect(parseLabelKey(labelKey(lang, 'AF', codes, 'abc123'))).toEqual({
-        version: 2,
+        version: 3,
         lang,
         region: 'AF',
         codes,
+        wide: NO_WIDE,
         sheetId: 'abc123',
       });
     }
     expect(parseLabelKey(labelKey(nb, 'AF', codes))).toEqual({
-      version: 2,
+      version: 3,
       lang: nb,
       region: 'AF',
       codes,
+      wide: NO_WIDE,
     });
+    for (const wide of [{half: 2, full: 0, double: 0}, {half: 0, full: 1, double: 0}, {half: 3, full: 2, double: 1}, {half: 0, full: 0, double: 2}]) {
+      const key = labelKey(nb, 'AF', codes, 'abc123', wide);
+      expect(parseLabelKey(key)).toMatchObject({version: 3, codes, wide, sheetId: 'abc123'});
+    }
+    expect(labelKey(nb, 'AF', codes, undefined, {half: 2, full: 1, double: 1})).toMatch(/^ID l3h2f1d1\.nb\.AF\./);
+    // More wide lines than countries is no key.
+    expect(parseLabelKey(labelKey(nb, 'AF', ['CF'], undefined, {half: 1, full: 0, double: 1}))).toBeNull();
+  });
+  it('reads keys from version 2 without wide lines', () => {
+    const v2 = labelKey(nb, 'AF', ['CF', 'NG']).replace('ID l3.', 'ID l2.');
+    expect(parseLabelKey(v2)).toMatchObject({version: 2, codes: ['CF', 'NG'], wide: NO_WIDE});
+    expect(parseLabelKey(v2.replace('ID l2.', 'ID l2f1.'))).toMatchObject({wide: NO_WIDE});
   });
   it('reads keys from version 1, and grades their Manta sheets with boxes as they were drawn', () => {
-    const v1 = labelKey(nb, 'AS', ['CN', 'IN']).replace('ID l2.', 'ID l1.');
+    const v1 = labelKey(nb, 'AS', ['CN', 'IN']).replace('ID l3.', 'ID l1.');
     expect(parseLabelKey(v1)?.version).toBe(1);
     expect(labelStyleFor(PAGES[0], 1)).toBe('leader');
     expect(labelStyleFor(PAGES[1], 1)).toBe('numbered');
@@ -219,11 +236,11 @@ describe('drawing and grading', () => {
       }
     }
     const key = drafts.find(
-      d => d.kind === 'text' && d.text.startsWith('ID l2.'),
+      d => d.kind === 'text' && d.text.startsWith('ID l3'),
     );
     expect(
       key && key.kind === 'text' && parseLabelKey(key.text)?.codes,
-    ).toEqual(codes);
+    ).toEqual(arrangeLabels(PAGES[0], nb, codes).codes);
   });
 
   it('accepts the name in the sheet language, in English and with a typo', () => {
@@ -369,4 +386,104 @@ describe('reading the lines', () => {
       }
     }
   });
+});
+
+describe('long names', () => {
+  const name = (code: string) => countryIn(nb, code as never).name;
+  it('puts names too long for a column line last, on wider lines', () => {
+    // Three columns (more than 10 countries): a column line on Manta takes about 11 letters.
+    const codes = ['CF', 'NO', 'CI', 'BA', 'NG', 'KE', 'EG', 'GH', 'ML', 'TD', 'SN', 'ET'] as const;
+    const {codes: out, wide} = arrangeLabels(PAGES[0], nb, [...codes]);
+    expect([...out].sort()).toEqual([...codes].sort());
+    // Elfenbenskysten (15) and Bosnia-Hercegovina (18) on half lines, Den sentralafrikanske
+    // republikk (31) across.
+    expect(wide).toEqual({half: 2, full: 1, double: 0});
+    expect(out.slice(-3)).toEqual(['CI', 'BA', 'CF']);
+    // The others keep their order.
+    expect(out.slice(0, -3)).toEqual(codes.filter(c => !['BA', 'CF', 'CI'].includes(c)));
+    // Two columns: a column line is already half the width, so only full lines are left.
+    expect(arrangeLabels(PAGES[0], nb, ['CF', 'BA', 'NO']).wide).toEqual({half: 0, full: 1, double: 0});
+    expect(arrangeLabels(PAGES[0], nb, ['NO', 'SE']).wide).toEqual(NO_WIDE);
+    // Nomad: Elfenbenskysten goes across the page, and Den sentralafrikanske republikk is too long
+    // even for that, so it gets two lines.
+    const nomad = arrangeLabels(PAGES[1], nb, ['CF', 'CI', 'NG']);
+    expect(nomad).toEqual({codes: ['NG', 'CI', 'CF'], wide: {half: 0, full: 1, double: 1}});
+    const L = labelLayout(PAGES[1], 'AF', nomad.codes, 'numbered', nomad.wide);
+    const two = L.slots[2];
+    expect(two.lines).toBe(2);
+    expect(two.box.bottom - two.box.top).toBe(2 * (L.slots[1].box.bottom - L.slots[1].box.top));
+    // Two writing lines in its box, and it is read on its own.
+    const lines = labelSheetDrafts(PAGES[1], nb, 'AF', ['CF', 'CI', 'NG'], '/x/af.png').filter(
+      d =>
+        d.kind === 'line' &&
+        d.a.x === two.box.left &&
+        d.b.x === two.box.right &&
+        d.a.y === d.b.y &&
+        d.a.y > two.box.top &&
+        d.a.y <= two.box.bottom,
+    );
+    expect(lines).toHaveLength(2);
+    expect(labelColumns(L).find(c => c.includes(2))).toEqual([2]);
+  });
+
+  // With handwriting as large as measured in the table mode, every name has room on its line(s),
+  // in every language, on every page and continent and with every number of countries.
+  for (const page of PAGES) {
+    it(`gives every name room for handwriting on ${page.width}`, () => {
+      for (const lang of LANGUAGES) {
+        for (const region of LABEL_REGIONS) {
+          const all = countriesIn(lang)
+            .filter(c => c.continent === region && countryLabel(region, c.code))
+            .map(c => c.code);
+          for (const n of labelCountsFor(page)) {
+            for (let i = 0; i < all.length; i += n) {
+              const {codes, wide} = arrangeLabels(page, lang, all.slice(i, i + n));
+              const L = labelLayout(page, region, codes, 'numbered', wide);
+              for (const s of L.slots) {
+                const room = (s.box.right - s.box.left) * (s.lines ?? 1);
+                const need = handwrittenWidth(countryIn(lang, s.code).name);
+                if (need > room) {
+                  throw new Error(`${lang.code} ${region} ${n}: ${countryIn(lang, s.code).name} needs ${need} px, has ${room}`);
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  for (const page of PAGES) {
+    for (const region of ['AF', 'NA', 'EU'] as const) {
+      for (const n of labelCountsFor(page)) {
+        it(`${region}, ${n} on ${page.width}: wide lines apart, on the page, wide enough and read in columns`, () => {
+          for (let round = 0; round < 5; round++) {
+            const chosen = pickLabelCountries(nb, region, n, random, undefined, 'mixed', labelSeparation(page)).map(c => c.code);
+            const {codes, wide} = arrangeLabels(page, nb, chosen);
+            const L = labelLayout(page, region, codes, 'numbered', wide);
+            const narrow = L.slots[0].box.right - L.slots[0].box.left;
+            L.slots.forEach((s, i) => {
+              expect(within(s.band, page)).toBe(true);
+              expect(overlaps(s.band, L.map)).toBe(false);
+              L.slots.slice(i + 1).forEach(o => expect(overlaps(s.band, o.band)).toBe(false));
+              const w = s.box.right - s.box.left;
+              // A name that did not fit a column line gets a line much wider than one.
+              if (i >= codes.length - wide.half - wide.full) {
+                expect(w).toBeGreaterThan(narrow * 1.3);
+                expect(name(s.code).length).toBeGreaterThan(7);
+              }
+            });
+            // The same layout again from the key, as when grading.
+            const key = parseLabelKey(labelKey(nb, region, codes, undefined, wide))!;
+            expect(labelLayout(page, region, key.codes, labelStyleFor(page, key.version), key.wide)).toEqual(L);
+            const cols = labelColumns(L);
+            expect(cols.flat().sort((a, b) => a - b)).toEqual(codes.map((_, k) => k));
+            for (const col of cols) {
+              expect(new Set(col.map(k => `${L.slots[k].box.left}:${L.slots[k].box.right}`)).size).toBe(1);
+            }
+          }
+        });
+      }
+    }
+  }
 });
