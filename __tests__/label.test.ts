@@ -144,7 +144,7 @@ describe('label sheet layout', () => {
 describe('number of countries', () => {
   it('stops at 15 on small pages and offers all on large ones', () => {
     expect(labelCountsFor(PAGES[0])).toEqual([...LABEL_COUNTS]);
-    expect(labelCountsFor(PAGES[1])).toEqual([10, 15]);
+    expect(labelCountsFor(PAGES[1])).toEqual([10]);
   });
 });
 

@@ -62,11 +62,13 @@ export const labelStyleFor = (page: Size, keyVersion: 1 | 2 = LABEL_KEY_VERSION)
   keyVersion >= 2 || page.width < NUMBERED_BELOW_WIDTH ? 'numbered' : 'leader';
 
 /**
- * The choices of number of countries for a page. On small pages the list below the map takes
- * so much room with 20 that the map gets too small, so they stop at 15.
+ * The choices of number of countries for a page. Small pages (Nomad, A5X) get only 10: with 15
+ * the list needs three columns, and a writing line is then only about 24 mm wide, too short
+ * for names like "Bangladesh"; two columns with 15 would leave the map too small. With 10 the
+ * lines are about 39 mm wide.
  */
 export const labelCountsFor = (page: Size): number[] =>
-  page.width < NUMBERED_BELOW_WIDTH ? LABEL_COUNTS.filter(c => c <= 15) : [...LABEL_COUNTS];
+  page.width < NUMBERED_BELOW_WIDTH ? LABEL_COUNTS.filter(c => c <= 10) : [...LABEL_COUNTS];
 
 export interface LabelSlot {
   code: CountryCode;
