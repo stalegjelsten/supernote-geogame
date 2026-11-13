@@ -30,7 +30,9 @@ export function weight(s: CountryStats | undefined, strategy: Strategy, now: num
   const weakness = s ? Math.max(1 - s.mastery, s.lastMisspelled ? 0.5 : 0) : 1;
   const late = s ? overdue(s, now) : 0;
   const isDue = !!s && late >= 0;
-  const known = !!s && s.box >= KNOWN_BOX;
+  // A misspelling keeps the box (stats.ts), so a known country written wrong is not "known"
+  // here; otherwise it would hardly come back until it is spelled right.
+  const known = !!s && s.box >= KNOWN_BOX && !s.lastMisspelled;
   switch (strategy) {
     case 'new':
       return unseen ? 20 : 1 / (1 + s!.attempts);

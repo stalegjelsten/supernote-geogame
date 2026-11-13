@@ -545,17 +545,25 @@ function squareIn(box: Rect): Rect {
 
 const rejectedCache = new Map<string, Set<string>>();
 
-/** All country names in the language, normalized; writing another country is never "almost". */
+const ENGLISH = getLanguage('en')!;
+
+/**
+ * All country names that are accepted somewhere, normalized: the names in the language, the
+ * English names and COUNTRY_ALIASES. Writing another country is never "almost", also when
+ * it is written in English (Iraq for Iran, Austria for Australia).
+ */
 function otherCountryNames(lang: Language): Set<string> {
   let s = rejectedCache.get(lang.code);
   if (!s) {
-    s = new Set(countriesIn(lang).map(c => normalizeCached(c.name)));
+    s = new Set([
+      ...countriesIn(lang).map(c => normalizeCached(c.name)),
+      ...countriesIn(ENGLISH).map(c => normalizeCached(c.name)),
+      ...Object.values(COUNTRY_ALIASES).flatMap(names => (names ?? []).map(normalizeCached)),
+    ]);
     rejectedCache.set(lang.code, s);
   }
   return s;
 }
-
-const ENGLISH = getLanguage('en')!;
 
 /**
  * Grades a written country name. The name in the sheet's language is the answer key; the

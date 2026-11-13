@@ -35,6 +35,8 @@ function foldKana(text: string): string {
   return text
     .replace(/[\u3041-\u3096]/g, ch => String.fromCharCode(ch.charCodeAt(0) + 0x60))
     .replace(/ヴ([ァィェォ]?)/g, (_, small: string) => (small ? VU[small] : 'ブ'))
+    // 一 right after a katakana is a misread ー, never the kanji (ロ一マ = ローマ).
+    .replace(/([\u30a1-\u30fa\u30fc])一/g, '$1')
     .replace(/ー/g, '');
 }
 
@@ -184,8 +186,12 @@ export function matchAnswer(
     if (!target) {continue;}
     for (const a of answers) {
       const d = levenshtein(a, target);
-      if (d < best.distance) {
-        const verdict = d <= allowedErrors(target.length) ? 'close' : 'wrong';
+      const verdict = d <= allowedErrors(target.length) ? 'close' : 'wrong';
+      // A "close" against any spelling wins over a nearer spelling that allows no typos
+      // (Roe is 1 from both Rom and Roma; Rom allows none, Roma allows one).
+      const better =
+        verdict === best.verdict ? d < best.distance : verdict === 'close';
+      if (better) {
         best = {verdict, matched: option, distance: d};
       }
     }

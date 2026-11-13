@@ -481,6 +481,8 @@ export interface MapGrade {
  * @param mapRect where the map image actually lies on the page
  * @param mapStrokes the strokes on the map, in drawing order, in page coordinates
  * @param skipped for each entry (index n-1): is the box struck through?
+ * @param layoutCount the number of numbered lines on the sheet, also unreadable ones, so the
+ *   cells are laid out as on the sheet (the highest readable entry may not be the last one)
  */
 export function gradeMap(
   page: Size,
@@ -491,6 +493,7 @@ export function gradeMap(
   mapStrokes: Point[][],
   skipped: boolean[],
   target: MapTarget = 'capital',
+  layoutCount = 0,
 ): MapGrade {
   const meta = MAPS[region];
   const countryMode = target === 'country';
@@ -520,7 +523,7 @@ export function gradeMap(
   const hit = (mark: Point, e: MapEntry) =>
     hitsCountry(region, e.country.code, toImage(mark), tolerance);
   const t = mapTexts(lang);
-  const count = Math.max(...entries.map(e => e.n));
+  const count = Math.max(layoutCount, ...entries.map(e => e.n));
   const L = mapLayoutFor(page, region, count);
   const sorted = [...entries].sort((a, b) => a.n - b.n);
   const marks = groupMarks(mapStrokes);
