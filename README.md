@@ -1,12 +1,18 @@
 # World Capitals Quiz
 
-Supernote plugin for practicing countries and capitals. The plugin creates a worksheet on a note page, you write the capitals by hand, and the plugin grades the sheet using handwriting recognition.
+Supernote plugin for practicing countries and capitals. The plugin creates a worksheet on a note page, you answer by hand, and the plugin grades the sheet using handwriting recognition. There are four games: write the capitals in a table, mark capitals or countries on a map, name countries from their outlines, and write the names of numbered countries on a map. Statistics per country decide which countries you get next.
 
 > **Made with AI.** All the code in this project was written by AI (Claude from Anthropic, via Claude Code). The same goes for the texts and translations in the plugin. Ståle Gjelsten decided what the plugin should do, directed the work and tested it on a Supernote Manta. Country names, capitals and maps come from open data sources (see [License and data sources](#license-and-data-sources)), not from AI.
 
 ## Installation
 
-The plugin has been submitted to InkHub and is pending review. Until it is approved there, you can install it manually:
+### From InkHub
+
+The plugin is published in InkHub, the Supernote plugin store. Search for **World Capitals Quiz** in InkHub and install it from there.
+
+### Manually (latest version)
+
+New versions come out on GitHub first, and the version in InkHub may be older. To get the latest version, install it manually:
 
 1. Download `geogame.snplg` from the [latest release](https://github.com/stalegjelsten/supernote-geogame/releases/latest).
 2. Copy the file to your Supernote, for example to the `MyStyle/` folder (via USB, Browse & Access or Supernote Cloud).
@@ -14,6 +20,10 @@ The plugin has been submitted to InkHub and is pending review. Until it is appro
 4. Open a note: **World Capitals Quiz** now appears in the toolbar under **Plugins** (🧩).
 
 To update, install the new `geogame.snplg` from a later release the same way.
+
+### Devices
+
+The layout adapts to the page size (Manta, Nomad, A5X and A6X): smaller pages get fewer countries per page. The plugin is tested on a Manta.
 
 ## Usage
 
@@ -40,6 +50,7 @@ The outlines come from Natural Earth 1:10m (public domain), and for 30 small cou
 
 Choose **Game: Names on map** to get a map of the continent with 10, 15 or 20 countries marked with a dot and a number, and a numbered list of lines below it. Write the name of each country on the line with its number. Grade with **Grade this page**; the names are accepted the same way as on the outline sheet (the sheet's language, English and common other names, with a few typos allowed). The results are saved in the statistics as **Names on the map**.
 
+- **One player:** names-on-the-map sheets are for one player, like outline sheets.
 - **Continents:** Europe, Asia, Africa, North America, South America and Oceania. The world map is too wide for the list below it, so it is not offered. Oceania has 14 countries with a point on the map, so a sheet there has at most 14.
 - **Small screens** (Nomad, A5X): 10 countries. With 15 the list needs three columns and the writing lines get too short (about 24 mm), and fewer columns would leave too little room for the map.
 - **The map** gets the whole width of the page (Europe is about 113 mm wide on Manta with 15 countries). Most countries are far too small to write in, which is why the names go on the list.
@@ -64,7 +75,7 @@ Choose **Mixed**, **Easy**, **Medium** or **Hard** (hidden when a table sheet us
 
 ## Multiple players (hot seat)
 
-Choose **Players: 2–4** in the menu and how you play:
+Choose **Players: 2–4** in the menu and how you play. This is available for table and map sheets; outline and names-on-the-map sheets are for one player.
 
 - **Pass around** – the device is hidden from the others. Each player gets their own pages with *the same* countries, with a "Pass the device to player 2" page in between. Tap **Grade the whole set** on any player's page to grade everyone and see who won. The same button also grades all pages of a long single-player table sheet.
 - **Take turns** – everyone sees the device. You share one sheet and answer in turn; each player has *their own* countries, drawn so everyone gets roughly equally well-known ones, so looking at the others' answers doesn't help. The number in the answer box (table) or the number in the list (map) shows whose turn it is. Points per player are written at the bottom.
@@ -153,7 +164,7 @@ The SDK cannot write file contents, so each graded sheet is stored as an empty f
 
 ```bash
 npm install
-npm test          # unit tests (matching, layout, map scoring, hot seat, statistics, notes, translations)
+npm test          # unit tests (matching, layout, map scoring, outlines, names on the map, hot seat, statistics, notes, translations)
 npm run typecheck
 npm run build     # creates build/outputs/geogame.snplg
 ```
@@ -163,11 +174,13 @@ Install the build the same way as under [Installation](#installation). Publish v
 ## Structure
 
 - `src/data/countries.ts` – country codes and continents; `src/data/capitals.ts` – capital coordinates
+- `src/i18n/menu/<code>.ts` – the menu texts per language (`en.ts` is the template the others are translated from)
 - `src/i18n/countries/<code>.ts` – country names, capitals and accepted alternative answers per language (nb and en by hand, the rest generated by `scripts/gen-languages.js`)
 - `src/core/` – pure logic without the SDK (matching, layout, row distribution, map scoring, hot seat, statistics, footnotes), tested in `__tests__/`
 - `src/core/stats.ts` – answer history and per-country statistics (mastery, Leitner box, review schedule, misspellings, the list of graded sheets); `src/core/statsReport.ts` – what the Statistics tab shows
+- `src/core/sheetId.ts` – the hidden ID on each sheet, which tells a new grading of the same sheet from a new sheet
 - `src/core/training.ts` – strategies for choosing countries for new sheets (`random`, `smart`, `weak`, `due`, `new`)
-- `src/sdk/notes.ts` – wrapper around `sn-plugin-lib`
+- `src/sdk/notes.ts` – wrapper around `sn-plugin-lib`; `src/sdk/pluginDir.ts` – the plugin folder, asked for once
 - `src/sdk/statsStore.ts` – stores the history as empty folders in `<plugin folder>/stats/` (the SDK cannot write files), removes single sheets, and keeps guest mode
 - `src/actions.ts` – creating and grading table sheets, and saving statistics (`answeredOnly` leaves out empty boxes, for all written sheet types)
 - `src/mapActions.ts` – creating and grading map sheets; `src/sdk/mapAssets.ts` – the bundled maps

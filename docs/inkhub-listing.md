@@ -15,6 +15,20 @@ World Capitals Quiz
 
 Handwritten quiz on world capitals and countries: worksheets, map quizzes and 2–4 player games, graded automatically on your Supernote.
 
+## Short pitch
+
+For the store listing where a shorter text fits better than the full description below.
+
+Learn the world's capitals and countries with your pen. World Capitals Quiz
+makes a worksheet on your note page, you answer by hand, and it grades the
+sheet with Supernote's handwriting recognition.
+
+- Four games: write capitals, mark them on a map, name countries from their outlines, or label numbered countries on a map.
+- Smart practice: statistics per country bring back the ones you struggle with and the ones due for review.
+- Play alone, or with 2–4 players on one device.
+- All 197 countries, every continent, 55 languages.
+- Works fully offline. Nothing leaves your device.
+
 ## Description
 
 Practise world capitals and countries with your pen. The plugin creates a
@@ -28,10 +42,12 @@ Features
 - Outline quiz: name countries from their outlines, drawn in a grid with optional scale bars and rotation.
 - Names on the map: countries are marked with numbers on a large map, and you write their names on a numbered list below it.
 - Europe, Asia, Africa, North America, South America, Oceania or the whole world.
-- Choose 10, 15, 20 or all countries. Long sheets are spread over several pages.
+- Choose 10, 15, 20 or all countries on capitals worksheets. Long sheets are spread over several pages.
+- Four levels (mixed, easy, medium, hard), based on how well known each capital or country is.
+- Smart practice: new sheets are drawn from your statistics, with the countries you struggle with and those due for review. You can also choose weak, review, new or random.
 - Footnotes on tricky capitals: countries with several capitals or a capital that is often mixed up (Tanzania, South Africa, Bolivia, Nigeria and more) get a short note at the bottom of the graded sheet.
 - Accepts common alternative spellings and the English name of the capital.
-- Multiplayer for 2–4 players on one device, for both worksheets and maps:
+- Multiplayer for 2–4 players on one device, for capitals worksheets and map quizzes:
   - Pass around: each player gets their own pages with the same countries, with a hand-over page in between. Grade the whole set to see who won.
   - Take turns: one shared sheet where players answer in turn, each with their own countries. Points per player are shown at the bottom.
 - Fix your answers and grade again as many times as you like.
@@ -59,9 +75,9 @@ answers will be misread and marked wrong.
 How to use
 1. Make sure the device's handwriting recognition language matches the language you will write in.
 2. Open a notebook. The sheet goes on the current page if it is empty and white; otherwise on a new page after it.
-3. Tap World Capitals Quiz in the toolbar, choose continent, sheet type, number and players, and make the sheet.
+3. Tap Plugins, then World Capitals Quiz, choose game, continent, number and players, and make the sheet.
 4. Write your answers. Leave a box empty to skip it, or draw a dash if you don't know.
-5. Open the menu again and tap Grade.
+5. Open the menu again and tap Grade this page.
 
 Permissions: reads and writes the current note page (to create and grade the sheet).
 
@@ -95,6 +111,7 @@ position on disputed territories. Open source under the MIT License.
 5. Map quiz before grading, with crosses on the map.
 6. Map quiz after grading, with distance in km.
 7. Names on the map after grading (Europe, 15 countries).
-8. Multiplayer: a graded set with the winner, or a shared sheet with points per player.
-9. Statistics in the menu: countries known per continent, countries to practise more and misspelled ones.
-10. (Optional) a sheet in another language, e.g. Japanese or German.
+8. Outline quiz after grading (e.g. 9 countries, relative size).
+9. Multiplayer: a graded set with the winner, or a shared sheet with points per player.
+10. Statistics in the menu: countries known per continent, countries to practise more and misspelled ones.
+11. (Optional) a sheet in another language, e.g. Japanese or German.
