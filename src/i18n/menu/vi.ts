@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Ở chế độ khách, phiếu vẫn được chấm như bình thường, nhưng không có gì được lưu vào thống kê và phiếu mới được chọn ngẫu nhiên.',
   statsGuestBanner: 'Chế độ khách: kết quả chấm không được lưu vào thống kê.',
   statsBlankHint: 'Ô trống không được tính vào thống kê. Nếu không biết câu trả lời, hãy kẻ một gạch trong ô.',
+  sheetDashHint: 'Nếu không biết câu trả lời, hãy kẻ một gạch trong ô.',
+  sheetUnanswered: 'Chưa trả lời: {n}',
 
   outlineMode: 'Đường viền',
   outlineHint: 'Viết tên quốc gia dưới mỗi đường viền.',

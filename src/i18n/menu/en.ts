@@ -150,6 +150,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'In guest mode, sheets are graded as usual, but nothing is saved in the statistics and new sheets are drawn at random.',
   statsGuestBanner: 'Guest mode: grading is not saved in the statistics.',
   statsBlankHint: "Empty boxes don't count in the statistics. If you don't know the answer, draw a dash in the box.",
+  sheetDashHint: "If you don't know the answer, draw a dash in the box.",
+  sheetUnanswered: 'Not answered: {n}',
 
   outlineMode: 'Outline',
   outlineHint: 'Write the name of the country under each outline.',

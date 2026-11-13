@@ -40,7 +40,7 @@ The plugin runs on devices with plugin support: Manta (A5 X2) and Nomad (A6 X2),
 
 - **Number of countries:** 10, 15, 20 or all the countries of the continent. Smaller pages hold fewer rows (20 on Manta, fewer on Nomad, A5 X and A6 X), so long sheets are spread over several pages. Tap **Grade the whole set** on any of the pages to grade them all.
 - **Answers:** the capital is accepted in the sheet's language and in English, with common other spellings (`src/i18n/countries/<code>.ts`).
-- **Skipping:** you don't have to answer all of them: boxes you leave empty are not counted in the [statistics](#statistics). If you don't know an answer and want that to count, draw a dash in the box.
+- **Skipping:** you don't have to answer all of them. On a single-player sheet, boxes you leave empty are not counted, neither in the score on the sheet nor in the [statistics](#statistics); the score line says how many were left empty ("Score: 4 of 5 · Not answered: 15"). If you don't know an answer and want that to count, draw a dash in the box, as the instructions at the top of the sheet say. On multiplayer sheets every row counts, so leaving the hard ones empty doesn't help.
 - **Footnotes** explain capitals that are often confused (see [Footnotes](#footnotes)).
 - **Players:** alone or 2–4 players (see [Multiple players](#multiple-players-hot-seat)). The results are saved in the statistics as **Writing capitals**.
 
@@ -114,9 +114,9 @@ On the map, capitals score points/1000 and countries right or wrong. Cities you 
 
 On table, outline and names-on-the-map sheets, a box with nothing written in it is left out of the statistics. It counts neither as wrong nor as practiced. So you can answer only the countries you want to practice and leave the rest empty.
 
-To say "I don't know" so that it counts, draw a dash (or anything else that isn't a name) in the box. The handwriting recognition can't read it as a name, so it scores 0 and the country comes back on later sheets. The menu says this under the grade buttons.
+To say "I don't know" so that it counts, draw a dash (or anything else that isn't a name) in the box. The handwriting recognition can't read it as a name, so it scores 0 and the country comes back on later sheets. The instructions at the top of a single-player table sheet and the menu, under the grade buttons, say this.
 
-The score written on the sheet still counts every row, so empty boxes are wrong there. A page with nothing written on it saves nothing.
+On single-player table sheets the score written on the sheet also leaves out the empty boxes, and says how many there were. On outline and names-on-the-map sheets, and on multiplayer sheets, the score on the sheet still counts every row. A page with nothing written on it saves nothing, and its score counts every row (0 of all).
 
 ### Misspellings
 

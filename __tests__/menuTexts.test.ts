@@ -77,6 +77,17 @@ test('finished menu texts have no placeholders left', () => {
   }
 });
 
+test('the table sheet tells a single player to draw a dash, and says how many were not answered', () => {
+  for (const lang of LANGUAGES) {
+    expect([lang.code, lang.sheet.subtitle.length < 120]).toEqual([lang.code, true]);
+    if (lang.menu) {
+      expect([lang.code, lang.sheet.subtitle.endsWith(lang.menu.sheetDashHint)]).toEqual([lang.code, true]);
+    }
+    expect([lang.code, lang.sheet.unanswered(7)]).toEqual([lang.code, expect.stringContaining('7')]);
+    expect([lang.code, lang.sheet.unanswered(7)]).toEqual([lang.code, expect.not.stringMatching(/\{\w+\}/)]);
+  }
+});
+
 test('sheet text stays English for multiplayer and map, so it is recognized', () => {
   const de = LANGUAGES.find(l => l.code === 'de')!;
   const en = LANGUAGES.find(l => l.code === 'en')!;

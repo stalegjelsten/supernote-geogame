@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Dalam mod tetamu, helaian disemak seperti biasa, tetapi tiada apa-apa disimpan dalam statistik dan helaian baharu dipilih secara rawak.',
   statsGuestBanner: 'Mod tetamu: semakan tidak disimpan dalam statistik.',
   statsBlankHint: 'Kotak kosong tidak dikira dalam statistik. Jika tidak tahu jawapannya, lukis sengkang dalam kotak.',
+  sheetDashHint: 'Jika tidak tahu jawapannya, lukis sengkang dalam kotak.',
+  sheetUnanswered: 'Tidak dijawab: {n}',
 
   outlineMode: 'Bentuk',
   outlineHint: 'Tulis nama negara di bawah setiap bentuk.',

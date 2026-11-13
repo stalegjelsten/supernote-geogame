@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'ゲストモードでは通常どおり採点されますが、統計には何も保存されず、新しいシートはランダムに出題されます。',
   statsGuestBanner: 'ゲストモード：採点は統計に保存されません。',
   statsBlankHint: '空欄は統計に含まれません。答えがわからないときは、欄に線を引いてください。',
+  sheetDashHint: '答えがわからないときは、欄に線を引いてください。',
+  sheetUnanswered: '未回答：{n}',
 
   outlineMode: '輪郭',
   outlineHint: '各輪郭の下に国名を書いてください。',

@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'W trybie gościa arkusze są sprawdzane jak zwykle, ale nic nie jest zapisywane w statystykach, a nowe arkusze są losowane.',
   statsGuestBanner: 'Tryb gościa: sprawdzanie nie jest zapisywane w statystykach.',
   statsBlankHint: 'Puste pola nie są liczone w statystykach. Jeśli nie znasz odpowiedzi, narysuj w polu kreskę.',
+  sheetDashHint: 'Jeśli nie znasz odpowiedzi, narysuj w polu kreskę.',
+  sheetUnanswered: 'Bez odpowiedzi: {n}',
 
   outlineMode: 'Kontur',
   outlineHint: 'Wpisz nazwę kraju pod każdym konturem.',

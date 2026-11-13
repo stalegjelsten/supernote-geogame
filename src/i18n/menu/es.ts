@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'En modo invitado las hojas se corrigen como siempre, pero no se guarda nada en las estadísticas y las hojas nuevas se eligen al azar.',
   statsGuestBanner: 'Modo invitado: la corrección no se guarda en las estadísticas.',
   statsBlankHint: 'Las casillas vacías no cuentan en las estadísticas. Si no sabes la respuesta, haz una raya en la casilla.',
+  sheetDashHint: 'Si no sabes la respuesta, haz una raya en la casilla.',
+  sheetUnanswered: 'Sin respuesta: {n}',
 
   outlineMode: 'Silueta',
   outlineHint: 'Escribe el nombre del país debajo de cada silueta.',

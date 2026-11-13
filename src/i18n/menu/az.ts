@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Qonaq rejimində vərəqlər həmişəki kimi yoxlanır, amma statistikada heç nə saxlanmır və yeni vərəqlər təsadüfi seçilir.',
   statsGuestBanner: 'Qonaq rejimi: yoxlama statistikada saxlanmır.',
   statsBlankHint: 'Boş xanalar statistikada nəzərə alınmır. Cavabı bilmirsinizsə, xanaya xətt çəkin.',
+  sheetDashHint: 'Cavabı bilmirsinizsə, xanaya xətt çəkin.',
+  sheetUnanswered: 'Cavabsız: {n}',
 
   outlineMode: 'Kontur',
   outlineHint: 'Hər konturun altına ölkənin adını yazın.',

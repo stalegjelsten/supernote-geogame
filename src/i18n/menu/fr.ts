@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: "En mode invité, les feuilles sont corrigées comme d'habitude, mais rien n'est enregistré dans les statistiques et les nouvelles feuilles sont tirées au hasard.",
   statsGuestBanner: "Mode invité : la correction n'est pas enregistrée dans les statistiques.",
   statsBlankHint: 'Les cases vides ne comptent pas dans les statistiques. Si tu ne connais pas la réponse, trace un tiret dans la case.',
+  sheetDashHint: 'Si tu ne connais pas la réponse, trace un tiret dans la case.',
+  sheetUnanswered: 'Sans réponse : {n}',
 
   outlineMode: 'Contour',
   outlineHint: 'Écris le nom du pays sous chaque contour.',

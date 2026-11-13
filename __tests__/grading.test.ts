@@ -139,17 +139,28 @@ test('a single-player sheet is saved in the statistics', async () => {
 test('empty boxes are left out of the statistics; a mark that is no answer counts as wrong', async () => {
   mockPages.set(0, [...sheetPage(['NO', 'SE', 'DK']), ink(3, 1)]);
   const r = await gradeSheet('page', () => {});
-  // The score on the sheet still counts every row.
-  expect(r.total).toBe(3);
+  // The score on the sheet leaves them out too, and says how many were left empty.
+  expect([r.points, r.total]).toEqual([0, 1]);
+  expect(insertedTexts().map(t => t.textContentFull)).toContain('Score: 0 of 1 · Not answered: 2');
   forgetCache();
   const records = await loadRecords();
   expect(records.map(x => x.attempts)).toEqual([[{code: 'SE', score: 0}]]);
 });
 
-test('a page with nothing written saves nothing', async () => {
+test('a page with nothing written saves nothing, and every row counts in the score', async () => {
   mockPages.set(0, sheetPage(['NO', 'SE']));
-  await gradeSheet('page', () => {});
+  const r = await gradeSheet('page', () => {});
   expect(statsRecords()).toEqual([]);
+  expect([r.points, r.total]).toEqual([0, 2]);
+  expect(insertedTexts().map(t => t.textContentFull)).toContain('Score: 0 of 2');
+});
+
+test('multiplayer: empty boxes count in the score, so leaving the hard ones empty does not help', async () => {
+  const hs = hotSeatTexts(ENGLISH);
+  mockPages.set(0, [...sheetPage(['NO', 'SE', 'DK'], hs.tablePass(1, 2)), ink(3, 1)]);
+  const r = await gradeSheet('page', () => {});
+  expect(r.total).toBe(3);
+  expect(insertedTexts().some(t => t.textContentFull.includes('Not answered'))).toBe(false);
 });
 
 test('pass around: grading the whole set saves no statistics', async () => {

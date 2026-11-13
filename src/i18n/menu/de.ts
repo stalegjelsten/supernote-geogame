@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Im Gastmodus werden Blätter wie gewohnt korrigiert, aber nichts wird in der Statistik gespeichert, und neue Blätter werden zufällig gezogen.',
   statsGuestBanner: 'Gastmodus: Korrekturen werden nicht in der Statistik gespeichert.',
   statsBlankHint: 'Leere Felder zählen nicht in der Statistik. Wenn du die Antwort nicht weißt, zieh einen Strich ins Feld.',
+  sheetDashHint: 'Wenn du die Antwort nicht weißt, zieh einen Strich ins Feld.',
+  sheetUnanswered: 'Unbeantwortet: {n}',
 
   outlineMode: 'Umriss',
   outlineHint: 'Schreibe den Namen des Landes unter jeden Umriss.',

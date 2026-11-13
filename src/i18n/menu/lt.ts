@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Svečio režimu lapai tikrinami kaip įprasta, bet į statistiką nieko neišsaugoma, o nauji lapai parenkami atsitiktinai.',
   statsGuestBanner: 'Svečio režimas: tikrinimas neišsaugomas statistikoje.',
   statsBlankHint: 'Tušti langeliai į statistiką neįskaičiuojami. Jei nežinai atsakymo, langelyje nubrėžk brūkšnį.',
+  sheetDashHint: 'Jei nežinai atsakymo, langelyje nubrėžk brūkšnį.',
+  sheetUnanswered: 'Neatsakyta: {n}',
 
   outlineMode: 'Kontūras',
   outlineHint: 'Po kiekvienu kontūru parašykite šalies pavadinimą.',

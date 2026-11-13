@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Katika hali ya mgeni, karatasi husahihishwa kama kawaida, lakini hakuna kinachohifadhiwa kwenye takwimu na karatasi mpya huchaguliwa bila mpangilio.',
   statsGuestBanner: 'Hali ya mgeni: usahihishaji hauhifadhiwi kwenye takwimu.',
   statsBlankHint: 'Visanduku vitupu havihesabiwi katika takwimu. Usipojua jibu, chora mstari kwenye kisanduku.',
+  sheetDashHint: 'Usipojua jibu, chora mstari kwenye kisanduku.',
+  sheetUnanswered: 'Bila jibu: {n}',
 
   outlineMode: 'Umbo',
   outlineHint: 'Andika jina la nchi chini ya kila umbo.',

@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Misafir modunda kâğıtlar her zamanki gibi kontrol edilir, ama istatistiklere hiçbir şey kaydedilmez ve yeni kâğıtlar rastgele seçilir.',
   statsGuestBanner: 'Misafir modu: kontrol istatistiklere kaydedilmez.',
   statsBlankHint: 'Boş kutular istatistiklere sayılmaz. Cevabı bilmiyorsan kutuya bir çizgi çiz.',
+  sheetDashHint: 'Cevabı bilmiyorsan kutuya bir çizgi çiz.',
+  sheetUnanswered: 'Cevapsız: {n}',
 
   outlineMode: 'Siluet',
   outlineHint: 'Her siluetin altına ülkenin adını yazın.',

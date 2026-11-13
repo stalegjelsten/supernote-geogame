@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'U načinu za goste listovi se ocjenjuju kao i obično, ali ništa se ne sprema u statistiku, a novi listovi se biraju nasumično.',
   statsGuestBanner: 'Način za goste: ocjene se ne spremaju u statistiku.',
   statsBlankHint: 'Prazna polja se ne računaju u statistici. Ako ne znaš odgovor, nacrtaj crtu u polje.',
+  sheetDashHint: 'Ako ne znaš odgovor, nacrtaj crtu u polje.',
+  sheetUnanswered: 'Bez odgovora: {n}',
 
   outlineMode: 'Obris',
   outlineHint: 'Napišite ime države ispod svakog obrisa.',

@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'I gæstetilstand rettes ark som normalt, men intet gemmes i statistikken, og nye ark trækkes tilfældigt.',
   statsGuestBanner: 'Gæstetilstand: retning gemmes ikke i statistikken.',
   statsBlankHint: 'Tomme felter tæller ikke med i statistikken. Ved du ikke svaret, så sæt en streg i feltet.',
+  sheetDashHint: 'Ved du ikke svaret, så sæt en streg i feltet.',
+  sheetUnanswered: 'Ubesvaret: {n}',
 
   outlineMode: 'Omrids',
   outlineHint: 'Skriv landets navn under hvert omrids.',

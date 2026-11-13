@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Vierastilassa arkit tarkistetaan tavalliseen tapaan, mutta mitään ei tallenneta tilastoihin ja uudet arkit arvotaan satunnaisesti.',
   statsGuestBanner: 'Vierastila: tarkistuksia ei tallenneta tilastoihin.',
   statsBlankHint: 'Tyhjiä ruutuja ei lasketa tilastoihin. Jos et tiedä vastausta, vedä ruutuun viiva.',
+  sheetDashHint: 'Jos et tiedä vastausta, vedä ruutuun viiva.',
+  sheetUnanswered: 'Vastaamatta: {n}',
 
   outlineMode: 'Ääriviiva',
   outlineHint: 'Kirjoita maan nimi jokaisen ääriviivan alle.',

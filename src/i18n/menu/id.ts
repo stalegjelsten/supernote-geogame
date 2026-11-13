@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Dalam mode tamu, lembar dinilai seperti biasa, tetapi tidak ada yang disimpan di statistik dan lembar baru dipilih secara acak.',
   statsGuestBanner: 'Mode tamu: penilaian tidak disimpan di statistik.',
   statsBlankHint: 'Kotak kosong tidak dihitung dalam statistik. Jika tidak tahu jawabannya, buat garis di kotak.',
+  sheetDashHint: 'Jika tidak tahu jawabannya, buat garis di kotak.',
+  sheetUnanswered: 'Tidak dijawab: {n}',
 
   outlineMode: 'Siluet',
   outlineHint: 'Tulis nama negara di bawah setiap siluet.',

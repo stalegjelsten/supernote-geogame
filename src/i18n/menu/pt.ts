@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'No modo convidado as folhas são corrigidas como sempre, mas nada é guardado nas estatísticas e as folhas novas são sorteadas ao acaso.',
   statsGuestBanner: 'Modo convidado: a correção não é guardada nas estatísticas.',
   statsBlankHint: 'As caixas vazias não contam nas estatísticas. Se não souberes a resposta, faz um traço na caixa.',
+  sheetDashHint: 'Se não souberes a resposta, faz um traço na caixa.',
+  sheetUnanswered: 'Sem resposta: {n}',
 
   outlineMode: 'Contorno',
   outlineHint: 'Escreva o nome do país por baixo de cada contorno.',

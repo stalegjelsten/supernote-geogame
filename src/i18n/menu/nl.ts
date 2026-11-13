@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'In gastmodus worden bladen gewoon nagekeken, maar er wordt niets in de statistieken opgeslagen en nieuwe bladen worden willekeurig gekozen.',
   statsGuestBanner: 'Gastmodus: nakijken wordt niet in de statistieken opgeslagen.',
   statsBlankHint: 'Lege vakjes tellen niet mee in de statistieken. Weet je het antwoord niet, zet dan een streepje in het vakje.',
+  sheetDashHint: 'Weet je het antwoord niet, zet dan een streepje in het vakje.',
+  sheetUnanswered: 'Onbeantwoord: {n}',
 
   outlineMode: 'Contour',
   outlineHint: 'Schrijf de naam van het land onder elke contour.',

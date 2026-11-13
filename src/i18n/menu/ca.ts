@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: "En mode convidat els fulls es corregeixen com sempre, però no es desa res a les estadístiques i els fulls nous es trien a l'atzar.",
   statsGuestBanner: 'Mode convidat: la correcció no es desa a les estadístiques.',
   statsBlankHint: 'Les caselles buides no compten a les estadístiques. Si no saps la resposta, fes un guió a la casella.',
+  sheetDashHint: 'Si no saps la resposta, fes un guió a la casella.',
+  sheetUnanswered: 'Sense resposta: {n}',
 
   outlineMode: 'Silueta',
   outlineHint: 'Escriu el nom del país sota cada silueta.',

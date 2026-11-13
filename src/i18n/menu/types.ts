@@ -164,6 +164,10 @@ export interface MenuStrings {
   statsGuestHint: string;
   statsGuestBanner: string;
   statsBlankHint: string;
+  /** Second sentence of the table sheet's instructions (single player): draw a dash if you don't know. */
+  sheetDashHint: string;
+  /** After the score on a single-player table sheet: how many boxes were left empty. */
+  sheetUnanswered: string;
 
   // Outline mode (outline.ts). Outline sheets are recognized by the key at the bottom,
   // not by the title, so the title and instructions on the sheet can be translated here.

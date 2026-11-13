@@ -136,6 +136,19 @@ export function answeredOnly<G extends {country: {code: CountryCode}; result: {v
 }
 
 /**
+ * The rows that count in the score on the sheet. Single player: only the rows with something
+ * written in them, unless nothing at all is written (then all, so a blank sheet scores 0).
+ * Multiplayer: all rows.
+ */
+export function soloScoreRows<G>(graded: readonly G[], hasInk: (g: G) => boolean, solo: boolean): G[] {
+  if (!solo) {
+    return [...graded];
+  }
+  const answered = graded.filter(hasInk);
+  return answered.length ? answered : [...graded];
+}
+
+/**
  * Where a new sheet should be created: on the current page if it is empty and has a white
  * or no template, otherwise on a new page after it.
  */
@@ -681,10 +694,15 @@ async function gradePage(
   await deleteElements(ref, old);
 
   progress(ui.progress.writingResults);
-  const points = graded.filter(g => isPoint(g.result)).length;
-  const total = graded.length;
+  // A single player can answer only the countries they want to practice: empty boxes are left
+  // out of the score, as in the statistics (answeredOnly). If nothing is written, every row counts.
+  // Multiplayer sheets count every row, so leaving the hard ones empty doesn't help.
+  const counted = soloScoreRows(graded, g => byRow[g.row].length > 0, !tag);
+  const points = counted.filter(g => isPoint(g.result)).length;
+  const total = counted.length;
+  const unanswered = graded.length - counted.length;
   let players: PlayerScore[] | undefined;
-  let scoreText = lang.sheet.score(points, total);
+  let scoreText = lang.sheet.score(points, total) + (unanswered ? ` · ${lang.sheet.unanswered(unanswered)}` : '');
   if (tag?.mode === 'shared') {
     // A row label that can't be read: the players take turns over the whole set, so on page 2
     // the turn order continues from page 1. Take the offset from a label that can be read.

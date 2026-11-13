@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: "Amin'ny fomba vahiny, hamarinina toy ny mahazatra ny takelaka, saingy tsy misy voatahiry ao amin'ny antontan'isa ary voafidy kisendrasendra ny takelaka vaovao.",
   statsGuestBanner: "Fomba vahiny: tsy voatahiry ao amin'ny antontan'isa ny fanamarinana.",
   statsBlankHint: "Tsy isaina ao amin'ny antontan'isa ny boaty foana. Raha tsy fantatrao ny valiny, manaova tsipika ao anaty boaty.",
+  sheetDashHint: 'Raha tsy fantatrao ny valiny, manaova tsipika ao anaty boaty.',
+  sheetUnanswered: 'Tsy voavaly: {n}',
 
   outlineMode: 'Endrika',
   outlineHint: "Soraty eo ambanin'ny endrika tsirairay ny anaran'ny firenena.",

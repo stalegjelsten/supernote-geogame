@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Külalisrežiimis kontrollitakse lehti tavapäraselt, kuid statistikasse ei salvestata midagi ja uued lehed valitakse juhuslikult.',
   statsGuestBanner: 'Külalisrežiim: kontrollimist ei salvestata statistikasse.',
   statsBlankHint: 'Tühjad lahtrid statistikasse ei lähe. Kui sa vastust ei tea, tõmba lahtrisse kriips.',
+  sheetDashHint: 'Kui sa vastust ei tea, tõmba lahtrisse kriips.',
+  sheetUnanswered: 'Vastamata: {n}',
 
   outlineMode: 'Kontuur',
   outlineHint: 'Kirjuta iga kontuuri alla riigi nimi.',

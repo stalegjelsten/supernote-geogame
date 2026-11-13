@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'I mód aoi, ceartaítear bileoga mar is gnách, ach ní shábháiltear aon rud sna staitisticí agus roghnaítear bileoga nua go randamach.',
   statsGuestBanner: 'Mód aoi: ní shábháiltear an ceartú sna staitisticí.',
   statsBlankHint: 'Ní áirítear boscaí folmha sna staitisticí. Mura bhfuil an freagra agat, tarraing dais sa bhosca.',
+  sheetDashHint: 'Mura bhfuil an freagra agat, tarraing dais sa bhosca.',
+  sheetUnanswered: 'Gan freagra: {n}',
 
   outlineMode: 'Imlíne',
   outlineHint: 'Scríobh ainm na tíre faoi gach imlíne.',

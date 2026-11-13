@@ -46,6 +46,8 @@ export interface Language {
     /** Start of the score text at the bottom, e.g. "Score:". */
     scorePrefix: string;
     score: (points: number, total: number) => string;
+    /** After the score on a single-player sheet: "Not answered: 3". */
+    unanswered: (n: number) => string;
     /** What recognition read, below a wrong answer. */
     read: (text: string) => string;
     /** Older texts in the result column that should also be removed when regrading. */

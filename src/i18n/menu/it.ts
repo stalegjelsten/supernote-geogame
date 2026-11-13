@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'In modalità ospite i fogli vengono corretti come sempre, ma nulla viene salvato nelle statistiche e i nuovi fogli sono scelti a caso.',
   statsGuestBanner: 'Modalità ospite: la correzione non viene salvata nelle statistiche.',
   statsBlankHint: 'Le caselle vuote non contano nelle statistiche. Se non sai la risposta, fai un trattino nella casella.',
+  sheetDashHint: 'Se non sai la risposta, fai un trattino nella casella.',
+  sheetUnanswered: 'Senza risposta: {n}',
 
   outlineMode: 'Sagoma',
   outlineHint: 'Scrivi il nome del paese sotto ogni sagoma.',

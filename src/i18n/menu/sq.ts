@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Në modalitetin e mysafirit fletët korrigjohen si zakonisht, por asgjë nuk ruhet në statistika dhe fletët e reja zgjidhen rastësisht.',
   statsGuestBanner: 'Modaliteti i mysafirit: korrigjimi nuk ruhet në statistika.',
   statsBlankHint: 'Kutitë bosh nuk numërohen në statistika. Nëse nuk e di përgjigjen, vizato një vijë në kuti.',
+  sheetDashHint: 'Nëse nuk e di përgjigjen, vizato një vijë në kuti.',
+  sheetUnanswered: 'Pa përgjigje: {n}',
 
   outlineMode: 'Kontur',
   outlineHint: 'Shkruaj emrin e vendit poshtë çdo konturi.',

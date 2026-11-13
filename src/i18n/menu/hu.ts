@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Vendégmódban a lapok javítása a szokásos, de semmi sem kerül a statisztikába, és az új lapok véletlenszerűen készülnek.',
   statsGuestBanner: 'Vendégmód: a javítás nem kerül a statisztikába.',
   statsBlankHint: 'Az üres mezők nem számítanak bele a statisztikába. Ha nem tudod a választ, húzz egy vonalat a mezőbe.',
+  sheetDashHint: 'Ha nem tudod a választ, húzz egy vonalat a mezőbe.',
+  sheetUnanswered: 'Megválaszolatlan: {n}',
 
   outlineMode: 'Körvonal',
   outlineHint: 'Írd minden körvonal alá az ország nevét.',

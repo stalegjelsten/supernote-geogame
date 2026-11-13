@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'I gästläge rättas blad som vanligt, men inget sparas i statistiken och nya blad dras slumpmässigt.',
   statsGuestBanner: 'Gästläge: rättningen sparas inte i statistiken.',
   statsBlankHint: 'Tomma rutor räknas inte i statistiken. Om du inte vet svaret, dra ett streck i rutan.',
+  sheetDashHint: 'Om du inte vet svaret, dra ett streck i rutan.',
+  sheetUnanswered: 'Obesvarade: {n}',
 
   outlineMode: 'Kontur',
   outlineHint: 'Skriv landets namn under varje kontur.',

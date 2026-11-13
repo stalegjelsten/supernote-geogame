@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: '게스트 모드에서는 평소처럼 채점하지만 통계에 아무것도 저장되지 않고 새 시트는 무작위로 출제됩니다.',
   statsGuestBanner: '게스트 모드: 채점 결과가 통계에 저장되지 않습니다.',
   statsBlankHint: '빈칸은 통계에 포함되지 않습니다. 답을 모르면 칸에 줄을 그으세요.',
+  sheetDashHint: '답을 모르면 칸에 줄을 그으세요.',
+  sheetUnanswered: '미응답: {n}',
 
   outlineMode: '윤곽',
   outlineHint: '각 윤곽 아래에 나라 이름을 쓰세요.',

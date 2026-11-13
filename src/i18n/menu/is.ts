@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Í gestaham er farið yfir blöð eins og venjulega, en ekkert er vistað í tölfræðinni og ný blöð eru valin af handahófi.',
   statsGuestBanner: 'Gestahamur: yfirferð er ekki vistuð í tölfræðinni.',
   statsBlankHint: 'Auðir reitir teljast ekki með í tölfræðinni. Ef þú veist ekki svarið skaltu draga strik í reitinn.',
+  sheetDashHint: 'Ef þú veist ekki svarið skaltu draga strik í reitinn.',
+  sheetUnanswered: 'Ósvarað: {n}',
 
   outlineMode: 'Útlínur',
   outlineHint: 'Skrifaðu nafn landsins undir hverjar útlínur.',

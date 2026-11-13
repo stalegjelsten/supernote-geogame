@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'No modo convidado as follas corríxense como sempre, pero non se garda nada nas estatísticas e as follas novas escóllense ao chou.',
   statsGuestBanner: 'Modo convidado: a corrección non se garda nas estatísticas.',
   statsBlankHint: 'As caixas baleiras non contan nas estatísticas. Se non sabes a resposta, fai un guión na caixa.',
+  sheetDashHint: 'Se non sabes a resposta, fai un guión na caixa.',
+  sheetUnanswered: 'Sen resposta: {n}',
 
   outlineMode: 'Silueta',
   outlineHint: 'Escribe o nome do país debaixo de cada silueta.',

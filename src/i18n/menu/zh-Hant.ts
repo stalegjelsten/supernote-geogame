@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: '訪客模式下照常批改，但不會儲存到統計中，新練習紙隨機抽取。',
   statsGuestBanner: '訪客模式：批改結果不儲存到統計中。',
   statsBlankHint: '空格不計入統計。如果不知道答案，請在格子裡畫一條橫線。',
+  sheetDashHint: '如果不知道答案，請在格子裡畫一條橫線。',
+  sheetUnanswered: '未作答：{n}',
 
   outlineMode: '輪廓',
   outlineHint: '在每個輪廓下面寫出國家名稱。',

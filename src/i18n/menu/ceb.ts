@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Sa guest mode, susihon ang mga worksheet sama sa naandan, apan walay ma-save sa estadistika ug random ang pagpili sa bag-ong mga worksheet.',
   statsGuestBanner: 'Guest mode: ang pagsusi dili ma-save sa estadistika.',
   statsBlankHint: 'Ang walay sulod nga kahon dili maihap sa estadistika. Kung wala ka kahibalo sa tubag, pagdrowing og linya sa kahon.',
+  sheetDashHint: 'Kung wala ka kahibalo sa tubag, pagdrowing og linya sa kahon.',
+  sheetUnanswered: 'Walay tubag: {n}',
 
   outlineMode: 'Porma',
   outlineHint: 'Isulat ang ngalan sa nasod ubos sa matag porma.',

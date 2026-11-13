@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'V režime hosťa sa listy opravujú ako zvyčajne, ale nič sa neukladá do štatistiky a nové listy sa vyberajú náhodne.',
   statsGuestBanner: 'Režim hosťa: oprava sa neukladá do štatistiky.',
   statsBlankHint: 'Prázdne políčka sa do štatistiky nezapočítavajú. Ak odpoveď nevieš, nakresli do políčka pomlčku.',
+  sheetDashHint: 'Ak odpoveď nevieš, nakresli do políčka pomlčku.',
+  sheetUnanswered: 'Nezodpovedané: {n}',
 
   outlineMode: 'Obrys',
   outlineHint: 'Napíšte názov krajiny pod každý obrys.',

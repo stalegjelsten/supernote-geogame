@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'In gasmodus word blaaie soos gewoonlik gemerk, maar niks word in die statistiek gestoor nie en nuwe blaaie word lukraak gekies.',
   statsGuestBanner: 'Gasmodus: merke word nie in die statistiek gestoor nie.',
   statsBlankHint: 'Leë blokkies tel nie in die statistiek nie. As jy nie die antwoord weet nie, trek ’n streep in die blokkie.',
+  sheetDashHint: 'As jy nie die antwoord weet nie, trek ’n streep in die blokkie.',
+  sheetUnanswered: 'Onbeantwoord: {n}',
 
   outlineMode: 'Buitelyn',
   outlineHint: 'Skryf die naam van die land onder elke buitelyn.',

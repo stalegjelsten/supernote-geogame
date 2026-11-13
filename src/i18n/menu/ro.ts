@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'În modul invitat foile sunt corectate ca de obicei, dar nimic nu se salvează în statistici, iar foile noi sunt alese aleatoriu.',
   statsGuestBanner: 'Mod invitat: corectarea nu se salvează în statistici.',
   statsBlankHint: 'Căsuțele goale nu se numără în statistici. Dacă nu știi răspunsul, trage o linie în căsuță.',
+  sheetDashHint: 'Dacă nu știi răspunsul, trage o linie în căsuță.',
+  sheetUnanswered: 'Fără răspuns: {n}',
 
   outlineMode: 'Contur',
   outlineHint: 'Scrie numele țării sub fiecare contur.',

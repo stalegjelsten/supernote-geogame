@@ -93,6 +93,11 @@ function menuErrors(m: MenuStrings): Language['errors'] {
   };
 }
 
+/** Two sentences after each other; no space after a full-width full stop (Chinese, Japanese). */
+export function joinSentences(a: string, b: string): string {
+  return /[。！？]$/.test(a) ? a + b : `${a} ${b}`;
+}
+
 export function sheetLanguage(d: SheetLanguageDef): Language {
   const scorePrefix = `${d.scoreWord}:`;
   return {
@@ -108,12 +113,13 @@ export function sheetLanguage(d: SheetLanguageDef): Language {
       titlePrefix: d.titlePrefix,
       partSuffix: (part, parts) => ` · ${part}/${parts}`,
       partPattern: NEUTRAL_PART_PATTERN,
-      subtitle: d.subtitle,
+      subtitle: d.menu ? joinSentences(d.subtitle, d.menu.sheetDashHint) : d.subtitle,
       colCountry: d.colCountry,
       colAnswer: d.colAnswer,
       colResult: d.colResult,
       scorePrefix,
       score: (points, total) => `${scorePrefix} ${points}/${total}`,
+      unanswered: n => fmt(d.menu?.sheetUnanswered ?? 'Not answered: {n}', {n}),
       read: text => `(${d.readWord}: “${text}”)`,
     },
     ui: {...(d.menu ? menuUi(d.menu) : en.ui), ...d.ui},

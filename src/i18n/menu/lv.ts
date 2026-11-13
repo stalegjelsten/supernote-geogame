@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Viesa režīmā lapas tiek pārbaudītas kā parasti, bet statistikā nekas netiek saglabāts un jaunās lapas tiek izvēlētas nejauši.',
   statsGuestBanner: 'Viesa režīms: pārbaude netiek saglabāta statistikā.',
   statsBlankHint: 'Tukšie lauki statistikā netiek ieskaitīti. Ja nezini atbildi, ievelc laukā svītru.',
+  sheetDashHint: 'Ja nezini atbildi, ievelc laukā svītru.',
+  sheetUnanswered: 'Neatbildēti: {n}',
 
   outlineMode: 'Kontūra',
   outlineHint: 'Zem katras kontūras uzraksti valsts nosaukumu.',

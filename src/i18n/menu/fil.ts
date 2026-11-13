@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Sa guest mode, minamarkahan ang mga sheet gaya ng dati, pero walang nase-save sa estadistika at random ang pagpili ng mga bagong sheet.',
   statsGuestBanner: 'Guest mode: hindi nase-save sa estadistika ang pagmamarka.',
   statsBlankHint: 'Hindi binibilang sa estadistika ang mga blangkong kahon. Kung hindi mo alam ang sagot, gumuhit ng gitling sa kahon.',
+  sheetDashHint: 'Kung hindi mo alam ang sagot, gumuhit ng gitling sa kahon.',
+  sheetUnanswered: 'Walang sagot: {n}',
 
   outlineMode: 'Hugis',
   outlineHint: 'Isulat ang pangalan ng bansa sa ilalim ng bawat hugis.',

@@ -145,6 +145,8 @@ const menu: MenuStrings = {
   statsGuestHint: 'Gonbidatu moduan orriak ohi bezala zuzentzen dira, baina ez da ezer gordetzen estatistiketan eta orri berriak ausaz aukeratzen dira.',
   statsGuestBanner: 'Gonbidatu modua: zuzenketa ez da estatistiketan gordetzen.',
   statsBlankHint: 'Lauki hutsak ez dira estatistiketan kontatzen. Erantzuna ez badakizu, marraztu marra bat laukian.',
+  sheetDashHint: 'Erantzuna ez badakizu, marraztu marra bat laukian.',
+  sheetUnanswered: 'Erantzun gabe: {n}',
 
   outlineMode: 'Silueta',
   outlineHint: 'Idatzi herrialdearen izena silueta bakoitzaren azpian.',
