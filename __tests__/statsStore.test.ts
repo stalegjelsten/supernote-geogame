@@ -30,7 +30,15 @@ jest.mock('sn-plugin-lib', () => ({
   },
 }));
 
-import {clearRecords, forgetCache, loadRecords, saveRecord} from '../src/sdk/statsStore';
+import {
+  clearRecords,
+  forgetCache,
+  guestMode,
+  loadRecords,
+  removeSheet,
+  saveRecord,
+  setGuestMode,
+} from '../src/sdk/statsStore';
 import type {SheetRecord} from '../src/core/stats';
 
 const T0 = Date.UTC(2026, 10, 1);
@@ -76,4 +84,28 @@ test('two saves at the same time both end up in the cache', async () => {
   await Promise.all([saveRecord(rec('aaaaaaaaaaaaaa', T0, 0)), saveRecord(rec('bbbbbbbbbbbbbb', T0 + 1000, 1))]);
   // No forgetCache(): the cache itself must have both.
   expect((await loadRecords()).map(r => r.key).sort()).toEqual(['aaaaaaaaaaaaaa', 'bbbbbbbbbbbbbb']);
+});
+
+test('removing a sheet deletes all its parts and nothing else', async () => {
+  await saveRecord(rec('aaaaaaaaaaaaaa', T0, 0));
+  await saveRecord({...rec('aaaaaaaaaaaaaa1', T0, 0), attempts: [{code: 'FR', score: 0}]});
+  await saveRecord(rec('bbbbbbbbbbbbbb', T0 + 1000, 1));
+  await removeSheet('capital', 'aaaaaaaaaaaaaa');
+  expect((await loadRecords()).map(r => r.key)).toEqual(['bbbbbbbbbbbbbb']);
+  forgetCache();
+  expect((await loadRecords()).map(r => r.key)).toEqual(['bbbbbbbbbbbbbb']);
+});
+
+test('in guest mode nothing is saved, and the mode survives a restart', async () => {
+  expect(await guestMode()).toBe(false);
+  await setGuestMode(true);
+  forgetCache();
+  expect(await guestMode()).toBe(true);
+  expect(await saveRecord(rec('aaaaaaaaaaaaaa', T0, 0))).toBe(true);
+  expect(await loadRecords()).toEqual([]);
+  await setGuestMode(false);
+  forgetCache();
+  expect(await guestMode()).toBe(false);
+  await saveRecord(rec('aaaaaaaaaaaaaa', T0, 0));
+  expect(await loadRecords()).toHaveLength(1);
 });

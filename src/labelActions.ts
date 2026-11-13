@@ -28,10 +28,9 @@ import {inside} from './core/marks';
 import {isResultText} from './core/sheet';
 import type {Region} from './core/sheet';
 import {newSheetId} from './core/sheetId';
-import {verdictScore} from './core/stats';
 import type {Strategy} from './core/training';
 import {labelTexts} from './i18n/label';
-import {recordResults, trainingOrder} from './actions';
+import {answeredOnly, recordResults, trainingOrder} from './actions';
 import {mapPicturePath} from './mapActions';
 import {
   TYPE_GEO,
@@ -236,10 +235,7 @@ export async function gradeLabelSheet(
   await recordResults(
     ref.notePath,
     SKILL,
-    graded.map(g => ({
-      code: g.country.code,
-      score: verdictScore(g.result.verdict),
-    })),
+    answeredOnly(graded, g => bySlot[g.index].length > 0),
     codes,
     info.sheetId,
   );

@@ -28,7 +28,13 @@ import {SKILLS, type SheetRecord, type Skill} from './src/core/stats';
 import type {StatsReport} from './src/core/statsReport';
 import {statsReport} from './src/core/statsReport';
 import {statsTexts, type StatsTexts} from './src/i18n/stats';
-import {clearRecords, loadRecords} from './src/sdk/statsStore';
+import {
+  clearRecords,
+  guestMode,
+  loadRecords,
+  removeSheet,
+  setGuestMode,
+} from './src/sdk/statsStore';
 import {
   MAP_COUNTS,
   MAP_ENTRY_STYLES,
@@ -163,8 +169,14 @@ function App(): React.JSX.Element {
   // Outline and label sheets are for one player.
   const singleOnly = mode === 'outline' || mode === 'label';
   const game = players > 1 && !singleOnly ? {mode: playMode, players} : undefined;
-  // The statistics belong to one player, so multiplayer sheets are always drawn at random.
-  const usedStrategy: Strategy = game ? 'random' : strategy;
+  // Guest mode (lending the device out): grading is not saved in the statistics.
+  const [guest, setGuest] = useState(false);
+  useEffect(() => {
+    guestMode().then(setGuest);
+  }, []);
+  // The statistics belong to one player, so multiplayer sheets (and sheets for a guest)
+  // are always drawn at random.
+  const usedStrategy: Strategy = game || guest ? 'random' : strategy;
   const [region, setRegion] = useState<Region>('EU');
   const [count, setCount] = useState<Count>(20);
   const [mapCount, setMapCount] = useState<number>(MAP_SHEET_COUNT);
@@ -213,6 +225,8 @@ function App(): React.JSX.Element {
   const stx = statsTexts(t);
   const [records, setRecords] = useState<SheetRecord[] | null>(null);
   const [confirmReset, setConfirmReset] = useState(false);
+  /** The sheet (SheetResult.id) waiting for "remove" to be confirmed. */
+  const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
   const [statsMessage, setStatsMessage] = useState<string | null>(null);
   // The statistics follow the selected game until a skill is chosen in the statistics tab.
   const gameSkill: Skill =
@@ -237,6 +251,7 @@ function App(): React.JSX.Element {
       .catch(e => setStatsMessage((e as Error).message ?? String(e)));
   const openTab = (next: Tab) => {
     setConfirmReset(false);
+    setConfirmRemove(null);
     setStatsMessage(null);
     if (next === 'stats') {
       refreshStats();
@@ -260,6 +275,31 @@ function App(): React.JSX.Element {
       resetting.current = false;
     }
     refreshStats();
+  };
+
+  const removeOneSheet = async (id: string) => {
+    if (resetting.current) {
+      return;
+    }
+    resetting.current = true;
+    setConfirmRemove(null);
+    try {
+      await removeSheet(skill, id);
+      setStatsMessage(stx.removed);
+    } catch (e) {
+      setStatsMessage(ui.somethingWrong((e as Error).message ?? String(e)));
+    } finally {
+      resetting.current = false;
+    }
+    refreshStats();
+  };
+  const toggleGuest = async () => {
+    try {
+      await setGuestMode(!guest);
+      setGuest(!guest);
+    } catch (e) {
+      setStatus({kind: 'error', message: (e as Error).message ?? String(e)});
+    }
   };
 
   const close = () => {
@@ -438,6 +478,12 @@ function App(): React.JSX.Element {
           <Text style={styles.closeText}>✕</Text>
         </Pressable>
       </View>
+
+      {guest && (
+        <View style={styles.guestBar}>
+          <Text style={styles.guestText}>{stx.guestBanner}</Text>
+        </View>
+      )}
 
       <View style={styles.tabs}>
         {(
@@ -691,7 +737,7 @@ function App(): React.JSX.Element {
                   ))}
                 </View>
                 {level !== 'mixed' && <Text style={styles.hint}>{lt.hint}</Text>}
-                {!game && (
+                {!game && !guest && (
                   <>
                     <Text style={styles.label}>{tt.label}</Text>
                     <View style={styles.grid}>
@@ -790,6 +836,21 @@ function App(): React.JSX.Element {
               )}
             </View>
 
+            {/* Next to grading: for a sheet where only some answers should count (or someone
+                else is playing), turn off saving before grading. Multiplayer sheets are never saved. */}
+            {!game && (
+              <>
+                {mode !== 'map' && <Text style={styles.hint}>{stx.blankHint}</Text>}
+                <Button
+                  label={guest ? stx.guestOff : stx.guestOn}
+                  selected={guest}
+                  onPress={toggleGuest}
+                  disabled={busy}
+                />
+                <Text style={styles.hint}>{stx.guestHint}</Text>
+              </>
+            )}
+
           </>
         )}
 
@@ -807,6 +868,9 @@ function App(): React.JSX.Element {
             onAskReset={() => setConfirmReset(true)}
             onCancelReset={() => setConfirmReset(false)}
             onReset={resetStats}
+            confirmRemove={confirmRemove}
+            onAskRemove={setConfirmRemove}
+            onRemove={removeOneSheet}
           />
         )}
 
@@ -914,6 +978,9 @@ function StatsView({
   onAskReset,
   onCancelReset,
   onReset,
+  confirmRemove,
+  onAskRemove,
+  onRemove,
 }: {
   report: StatsReport | null;
   stx: StatsTexts;
@@ -927,6 +994,10 @@ function StatsView({
   onAskReset: () => void;
   onCancelReset: () => void;
   onReset: () => void;
+  confirmRemove: string | null;
+  /** The sheet to ask about, or null to cancel. */
+  onAskRemove: (id: string | null) => void;
+  onRemove: (id: string) => void;
 }) {
   return (
     <>
@@ -1009,6 +1080,44 @@ function StatsView({
             </>
           )}
 
+          {report.misspelled.length > 0 && (
+            <>
+              <Text style={styles.label}>
+                {stx.misspelled} ({regionName(region, t)})
+              </Text>
+              {report.misspelled.map(w => (
+                <Text key={w.code} style={styles.hint}>
+                  {stx.misspelledItem(w.name, w.answer, w.times)}
+                </Text>
+              ))}
+            </>
+          )}
+
+          <View style={styles.divider} />
+          <Text style={styles.label}>{stx.sheetList}</Text>
+          <Text style={styles.hint}>{stx.sheetListHint}</Text>
+          {[...report.recent].reverse().map(r =>
+            r.id === confirmRemove ? (
+              <View key={r.id} style={styles.box}>
+                <Text style={styles.message}>
+                  {stx.sheetRow(new Date(r.time), Math.round(100 * r.score), r.answers)}
+                </Text>
+                <Text style={styles.message}>{stx.confirmRemove}</Text>
+                <View style={styles.grid}>
+                  <Button label={stx.remove} primary onPress={() => onRemove(r.id)} />
+                  <Button label={stx.cancel} onPress={() => onAskRemove(null)} />
+                </View>
+              </View>
+            ) : (
+              <View key={r.id} style={styles.weakRow}>
+                <Text style={[styles.hint, styles.weakText]}>
+                  {stx.sheetRow(new Date(r.time), Math.round(100 * r.score), r.answers)}
+                </Text>
+                <Button label={stx.remove} onPress={() => onAskRemove(r.id)} />
+              </View>
+            ),
+          )}
+
           <View style={styles.divider} />
           {confirmReset ? (
             <>
@@ -1076,6 +1185,13 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
   },
   busyText: {fontSize: 24, fontWeight: '700', color: WHITE},
+  guestBar: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderBottomWidth: 4,
+    borderColor: BLACK,
+  },
+  guestText: {fontSize: 18, fontWeight: '700', color: BLACK},
   statusBar: {
     paddingHorizontal: 20,
     paddingVertical: 12,

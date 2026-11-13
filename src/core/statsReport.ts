@@ -8,10 +8,12 @@ import {countryIn} from './countries';
 import type {Region} from './sheet';
 import {
   computeStats,
+  misspelledCountries,
   recentSheets,
   sessions,
   summarize,
   weakest,
+  type CountryStats,
   type SessionSummary,
   type SheetRecord,
   type SheetResult,
@@ -29,6 +31,15 @@ export interface WeakCountry {
   attempts: number;
 }
 
+export interface MisspelledCountry {
+  code: CountryCode;
+  name: string;
+  /** The right spelling of what was to be answered. */
+  answer: string;
+  /** How many times it has been misspelled. */
+  times: number;
+}
+
 export interface StatsReport {
   skill: Skill;
   sessions: SessionSummary;
@@ -36,6 +47,8 @@ export interface StatsReport {
   /** Summary for the region selected in the menu. */
   focus: {region: Region; summary: Summary};
   weakest: WeakCountry[];
+  /** Right, but misspelled the last time (only for skills where the answer is written). */
+  misspelled: MisspelledCountry[];
   /** The latest graded sheets, oldest first. */
   recent: SheetResult[];
 }
@@ -54,22 +67,27 @@ export function statsReport(
   recentLimit = 10,
 ): StatsReport {
   const stats = computeStats(records, skill);
+  const named = (s: CountryStats) => {
+    const c = countryIn(lang, s.code);
+    return {name: c.name, answer: skill === 'capital' || skill === 'mapCapital' ? c.capital : c.name};
+  };
   const regions = [...CONTINENTS, 'ALL' as const].map(region => ({region, summary: summarize(stats, codesIn(region), now)}));
   return {
     skill,
     sessions: sessions(records, skill),
     regions,
     focus: regions.find(r => r.region === focus)!,
-    weakest: weakest(stats, codesIn(focus), weakLimit).map(s => {
-      const c = countryIn(lang, s.code);
-      return {
-        code: s.code,
-        name: c.name,
-        answer: skill === 'capital' || skill === 'mapCapital' ? c.capital : c.name,
-        percent: Math.round(100 * s.mastery),
-        attempts: s.attempts,
-      };
-    }),
+    weakest: weakest(stats, codesIn(focus), weakLimit).map(s => ({
+      code: s.code,
+      ...named(s),
+      percent: Math.round(100 * s.mastery),
+      attempts: s.attempts,
+    })),
+    misspelled: misspelledCountries(stats, codesIn(focus), weakLimit).map(s => ({
+      code: s.code,
+      ...named(s),
+      times: s.misspellings,
+    })),
     recent: recentSheets(records, skill, recentLimit),
   };
 }

@@ -10,6 +10,8 @@ import {
   dueAt,
   encodeRecord,
   levelOf,
+  misspelled,
+  misspelledCountries,
   recentSheets,
   mapPointsScore,
   sameSheet,
@@ -172,10 +174,60 @@ describe('latest sheets', () => {
       rec(T0 + 3 * DAY, [['NO', 1]], 'c'.repeat(KEY_LENGTH), 'mapCapital'),
     ];
     expect(recentSheets(records, 'capital', 10)).toEqual([
-      {time: T0 + DAY, score: 0.5, answers: 2},
-      {time: T0 + 2 * DAY, score: 0.5, answers: 2},
+      {id: key, time: T0 + DAY, score: 0.5, answers: 2},
+      {id: 'b'.repeat(KEY_LENGTH), time: T0 + 2 * DAY, score: 0.5, answers: 2},
     ]);
-    expect(recentSheets(records, 'capital', 1)).toEqual([{time: T0 + 2 * DAY, score: 0.5, answers: 2}]);
+    expect(recentSheets(records, 'capital', 1)).toEqual([
+      {id: 'b'.repeat(KEY_LENGTH), time: T0 + 2 * DAY, score: 0.5, answers: 2},
+    ]);
+  });
+});
+
+describe('misspellings', () => {
+  const close = verdictScore('close');
+
+  test('a misspelled answer is recognized from the stored score, also after encoding', () => {
+    const back = decodeRecord(encodeRecord(rec(T0, [['NO', close]], 'a'.repeat(KEY_LENGTH))))!;
+    expect(misspelled('capital', back.attempts[0].score)).toBe(true);
+    expect(misspelled('capital', 1)).toBe(false);
+    expect(misspelled('capital', 0)).toBe(false);
+    // Map scores are continuous; 0.8 there is just 800 of 1000 points.
+    expect(misspelled('mapCapital', close)).toBe(false);
+  });
+
+  test('a misspelling keeps the box: it neither moves up nor falls back', () => {
+    const stats = computeStats(
+      [rec(T0, [['NO', 1]]), rec(T0 + DAY, [['NO', 1]]), rec(T0 + 2 * DAY, [['NO', close]])],
+      'capital',
+    );
+    const no = stats.get('NO')!;
+    expect(no.box).toBe(2);
+    expect(no.streak).toBe(2);
+    expect(no.misspellings).toBe(1);
+    expect(no.lastMisspelled).toBe(true);
+    // Repeated misspellings never make it "known".
+    const many = computeStats([0, 1, 2, 3, 4].map(d => rec(T0 + d * DAY, [['SE', close]])), 'capital');
+    expect(levelOf(many.get('SE'))).toBe('learning');
+  });
+
+  test('spelled right afterwards, it is no longer on the list', () => {
+    const stats = computeStats([rec(T0, [['NO', close]]), rec(T0 + DAY, [['NO', 1]])], 'capital');
+    expect(stats.get('NO')!.lastMisspelled).toBe(false);
+    expect(misspelledCountries(stats, ['NO'], 5)).toEqual([]);
+  });
+
+  test('the report lists misspelled countries apart from the weak ones, with the right spelling', () => {
+    const records = [rec(T0, [['NO', close], ['SE', 0]])];
+    const r = statsReport(records, 'capital', getLanguage('nb')!, 'EU', T0 + DAY);
+    expect(r.misspelled).toEqual([{code: 'NO', name: 'Norge', answer: 'Oslo', times: 1}]);
+    expect(r.weakest.map(w => w.code)).toEqual(['SE']);
+  });
+
+  test('a misspelled country weighs at least as much as a half-weak one in training', () => {
+    const now = T0 + 10 * DAY;
+    const stats = computeStats([rec(T0, [['NO', close]])], 'capital');
+    const right = computeStats([rec(T0, [['NO', 1]])], 'capital');
+    expect(weight(stats.get('NO'), 'weak', now)).toBeGreaterThan(weight(right.get('NO'), 'weak', now));
   });
 });
 

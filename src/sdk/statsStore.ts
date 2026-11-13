@@ -20,6 +20,11 @@ import {
 } from '../core/stats';
 
 const STATS_DIR = 'stats';
+/**
+ * Guest mode is stored as an empty folder next to the statistics, so it survives a restart:
+ * whoever lends out the device should not have to remember to turn it on again.
+ */
+const GUEST_DIR = 'guest';
 
 /** Older records are deleted when there are more than this, so the list stays fast. */
 export const MAX_RECORDS = 3000;
@@ -31,11 +36,50 @@ interface Stored {
 
 let cache: Stored[] | null = null;
 let dirPath: string | null = null;
+let guest: boolean | null = null;
 
 /** Forgets what has been read in, as on a restart of the plugin (used in tests). */
 export function forgetCache(): void {
   cache = null;
   dirPath = null;
+  guest = null;
+}
+
+async function guestPath(): Promise<string | null> {
+  const plugin = await PluginManager.getPluginDirPath();
+  return plugin ? `${plugin}/${GUEST_DIR}` : null;
+}
+
+/**
+ * Guest mode (lending the device out): sheets are graded as usual, but nothing is saved in the
+ * statistics, and new sheets are drawn at random instead of from the owner's statistics.
+ */
+export async function guestMode(): Promise<boolean> {
+  if (guest !== null) {
+    return guest;
+  }
+  try {
+    const path = await guestPath();
+    guest = !!path && (await FileUtils.exists(path));
+  } catch {
+    guest = false;
+  }
+  return guest;
+}
+
+/** Turns guest mode on or off. Throws if it could not be stored. */
+export async function setGuestMode(on: boolean): Promise<void> {
+  const path = await guestPath();
+  if (!path) {
+    throw new Error('No plugin folder');
+  }
+  const exists = await FileUtils.exists(path);
+  if (on && !exists) {
+    await FileUtils.makeDir(path);
+  } else if (!on && exists) {
+    await FileUtils.deleteDir(path);
+  }
+  guest = on;
 }
 
 async function statsDir(): Promise<string | null> {
@@ -99,7 +143,7 @@ export async function loadRecords(): Promise<SheetRecord[]> {
 
 /**
  * Saves a graded sheet. If the same sheet has been graded before, the previous grading is replaced.
- * Never throws; returns false if saving failed.
+ * In guest mode nothing is saved. Never throws; returns false if saving failed.
  */
 export function saveRecord(record: SheetRecord): Promise<boolean> {
   return serial(() => saveRecordNow(record));
@@ -117,7 +161,7 @@ function serial<T>(task: () => Promise<T>): Promise<T> {
 }
 
 async function saveRecordNow(record: SheetRecord): Promise<boolean> {
-  if (!record.attempts.length) {
+  if (!record.attempts.length || (await guestMode())) {
     return true;
   }
   try {
@@ -157,6 +201,36 @@ async function saveRecordNow(record: SheetRecord): Promise<boolean> {
     // Unknown state on disk; read again next time.
     cache = null;
     return false;
+  }
+}
+
+/**
+ * Removes one graded sheet (all its parts) from the statistics, e.g. one someone else played.
+ * `id` is `SheetResult.id`. Grading the same sheet again adds it back.
+ */
+export function removeSheet(skill: SheetRecord['skill'], id: string): Promise<void> {
+  return serial(() => removeSheetNow(skill, id));
+}
+
+async function removeSheetNow(skill: SheetRecord['skill'], id: string): Promise<void> {
+  const dir = await statsDir();
+  if (!dir) {
+    return;
+  }
+  const stored = await loadStored();
+  const keep: Stored[] = [];
+  try {
+    for (const s of stored) {
+      if (s.record.skill === skill && sameSheet(s.record.key, id)) {
+        await FileUtils.deleteDir(`${dir}/${s.name}`);
+      } else {
+        keep.push(s);
+      }
+    }
+    cache = keep;
+  } catch (e) {
+    cache = null;
+    throw e;
   }
 }
 

@@ -151,6 +151,19 @@ export interface MenuStrings {
   statsResetDone: string;
   statsRecent: string;
   statsSkillOutline: string;
+  statsMisspelled: string;
+  statsMisspelledItem: string; // {country} {answer} {times} {timeUnit}
+  statsSheetList: string;
+  statsSheetListHint: string;
+  statsSheetRow: string; // {date} {percent} {answers}
+  statsRemove: string;
+  statsConfirmRemove: string;
+  statsRemoved: string;
+  statsGuestOn: string;
+  statsGuestOff: string;
+  statsGuestHint: string;
+  statsGuestBanner: string;
+  statsBlankHint: string;
 
   // Outline mode (outline.ts). Outline sheets are recognized by the key at the bottom,
   // not by the title, so the title and instructions on the sheet can be translated here.

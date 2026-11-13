@@ -9,7 +9,6 @@ import {boxOf} from './core/grouping';
 import {inside} from './core/marks';
 import {isResultText} from './core/sheet';
 import {newSheetId} from './core/sheetId';
-import {verdictScore} from './core/stats';
 import type {Strategy} from './core/training';
 import {
   DEFAULT_OUTLINE_OPTIONS,
@@ -26,7 +25,7 @@ import {
   type OutlineSheetInfo,
 } from './core/outlineSheet';
 import type {Region} from './core/sheet';
-import {recordResults, trainingOrder} from './actions';
+import {answeredOnly, recordResults, trainingOrder} from './actions';
 import {
   TYPE_GEO,
   TYPE_STROKE,
@@ -164,7 +163,7 @@ export async function gradeOutlineSheet(progress: Progress): Promise<OutlineGrad
   await recordResults(
     ref.notePath,
     'outline',
-    graded.map(g => ({code: g.country.code, score: verdictScore(g.result.verdict)})),
+    answeredOnly(graded, g => byCell[g.index].length > 0),
     codes,
     info.sheetId,
   );

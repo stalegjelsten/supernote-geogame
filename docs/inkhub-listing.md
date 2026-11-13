@@ -35,7 +35,11 @@ Features
   - Pass around: each player gets their own pages with the same countries, with a hand-over page in between. Grade the whole set to see who won.
   - Take turns: one shared sheet where players answer in turn, each with their own countries. Points per player are shown at the bottom.
 - Fix your answers and grade again as many times as you like.
-- Statistics: every graded single-player sheet is remembered per country. The menu shows how many countries you know, are learning or have not tried yet for each continent, how many are due for review, and which countries to practise more. Writing capitals, capitals on the map, countries on the map, countries by outline and names on the map are tracked separately. Grading the same sheet again replaces the earlier result, and the statistics can be reset from the menu.
+- Statistics: every graded single-player sheet is remembered per country. The menu shows how many countries you know, are learning or have not tried yet for each continent, how many are due for review, and which countries to practise more. Writing capitals, capitals on the map, countries on the map, countries by outline and names on the map are tracked separately. Grading the same sheet again replaces the earlier result.
+  - Answer only the countries you want to practise: empty boxes are not counted. Draw a dash for "don't know".
+  - Answers that were right but misspelled get their own list with the right spelling, and must be spelled right before the country counts as known.
+  - Remove a single sheet from the statistics, or reset everything.
+  - Guest mode: lend the device to someone without their answers counting.
 - Sheets in 55 languages, following the device language or chosen in the menu.
 - Works fully offline. No data leaves the device.
 
@@ -56,15 +60,15 @@ How to use
 1. Make sure the device's handwriting recognition language matches the language you will write in.
 2. Open a notebook. The sheet goes on the current page if it is empty and white; otherwise on a new page after it.
 3. Tap World Capitals Quiz in the toolbar, choose continent, sheet type, number and players, and make the sheet.
-4. Write your answers.
+4. Write your answers. Leave a box empty to skip it, or draw a dash if you don't know.
 5. Open the menu again and tap Grade.
 
 Permissions: reads and writes the current note page (to create and grade the sheet).
 
-Stored data: your answer history (country, quiz type, score and time) is kept
-locally in the plugin's own folder, so the statistics survive between sessions.
-Nothing is written to your other files, and nothing is sent anywhere. Reset
-statistics in the menu deletes it.
+Stored data: your answer history (country, quiz type, score and time) and
+whether guest mode is on are kept locally in the plugin's own folder, so the
+statistics survive between sessions. Nothing is written to your other files,
+and nothing is sent anywhere. Reset statistics in the menu deletes the history.
 
 Built with AI
 All the code in this plugin was written by AI (Claude by Anthropic, using
@@ -92,5 +96,5 @@ position on disputed territories. Open source under the MIT License.
 6. Map quiz after grading, with distance in km.
 7. Names on the map after grading (Europe, 15 countries).
 8. Multiplayer: a graded set with the winner, or a shared sheet with points per player.
-9. Statistics in the menu: countries known per continent and countries to practise more.
+9. Statistics in the menu: countries known per continent, countries to practise more and misspelled ones.
 10. (Optional) a sheet in another language, e.g. Japanese or German.

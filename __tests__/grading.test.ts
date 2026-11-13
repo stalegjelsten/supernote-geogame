@@ -58,7 +58,7 @@ import {rowLabel} from '../src/core/hotseat';
 import {computeLayout, type Rect} from '../src/core/layout';
 import {sheetTitle} from '../src/core/sheet';
 import {countryIn} from '../src/core/countries';
-import {forgetCache} from '../src/sdk/statsStore';
+import {forgetCache, loadRecords} from '../src/sdk/statsStore';
 import {sheetIdDraft} from '../src/core/sheetId';
 import type {CountryCode} from '../src/data/countries';
 
@@ -75,6 +75,23 @@ function sheetPage(codes: CountryCode[], subtitle = ENGLISH.sheet.subtitle, part
     text(subtitle, L.subtitle),
     ...codes.map((c, i) => text(countryIn(ENGLISH, c).name, L.rows[i].country)),
   ];
+}
+
+/** A pen stroke in the answer cell of a row: something written there (a dash, say). */
+function ink(codes: number, row: number) {
+  const a = computeLayout(SIZE, codes).rows[row].answer;
+  const y = (a.top + a.bottom) / 2;
+  const points = [
+    {x: a.left + 40, y},
+    {x: a.left + 120, y},
+  ];
+  return {
+    uuid: String(num),
+    type: 0,
+    numInPage: num++,
+    layerNum: 0,
+    stroke: {points: {size: async () => points.length, getRange: async () => points}},
+  };
 }
 
 const insertedTexts = (): Array<{textContentFull: string; textRect: Rect}> => mockInserted.flatMap(i => i.elements).flatMap(e => (e.textBox ? [e.textBox] : []));
@@ -114,9 +131,25 @@ test('regrading: an answer key spelled like a country does not count as an extra
 });
 
 test('a single-player sheet is saved in the statistics', async () => {
-  mockPages.set(0, sheetPage(['NO', 'SE']));
+  mockPages.set(0, [...sheetPage(['NO', 'SE']), ink(2, 0)]);
   await gradeSheet('page', () => {});
   expect(statsRecords().length).toBe(1);
+});
+
+test('empty boxes are left out of the statistics; a mark that is no answer counts as wrong', async () => {
+  mockPages.set(0, [...sheetPage(['NO', 'SE', 'DK']), ink(3, 1)]);
+  const r = await gradeSheet('page', () => {});
+  // The score on the sheet still counts every row.
+  expect(r.total).toBe(3);
+  forgetCache();
+  const records = await loadRecords();
+  expect(records.map(x => x.attempts)).toEqual([[{code: 'SE', score: 0}]]);
+});
+
+test('a page with nothing written saves nothing', async () => {
+  mockPages.set(0, sheetPage(['NO', 'SE']));
+  await gradeSheet('page', () => {});
+  expect(statsRecords()).toEqual([]);
 });
 
 test('pass around: grading the whole set saves no statistics', async () => {
@@ -151,16 +184,16 @@ function idText(id: string) {
 }
 
 test('two sheets with the same countries in the same note both count in the statistics', async () => {
-  mockPages.set(0, [...sheetPage(['NO', 'SE']), idText('lx2k1a00')]);
+  mockPages.set(0, [...sheetPage(['NO', 'SE']), idText('lx2k1a00'), ink(2, 0)]);
   await gradeSheet('page', () => {});
-  mockPages.set(0, [...sheetPage(['NO', 'SE']), idText('lx2k1b00')]);
+  mockPages.set(0, [...sheetPage(['NO', 'SE']), idText('lx2k1b00'), ink(2, 0)]);
   await gradeSheet('page', () => {});
   expect(statsRecords().length).toBe(2);
 });
 
 test('regrading the same sheet replaces the result, also after the note is renamed', async () => {
   const id = idText('lx2k1a00');
-  mockPages.set(0, [...sheetPage(['NO', 'SE']), id]);
+  mockPages.set(0, [...sheetPage(['NO', 'SE']), id, ink(2, 0)]);
   await gradeSheet('page', () => {});
   mockNote.path = '/notes/renamed.note';
   await gradeSheet('page', () => {});

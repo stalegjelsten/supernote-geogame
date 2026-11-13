@@ -76,6 +76,21 @@ export const PASS = 0.7;
 
 export const passed = (score: number) => score >= PASS;
 
+/**
+ * Skills graded by comparing written text with the answer key (Verdict). On these, a score of
+ * exactly `verdictScore('close')` means the answer was right but misspelled. Map skills give
+ * continuous scores, so the same value there means nothing special.
+ */
+const SPELLED_SKILLS: ReadonlySet<Skill> = new Set<Skill>(['capital', 'outline', 'label']);
+
+/**
+ * Was the answer right but misspelled? Read from the stored score, so records saved before
+ * this was tracked are understood as well.
+ */
+export function misspelled(skill: Skill, score: number): boolean {
+  return SPELLED_SKILLS.has(skill) && quantize(score) === quantize(verdictScore('close'));
+}
+
 // ---------------------------------------------------------------- koding
 
 function quantize(score: number): string {
@@ -201,6 +216,10 @@ export interface CountryStats {
   firstSeen: number;
   lastSeen: number;
   lastScore: number;
+  /** Number of times it was right but misspelled (see `misspelled`). */
+  misspellings: number;
+  /** The latest attempt was right but misspelled. */
+  lastMisspelled: boolean;
 }
 
 /** How much the latest attempt counts in `mastery`. */
@@ -226,7 +245,10 @@ export function computeStats(records: readonly SheetRecord[], skill: Skill): Map
   for (const r of sorted) {
     for (const a of r.attempts) {
       const s = stats.get(a.code);
-      const ok = passed(a.score);
+      // A misspelling is half a pass: it does not move the country up toward "known"
+      // (it has to be spelled right for that), but it doesn't send it back to the start either.
+      const typo = misspelled(skill, a.score);
+      const ok = passed(a.score) && !typo;
       if (!s) {
         stats.set(a.code, {
           code: a.code,
@@ -238,16 +260,22 @@ export function computeStats(records: readonly SheetRecord[], skill: Skill): Map
           firstSeen: r.time,
           lastSeen: r.time,
           lastScore: a.score,
+          misspellings: typo ? 1 : 0,
+          lastMisspelled: typo,
         });
         continue;
       }
       s.attempts++;
       s.passes += ok ? 1 : 0;
       s.mastery = s.mastery + MASTERY_WEIGHT * (a.score - s.mastery);
-      s.streak = ok ? s.streak + 1 : 0;
-      s.box = ok ? Math.min(MAX_BOX, s.box + 1) : 0;
+      if (!typo) {
+        s.streak = ok ? s.streak + 1 : 0;
+        s.box = ok ? Math.min(MAX_BOX, s.box + 1) : 0;
+      }
       s.lastSeen = r.time;
       s.lastScore = a.score;
+      s.misspellings += typo ? 1 : 0;
+      s.lastMisspelled = typo;
     }
   }
   return stats;
@@ -311,6 +339,24 @@ export function summarize(
   return out;
 }
 
+/**
+ * The countries whose latest answer was right but misspelled, the most often misspelled first.
+ * Kept apart from `weakest`: these are known, they just need the spelling.
+ */
+export function misspelledCountries(
+  stats: ReadonlyMap<CountryCode, CountryStats>,
+  codes: readonly CountryCode[],
+  limit: number,
+): CountryStats[] {
+  return codes
+    .flatMap(c => {
+      const s = stats.get(c);
+      return s?.lastMisspelled ? [s] : [];
+    })
+    .sort((a, b) => b.misspellings - a.misspellings || b.lastSeen - a.lastSeen)
+    .slice(0, limit);
+}
+
 /** The countries that have been practiced, weakest first (low mastery, then most attempts). */
 export function weakest(
   stats: ReadonlyMap<CountryCode, CountryStats>,
@@ -320,7 +366,7 @@ export function weakest(
   return codes
     .flatMap(c => {
       const s = stats.get(c);
-      return s && s.box < KNOWN_BOX ? [s] : [];
+      return s && s.box < KNOWN_BOX && !s.lastMisspelled ? [s] : [];
     })
     .sort((a, b) => a.mastery - b.mastery || b.attempts - a.attempts)
     .slice(0, limit);
@@ -357,6 +403,8 @@ export function sessions(records: readonly SheetRecord[], skill: Skill): Session
 }
 
 export interface SheetResult {
+  /** The sheet's key without the part number (see `splitRecord`); used to remove the sheet. */
+  id: string;
   time: number;
   /** Average score on the sheet (0–1). */
   score: number;
@@ -375,10 +423,10 @@ export function recentSheets(records: readonly SheetRecord[], skill: Skill, limi
       latest.set(r.key, r);
     }
   }
-  const sheets = new Map<string, {time: number; total: number; answers: number}>();
+  const sheets = new Map<string, {id: string; time: number; total: number; answers: number}>();
   for (const r of latest.values()) {
     const id = r.key.slice(0, KEY_LENGTH);
-    const s = sheets.get(id) ?? {time: r.time, total: 0, answers: 0};
+    const s = sheets.get(id) ?? {id, time: r.time, total: 0, answers: 0};
     s.time = Math.max(s.time, r.time);
     s.answers += r.attempts.length;
     s.total += r.attempts.reduce((m, a) => m + a.score, 0);
@@ -388,5 +436,5 @@ export function recentSheets(records: readonly SheetRecord[], skill: Skill, limi
     .filter(s => s.answers > 0)
     .sort((a, b) => a.time - b.time)
     .slice(-limit)
-    .map(s => ({time: s.time, score: s.total / s.answers, answers: s.answers}));
+    .map(s => ({id: s.id, time: s.time, score: s.total / s.answers, answers: s.answers}));
 }

@@ -26,7 +26,8 @@ export function weight(s: CountryStats | undefined, strategy: Strategy, now: num
     return 1;
   }
   const unseen = !s;
-  const weakness = s ? 1 - s.mastery : 1;
+  // A misspelled answer counts as at least half weak, so it comes back until it is spelled right.
+  const weakness = s ? Math.max(1 - s.mastery, s.lastMisspelled ? 0.5 : 0) : 1;
   const late = s ? overdue(s, now) : 0;
   const isDue = !!s && late >= 0;
   const known = !!s && s.box >= KNOWN_BOX;

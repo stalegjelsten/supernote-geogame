@@ -74,8 +74,9 @@ import {
 } from './sdk/notes';
 import {computeStats, sheetKey, verdictScore, type Attempt, type Skill} from './core/stats';
 import {orderForTraining, type Strategy} from './core/training';
-import {loadRecords, saveRecord} from './sdk/statsStore';
+import {guestMode, loadRecords, saveRecord} from './sdk/statsStore';
 import type {CountryCode} from './data/countries';
+import type {Verdict} from './core/match';
 
 /** Stroke width for table lines; see the comment in createSheet. */
 const LINE_WIDTH = 200;
@@ -87,13 +88,14 @@ export type Progress = (message: string) => void;
 
 /**
  * The order countries should be drawn in for a training mode, or undefined for
- * a plain random draw. Reads the statistics for the skill.
+ * a plain random draw. Reads the statistics for the skill. In guest mode the statistics
+ * belong to someone else, so the draw is random.
  */
 export async function trainingOrder(
   skill: Skill,
   strategy: Strategy,
 ): Promise<((pool: Country[]) => Country[]) | undefined> {
-  if (strategy === 'random') {
+  if (strategy === 'random' || (await guestMode())) {
     return undefined;
   }
   const stats = computeStats(await loadRecords(), skill);
@@ -104,8 +106,8 @@ export async function trainingOrder(
 /**
  * Saves the results from a graded page. A saving error never stops the grading.
  * `sheetCodes` are all the countries on the page and make up the sheet key; pass them when
- * some countries are left out of `attempts` (unmarked cities on a map), so grading again
- * with other cities marked still replaces the earlier result.
+ * some countries are left out of `attempts` (unmarked cities on a map, empty boxes on a written
+ * sheet), so grading again with other answers filled in still replaces the earlier result.
  */
 export async function recordResults(
   notePath: string,
@@ -119,6 +121,18 @@ export async function recordResults(
   }
   const key = sheetKey(notePath, skill, sheetCodes, sheetId);
   await saveRecord({skill, time: Date.now(), key, attempts});
+}
+
+/**
+ * The statistics for a graded page, without the boxes nothing was written in: you can answer
+ * only the countries you want to practice, and the rest neither count as wrong nor as practiced.
+ * To say "don't know", write a mark (a dash, a question mark): ink that isn't an answer scores 0.
+ */
+export function answeredOnly<G extends {country: {code: CountryCode}; result: {verdict: Verdict}}>(
+  graded: readonly G[],
+  hasInk: (g: G) => boolean,
+): Attempt[] {
+  return graded.filter(hasInk).map(g => ({code: g.country.code, score: verdictScore(g.result.verdict)}));
 }
 
 /**
@@ -723,10 +737,11 @@ async function gradePage(
   await insertDrafts(ref, drafts);
   await saveNote();
   // Statistics only for a single player; on multiplayer sheets the answers belong to several.
+  // Rows without ink are left out (see answeredOnly); the key still uses all the countries.
   if (!tag) {
-    const attempts = graded.map(g => ({code: g.country.code, score: verdictScore(g.result.verdict)}));
+    const attempts = answeredOnly(graded, g => byRow[g.row].length > 0);
     const id = sheetIdIn(elements.map(e => (e.type === TYPE_TEXT ? e.textBox?.textContentFull : null)));
-    await recordResults(ref.notePath, 'capital', attempts, undefined, id);
+    await recordResults(ref.notePath, 'capital', attempts, graded.map(g => g.country.code), id);
   }
   return {points, total, players};
 }

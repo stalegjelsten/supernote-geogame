@@ -27,7 +27,28 @@ export interface StatsTexts {
   resetDone: string;
   /** Heading over the chart of the latest sheets. */
   recent: string;
+  /** Heading over the countries that were right but misspelled. */
+  misspelled: string;
+  misspelledItem: (country: string, answer: string, times: number) => string;
+  /** Heading and hint over the list of graded sheets that can be removed. */
+  sheetList: string;
+  sheetListHint: string;
+  sheetRow: (date: Date, percent: number, answers: number) => string;
+  remove: string;
+  confirmRemove: string;
+  removed: string;
+  /** Guest mode: lending the device to someone else. */
+  guestOn: string;
+  guestOff: string;
+  guestHint: string;
+  guestBanner: string;
+  /** Under the grade buttons: empty boxes are left out, a dash means "don't know". */
+  blankHint: string;
 }
+
+const pad = (n: number) => String(n).padStart(2, '0');
+const isoDate = (d: Date) =>
+  `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 
 const nb: StatsTexts = {
   section: 'Statistikk',
@@ -53,6 +74,22 @@ const nb: StatsTexts = {
   cancel: 'Avbryt',
   resetDone: 'Statistikken er slettet.',
   recent: 'Siste ark (% riktig)',
+  misspelled: 'Riktig, men sjekk stavingen',
+  misspelledItem: (country, answer, times) =>
+    `${country} – ${answer} (feilstavet ${times} ${times === 1 ? 'gang' : 'ganger'})`,
+  sheetList: 'Rettede ark',
+  sheetListHint: 'Fjern et ark som ikke skal telle, for eksempel et som noen andre har spilt.',
+  sheetRow: (d, percent, answers) =>
+    `${d.getDate()}.${d.getMonth() + 1}. kl. ${pad(d.getHours())}:${pad(d.getMinutes())}: ${percent} % riktig, ${answers} svar`,
+  remove: 'Fjern',
+  confirmRemove: 'Fjerne arket fra statistikken? Retter du det igjen, kommer det tilbake.',
+  removed: 'Arket er fjernet fra statistikken.',
+  guestOn: 'Lån bort (gjestemodus)',
+  guestOff: 'Slå av gjestemodus',
+  guestHint:
+    'I gjestemodus rettes arkene som vanlig, men ingenting lagres i statistikken, og nye ark trekkes tilfeldig.',
+  guestBanner: 'Gjestemodus: rettingen lagres ikke i statistikken.',
+  blankHint: 'Tomme ruter telles ikke i statistikken. Vet du ikke svaret, sett en strek i ruta.',
 };
 
 const en: StatsTexts = {
@@ -79,6 +116,21 @@ const en: StatsTexts = {
   cancel: 'Cancel',
   resetDone: 'Statistics deleted.',
   recent: 'Latest sheets (% right)',
+  misspelled: 'Right, but check the spelling',
+  misspelledItem: (country, answer, times) =>
+    `${country} – ${answer} (misspelled ${times} ${times === 1 ? 'time' : 'times'})`,
+  sheetList: 'Graded sheets',
+  sheetListHint: 'Remove a sheet that should not count, for example one someone else played.',
+  sheetRow: (d, percent, answers) => `${isoDate(d)}: ${percent} % right, ${answers} answers`,
+  remove: 'Remove',
+  confirmRemove: 'Remove this sheet from the statistics? Grading it again adds it back.',
+  removed: 'The sheet has been removed from the statistics.',
+  guestOn: 'Lend out (guest mode)',
+  guestOff: 'Turn off guest mode',
+  guestHint:
+    'In guest mode, sheets are graded as usual, but nothing is saved in the statistics and new sheets are drawn at random.',
+  guestBanner: 'Guest mode: grading is not saved in the statistics.',
+  blankHint: "Empty boxes don't count in the statistics. If you don't know the answer, draw a dash in the box.",
 };
 
 const OWN: Record<string, StatsTexts> = {nb, en};
@@ -108,6 +160,20 @@ function fromMenu(m: MenuStrings): StatsTexts {
     cancel: m.cancel,
     resetDone: m.statsResetDone,
     recent: m.statsRecent,
+    misspelled: m.statsMisspelled,
+    misspelledItem: (country, answer, times) =>
+      fmt(m.statsMisspelledItem, {country, answer, times, timeUnit: plural(m, 'statsTimeUnit', times)}),
+    sheetList: m.statsSheetList,
+    sheetListHint: m.statsSheetListHint,
+    sheetRow: (d, percent, answers) => fmt(m.statsSheetRow, {date: isoDate(d), percent, answers}),
+    remove: m.statsRemove,
+    confirmRemove: m.statsConfirmRemove,
+    removed: m.statsRemoved,
+    guestOn: m.statsGuestOn,
+    guestOff: m.statsGuestOff,
+    guestHint: m.statsGuestHint,
+    guestBanner: m.statsGuestBanner,
+    blankHint: m.statsBlankHint,
   };
 }
 
