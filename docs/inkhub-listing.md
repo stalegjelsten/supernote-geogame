@@ -59,6 +59,9 @@ Features
 - Sheets in 55 languages, following the device language or chosen in the menu.
 - Works fully offline. No data leaves the device.
 
+Devices: only tested on a Manta. It should also work on Nomad, and on A5 X and A6 X
+with firmware Chauvet 2.28.42 or later, but it has not been tried there.
+
 Tip: use a separate notebook
 Create a notebook just for the quiz (for example "Capitals"), with a blank
 template. The plugin writes onto the page you are on and can add pages, so a

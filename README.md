@@ -23,7 +23,9 @@ To update, install the new `geogame.snplg` from a later release the same way.
 
 ### Devices
 
-The layout adapts to the page size (Manta, Nomad, A5X and A6X): smaller pages get fewer countries per page. The plugin is tested on a Manta.
+The plugin runs on devices with plugin support: Manta (A5 X2) and Nomad (A6 X2), and A5 X and A6 X from firmware Chauvet 2.28.42. The layout adapts to the page size: smaller pages (Nomad, A5 X, A6 X) get fewer countries per page.
+
+**The plugin has only been tested on a Manta.** It should work on the other devices, but it has not been tried on them.
 
 ## Usage
 
